@@ -1,0 +1,4 @@
+{
+  "/[lang]/magic-camp/page": "app/[lang]/magic-camp/page.js",
+  "/[lang]/page": "app/[lang]/page.js"
+}

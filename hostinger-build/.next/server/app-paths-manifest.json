@@ -1,0 +1,13 @@
+{
+  "/api/auth/createChild/route": "app/api/auth/createChild/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/auth/setCustomClaims/route": "app/api/auth/setCustomClaims/route.js",
+  "/icon.jpg/route": "app/icon.jpg/route.js",
+  "/[lang]/page": "app/[lang]/page.js",
+  "/[lang]/login/page": "app/[lang]/login/page.js",
+  "/[lang]/register/page": "app/[lang]/register/page.js",
+  "/[lang]/dashboard/approvals/page": "app/[lang]/dashboard/approvals/page.js",
+  "/[lang]/dashboard/page": "app/[lang]/dashboard/page.js",
+  "/[lang]/dashboard/messages/page": "app/[lang]/dashboard/messages/page.js",
+  "/[lang]/dashboard/shop/page": "app/[lang]/dashboard/shop/page.js"
+}
