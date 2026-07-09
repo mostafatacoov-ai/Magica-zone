@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { adminAuth, adminDb } from '@/lib/firebase-admin';
 import { FieldValue } from 'firebase-admin/firestore';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
     try {
         const { idToken, email, password, name, age } = await request.json();
