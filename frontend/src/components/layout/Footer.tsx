@@ -85,8 +85,8 @@ export default function Footer({ lang }: { lang: string }) {
                         </h3>
                         <div className="flex flex-col gap-2 text-sm text-gray-400">
                             <span>📧 hello@magicazone.com</span>
-                            <span>📱 {isArabic ? "واتساب" : "WhatsApp"}: +966 500 000 000</span>
-                            <span>📍 {isArabic ? "المملكة العربية السعودية" : "Saudi Arabia"}</span>
+                            <span>📱 {isArabic ? "واتساب" : "WhatsApp"}: 01003937096</span>
+                            <span>📍 {isArabic ? "مصر، القاهرة" : "Egypt, Cairo"}</span>
                         </div>
                     </div>
                 </div>
