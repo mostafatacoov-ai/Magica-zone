@@ -5,7 +5,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
-  title: "Magic Camp",
+  title: "Magica Camp",
   description: "Educational summer camp for kids aged 5 to 15.",
   icons: {
     icon: '/icon.png',

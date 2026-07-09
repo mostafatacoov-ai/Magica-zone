@@ -85,7 +85,7 @@ export default function AboutPage({ params: { lang } }: { params: { lang: string
         {
             year: "2025",
             title: isArabic ? "الانطلاق" : "The Launch",
-            desc: isArabic ? "إطلاق ماجيك فود، ماجيك يونيفورم، وماجيك سبلايز — بيئة متكاملة." : "Launch of Magic Food, Magic Uniform, and Magic Supplies — a complete ecosystem.",
+            desc: isArabic ? "إطلاق ماجيكا فود، ماجيكا يونيفورم، وماجيكا سبلايز — بيئة متكاملة." : "Launch of Magica Food, Magica Uniform, and Magica Supplies — a complete ecosystem.",
         },
         {
             year: "2026",
@@ -246,7 +246,7 @@ export default function AboutPage({ params: { lang } }: { params: { lang: string
                                 href={`/${lang}/magic-camp`}
                                 className="px-8 py-4 bg-gradient-to-r from-orange-500 to-purple-500 text-white rounded-full font-bold text-lg hover:scale-105 transition-transform shadow-xl"
                             >
-                                {isArabic ? "اكتشف ماجيك كامب" : "Explore Magic Camp"}
+                                {isArabic ? "اكتشف ماجيكا كامب" : "Explore Magica Camp"}
                             </Link>
                             <Link
                                 href={`/${lang}/register`}

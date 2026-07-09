@@ -89,7 +89,7 @@ export default function MagicFoodPage({ params: { lang } }: { params: { lang: st
                         transition={{ type: "spring", bounce: 0.5 }}
                         className="mb-8"
                     >
-                        <Image src={foodLogo} alt="Magic Food" className="h-32 w-auto mx-auto object-contain drop-shadow-md" />
+                        <Image src={foodLogo} alt="Magica Food" className="h-32 w-auto mx-auto object-contain drop-shadow-md" />
                     </motion.div>
 
                     <motion.h1
@@ -123,8 +123,8 @@ export default function MagicFoodPage({ params: { lang } }: { params: { lang: st
                         className="text-lg text-gray-500 max-w-2xl mx-auto mb-12 leading-relaxed"
                     >
                         {isArabic
-                            ? "ماجيك فود يقدم وجبات مصممة علمياً لدعم تركيز الأطفال وطاقتهم. وأحياناً — يُعلّمهم كيف يُعدّونها بأيديهم. لأن الطفل الذي يعرف ما يأكل، يعرف كيف يهتم بنفسه."
-                            : "Magic Food provides scientifically designed meals to support children's focus and energy. And sometimes — we teach them how to prepare it themselves. Because the child who knows what they eat, knows how to take care of themselves."}
+                            ? "ماجيكا فود يقدم وجبات مصممة علمياً لدعم تركيز الأطفال وطاقتهم. وأحياناً — يُعلّمهم كيف يُعدّونها بأيديهم. لأن الطفل الذي يعرف ما يأكل، يعرف كيف يهتم بنفسه."
+                            : "Magica Food provides scientifically designed meals to support children's focus and energy. And sometimes — we teach them how to prepare it themselves. Because the child who knows what they eat, knows how to take care of themselves."}
                     </motion.p>
                 </div>
             </section>

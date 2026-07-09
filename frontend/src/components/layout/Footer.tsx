@@ -3,12 +3,12 @@ import Image from "next/image";
 import logoImg from "../../../public/logo.png";
 
 const SUB_BRANDS = (lang: string, isArabic: boolean) => [
-    { emoji: "🏕️", label: isArabic ? "ماجيك كامب" : "Magic Camp", href: `/${lang}/magic-camp`, tagline: isArabic ? "صيف واحد يغيّر كل شيء" : "One Summer Changes Everything" },
-    { emoji: "🛍️", label: isArabic ? "ماجيك بازار" : "Magic Bazar", href: `/${lang}/magic-bazar`, tagline: isArabic ? "اشتري. بيع. تعلّم. انجح." : "Buy. Sell. Learn. Succeed." },
-    { emoji: "🍱", label: isArabic ? "ماجيك فود" : "Magic Food", href: `/${lang}/magic-food`, tagline: isArabic ? "أكل صح = تفكير صح" : "Eat Right = Think Right" },
-    { emoji: "🎙️", label: isArabic ? "ماجيك بودكاست" : "Magic Podcast", href: `/${lang}/magic-podcast`, tagline: isArabic ? "كلام بيفرق" : "Words That Matter" },
-    { emoji: "👕", label: isArabic ? "ماجيك يونيفورم" : "Magic Uniform", href: `/${lang}/magic-uniform`, tagline: isArabic ? "البس هويتك" : "Wear Your Identity" },
-    { emoji: "🎒", label: isArabic ? "ماجيك سبلايز" : "Magic Supplies", href: `/${lang}/magic-supplies`, tagline: isArabic ? "جهّز نفسك. جهّز مستقبلك." : "Equip Yourself. Equip Your Future." },
+    { emoji: "🏕️", label: isArabic ? "ماجيكا كامب" : "Magica Camp", href: `/${lang}/magic-camp`, tagline: isArabic ? "صيف واحد يغيّر كل شيء" : "One Summer Changes Everything" },
+    { emoji: "🛍️", label: isArabic ? "ماجيكا بازار" : "Magica Bazar", href: `/${lang}/magic-bazar`, tagline: isArabic ? "اشتري. بيع. تعلّم. انجح." : "Buy. Sell. Learn. Succeed." },
+    { emoji: "🍱", label: isArabic ? "ماجيكا فود" : "Magica Food", href: `/${lang}/magic-food`, tagline: isArabic ? "أكل صح = تفكير صح" : "Eat Right = Think Right" },
+    { emoji: "🎙️", label: isArabic ? "ماجيكا بودكاست" : "Magica Podcast", href: `/${lang}/magic-podcast`, tagline: isArabic ? "كلام بيفرق" : "Words That Matter" },
+    { emoji: "👕", label: isArabic ? "ماجيكا يونيفورم" : "Magica Uniform", href: `/${lang}/magic-uniform`, tagline: isArabic ? "البس هويتك" : "Wear Your Identity" },
+    { emoji: "🎒", label: isArabic ? "ماجيكا سبلايز" : "Magica Supplies", href: `/${lang}/magic-supplies`, tagline: isArabic ? "جهّز نفسك. جهّز مستقبلك." : "Equip Yourself. Equip Your Future." },
 ];
 
 export default function Footer({ lang }: { lang: string }) {

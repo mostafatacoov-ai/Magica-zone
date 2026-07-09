@@ -72,7 +72,7 @@ export default function MagicCampPage({ params: { lang } }: { params: { lang: st
     const schedule = [
         { time: isArabic ? "8:00 ص" : "8:00 AM", activity: isArabic ? "الاستقبال وبدء اليوم" : "Welcome & Morning Start" },
         { time: isArabic ? "9:00 ص" : "9:00 AM", activity: isArabic ? "جلسة المهارة الرئيسية" : "Core Skill Session" },
-        { time: isArabic ? "11:00 ص" : "11:00 AM", activity: isArabic ? "استراحة ماجيك فود" : "Magic Food Break" },
+        { time: isArabic ? "11:00 ص" : "11:00 AM", activity: isArabic ? "استراحة ماجيكا فود" : "Magica Food Break" },
         { time: isArabic ? "11:30 ص" : "11:30 AM", activity: isArabic ? "نشاط المغامرة الجماعي" : "Group Adventure Activity" },
         { time: isArabic ? "1:30 م" : "1:30 PM", activity: isArabic ? "ورشة الإبداع الحر" : "Free Creativity Workshop" },
         { time: isArabic ? "3:00 م" : "3:00 PM", activity: isArabic ? "وقت الفريق والألعاب" : "Team Games & Wrap-Up" },
@@ -93,7 +93,7 @@ export default function MagicCampPage({ params: { lang } }: { params: { lang: st
                             transition={{ type: "spring", bounce: 0.5, duration: 1 }}
                             className="mb-8"
                         >
-                            <Image src={campLogo} alt="Magic Camp" className="h-32 w-auto object-contain drop-shadow-md" />
+                            <Image src={campLogo} alt="Magica Camp" className="h-32 w-auto object-contain drop-shadow-md" />
                         </motion.div>
 
                         <motion.h1
@@ -168,7 +168,7 @@ export default function MagicCampPage({ params: { lang } }: { params: { lang: st
                         <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white">
                             <Image
                                 src={heroImg}
-                                alt={isArabic ? "أطفال في ماجيك كامب" : "Kids having fun at Magic Camp"}
+                                alt={isArabic ? "أطفال في ماجيكا كامب" : "Kids having fun at Magica Camp"}
                                 className="w-full h-auto object-cover transform hover:scale-105 transition-transform duration-700"
                                 placeholder="blur"
                             />

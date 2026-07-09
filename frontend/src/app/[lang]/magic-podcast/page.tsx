@@ -98,7 +98,7 @@ export default function MagicPodcastPage({ params: { lang } }: { params: { lang:
                         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/80 backdrop-blur-md border border-purple-200 shadow-sm mb-8"
                     >
                         <span className="text-2xl">🎙️</span>
-                        <span className="text-sm font-black text-purple-600 uppercase tracking-widest">Magic Podcast</span>
+                        <span className="text-sm font-black text-purple-600 uppercase tracking-widest">Magica Podcast</span>
                     </motion.div>
 
                     <motion.h1
@@ -130,8 +130,8 @@ export default function MagicPodcastPage({ params: { lang } }: { params: { lang:
                         className="text-lg text-gray-500 max-w-2xl mx-auto mb-12 leading-relaxed"
                     >
                         {isArabic
-                            ? "ماجيك بودكاست يناقش ما لا تناقشه المدرسة: الثقة بالنفس، اكتشاف الشغف، مواجهة الفشل، وصناعة الحلم. لأن الكلمة الصحيحة في الوقت الصحيح تغيّر مسار إنسان."
-                            : "Magic Podcast discusses what school doesn't: self-confidence, discovering passion, facing failure, and building dreams. Because the right word at the right time changes a person's path."}
+                            ? "ماجيكا بودكاست يناقش ما لا تناقشه المدرسة: الثقة بالنفس، اكتشاف الشغف، مواجهة الفشل، وصناعة الحلم. لأن الكلمة الصحيحة في الوقت الصحيح تغيّر مسار إنسان."
+                            : "Magica Podcast discusses what school doesn't: self-confidence, discovering passion, facing failure, and building dreams. Because the right word at the right time changes a person's path."}
                     </motion.p>
 
                     <motion.div
@@ -255,8 +255,8 @@ export default function MagicPodcastPage({ params: { lang } }: { params: { lang:
                         </h2>
                         <p className="text-purple-100 mb-8 text-lg max-w-xl mx-auto">
                             {isArabic
-                                ? "اشترك الآن واستمع لكل جديد من ماجيك بودكاست — مجاناً."
-                                : "Subscribe now and listen to everything new from Magic Podcast — for free."}
+                                ? "اشترك الآن واستمع لكل جديد من ماجيكا بودكاست — مجاناً."
+                                : "Subscribe now and listen to everything new from Magica Podcast — for free."}
                         </p>
                         <Link
                             href={`/${lang}/register`}

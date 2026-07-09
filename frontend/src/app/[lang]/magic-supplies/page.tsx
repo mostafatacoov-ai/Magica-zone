@@ -90,7 +90,7 @@ export default function MagicSuppliesPage({ params: { lang } }: { params: { lang
                         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/80 backdrop-blur-md border border-rose-200 shadow-sm mb-8"
                     >
                         <span className="text-2xl">🎒</span>
-                        <span className="text-sm font-black text-rose-600 uppercase tracking-widest">Magic Supplies</span>
+                        <span className="text-sm font-black text-rose-600 uppercase tracking-widest">Magica Supplies</span>
                     </motion.div>
 
                     <motion.h1
@@ -124,8 +124,8 @@ export default function MagicSuppliesPage({ params: { lang } }: { params: { lang
                         className="text-lg text-gray-500 max-w-2xl mx-auto mb-12 leading-relaxed"
                     >
                         {isArabic
-                            ? "ماجيك سبلايز ليست مجرد أدوات مدرسية — بل رفيق يومي لكل طفل يأخذ تعليمه بجدية ويؤمن أن التفاصيل الصغيرة تصنع النتائج الكبيرة."
-                            : "Magic Supplies aren't just school tools — they're a daily companion for every child who takes their education seriously and believes that small details create big results."}
+                            ? "ماجيكا سبلايز ليست مجرد أدوات مدرسية — بل رفيق يومي لكل طفل يأخذ تعليمه بجدية ويؤمن أن التفاصيل الصغيرة تصنع النتائج الكبيرة."
+                            : "Magica Supplies aren't just school tools — they're a daily companion for every child who takes their education seriously and believes that small details create big results."}
                     </motion.p>
 
                     <motion.div
@@ -160,7 +160,7 @@ export default function MagicSuppliesPage({ params: { lang } }: { params: { lang
                 <div className="max-w-6xl mx-auto">
                     <div className="text-center mb-14">
                         <h2 className="text-4xl font-black text-gray-800 mb-4">
-                            {isArabic ? "ما يحتويه طقم ماجيك سبلايز" : "What's in the Magic Supplies Kit"}
+                            {isArabic ? "ما يحتويه طقم ماجيكا سبلايز" : "What's in the Magica Supplies Kit"}
                         </h2>
                         <p className="text-gray-500 text-lg">
                             {isArabic ? "كل شيء يحتاجه الطفل الطموح" : "Everything the ambitious child needs"}
@@ -191,7 +191,7 @@ export default function MagicSuppliesPage({ params: { lang } }: { params: { lang
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-14">
                         <h2 className="text-4xl font-black text-gray-800">
-                            {isArabic ? "لماذا ماجيك سبلايز؟" : "Why Magic Supplies?"}
+                            {isArabic ? "لماذا ماجيكا سبلايز؟" : "Why Magica Supplies?"}
                         </h2>
                     </div>
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -226,7 +226,7 @@ export default function MagicSuppliesPage({ params: { lang } }: { params: { lang
                         className="bg-white/80 backdrop-blur-md border border-rose-200 rounded-3xl p-10 shadow-xl"
                     >
                         <h2 className="text-3xl font-black text-gray-800 mb-4 text-center">
-                            {isArabic ? "طقم ماجيك سبلايز الكامل" : "Complete Magic Supplies Kit"}
+                            {isArabic ? "طقم ماجيكا سبلايز الكامل" : "Complete Magica Supplies Kit"}
                         </h2>
                         <p className="text-center text-gray-500 mb-8">
                             {isArabic ? "متوفر مع كل تسجيل في برامج ماجيكا زون" : "Available with every Magica Zone program registration"}

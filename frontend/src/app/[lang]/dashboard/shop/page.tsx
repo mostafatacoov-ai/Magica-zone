@@ -8,7 +8,7 @@ import { ShoppingCart, Package, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
 const PRODUCTS = [
-    { id: "1", nameEn: "Magic Camp T-Shirt", nameAr: "تيشيرت المخيم السحري", price: 25, image: "👕" },
+    { id: "1", nameEn: "Magica Camp T-Shirt", nameAr: "تيشيرت المخيم السحري", price: 25, image: "👕" },
     { id: "2", nameEn: "Wizard Cap", nameAr: "قبعة الساحر", price: 15, image: "🧢" },
     { id: "3", nameEn: "Spell Book Notebook", nameAr: "دفتر تعويذات", price: 10, image: "📓" },
     { id: "4", nameEn: "Magic Wand Pen", nameAr: "قلم عصا سحرية", price: 5, image: "🪄" },

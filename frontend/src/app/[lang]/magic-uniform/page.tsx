@@ -88,7 +88,7 @@ export default function MagicUniformPage({ params: { lang } }: { params: { lang:
                         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/80 backdrop-blur-md border border-blue-200 shadow-sm mb-8"
                     >
                         <span className="text-2xl">👕</span>
-                        <span className="text-sm font-black text-blue-600 uppercase tracking-widest">Magic Uniform</span>
+                        <span className="text-sm font-black text-blue-600 uppercase tracking-widest">Magica Uniform</span>
                     </motion.div>
 
                     <motion.h1
@@ -122,8 +122,8 @@ export default function MagicUniformPage({ params: { lang } }: { params: { lang:
                         className="text-lg text-gray-500 max-w-2xl mx-auto mb-12 leading-relaxed"
                     >
                         {isArabic
-                            ? "ماجيك يونيفورم يمنح الطفل شعور الفريق، الفخر، والاحترافية منذ اللحظة الأولى التي يرتديه فيها."
-                            : "Magic Uniform gives children a sense of team, pride, and professionalism from the very first moment they wear it."}
+                            ? "ماجيكا يونيفورم يمنح الطفل شعور الفريق، الفخر، والاحترافية منذ اللحظة الأولى التي يرتديه فيها."
+                            : "Magica Uniform gives children a sense of team, pride, and professionalism from the very first moment they wear it."}
                     </motion.p>
 
                     <motion.div
@@ -158,7 +158,7 @@ export default function MagicUniformPage({ params: { lang } }: { params: { lang:
                 <div className="max-w-5xl mx-auto">
                     <div className="text-center mb-14">
                         <h2 className="text-4xl font-black text-gray-800 mb-4">
-                            {isArabic ? "مجموعة ماجيك يونيفورم" : "Magic Uniform Collection"}
+                            {isArabic ? "مجموعة ماجيكا يونيفورم" : "Magica Uniform Collection"}
                         </h2>
                         <p className="text-gray-500 text-lg">
                             {isArabic ? "كل قطعة مصممة بعناية" : "Every piece carefully designed"}

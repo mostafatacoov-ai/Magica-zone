@@ -79,7 +79,7 @@ export default function LoginPage({ params: { lang } }: { params: { lang: string
                         {isArabic ? "تسجيل الدخول" : "Welcome Back"}
                     </h1>
                     <p className="text-gray-500 mt-2">
-                        {isArabic ? "ادخل إلى عالم ماجيك كامب" : "Log in to your Magic Camp account"}
+                        {isArabic ? "ادخل إلى عالم ماجيكا كامب" : "Log in to your Magica Camp account"}
                     </p>
                 </div>
 

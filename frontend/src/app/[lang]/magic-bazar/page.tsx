@@ -87,7 +87,7 @@ export default function MagicBazarPage({ params: { lang } }: { params: { lang: s
                         transition={{ type: "spring", bounce: 0.5 }}
                         className="mb-8"
                     >
-                        <Image src={bazarLogo} alt="Magic Bazar" className="h-32 w-auto mx-auto object-contain drop-shadow-md" />
+                        <Image src={bazarLogo} alt="Magica Bazar" className="h-32 w-auto mx-auto object-contain drop-shadow-md" />
                     </motion.div>
 
                     <motion.h1
@@ -121,8 +121,8 @@ export default function MagicBazarPage({ params: { lang } }: { params: { lang: s
                         className="text-lg text-gray-500 max-w-2xl mx-auto mb-12 leading-relaxed"
                     >
                         {isArabic
-                            ? "ماجيك بازار هو أول سوق حقيقي يتعلم فيه الطفل كيف يعرض، يبيع، يتفاوض، ويدير. لأن أفضل درس في ريادة الأعمال لا يُدرَّس في فصل — بل يُعاش في السوق."
-                            : "Magic Bazar is the first real marketplace where children learn to pitch, sell, negotiate, and manage. Because the best entrepreneurship lesson isn't taught in a classroom — it's lived in the market."}
+                            ? "ماجيكا بازار هو أول سوق حقيقي يتعلم فيه الطفل كيف يعرض، يبيع، يتفاوض، ويدير. لأن أفضل درس في ريادة الأعمال لا يُدرَّس في فصل — بل يُعاش في السوق."
+                            : "Magica Bazar is the first real marketplace where children learn to pitch, sell, negotiate, and manage. Because the best entrepreneurship lesson isn't taught in a classroom — it's lived in the market."}
                     </motion.p>
 
                     <motion.div

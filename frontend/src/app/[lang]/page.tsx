@@ -13,7 +13,7 @@ const SUB_BRANDS = (lang: string, isArabic: boolean) => [
     {
         emoji: "🏕️",
         logoImg: campLogo,
-        title: isArabic ? "ماجيك كامب" : "Magic Camp",
+        title: isArabic ? "ماجيكا كامب" : "Magica Camp",
         tagline: isArabic ? "صيف واحد يغيّر كل شيء" : "One Summer Changes Everything",
         desc: isArabic
             ? "أكثر من معسكر صيفي — تجربة تُعيد تشكيل شخصية طفلك."
@@ -29,7 +29,7 @@ const SUB_BRANDS = (lang: string, isArabic: boolean) => [
     {
         emoji: "🛍️",
         logoImg: bazarLogo,
-        title: isArabic ? "ماجيك بازار" : "Magic Bazar",
+        title: isArabic ? "ماجيكا بازار" : "Magica Bazar",
         tagline: isArabic ? "اشتري. بيع. تعلّم. انجح." : "Buy. Sell. Learn. Succeed.",
         desc: isArabic
             ? "أول سوق حقيقي يتعلم فيه الطفل كيف يعرض، يبيع، ويدير."
@@ -45,7 +45,7 @@ const SUB_BRANDS = (lang: string, isArabic: boolean) => [
     {
         emoji: "🍱",
         logoImg: foodLogo,
-        title: isArabic ? "ماجيك فود" : "Magic Food",
+        title: isArabic ? "ماجيكا فود" : "Magica Food",
         tagline: isArabic ? "أكل صح = تفكير صح" : "Eat Right = Think Right",
         desc: isArabic
             ? "وجبات مصممة علمياً لدعم تركيز الأطفال وطاقتهم."
@@ -60,7 +60,7 @@ const SUB_BRANDS = (lang: string, isArabic: boolean) => [
     },
     {
         emoji: "🎙️",
-        title: isArabic ? "ماجيك بودكاست" : "Magic Podcast",
+        title: isArabic ? "ماجيكا بودكاست" : "Magica Podcast",
         tagline: isArabic ? "كلام بيفرق" : "Words That Matter",
         desc: isArabic
             ? "صوت موجّه للأطفال والأهالي — كلام يغيّر مسار إنسان."
@@ -75,7 +75,7 @@ const SUB_BRANDS = (lang: string, isArabic: boolean) => [
     },
     {
         emoji: "👕",
-        title: isArabic ? "ماجيك يونيفورم" : "Magic Uniform",
+        title: isArabic ? "ماجيكا يونيفورم" : "Magica Uniform",
         tagline: isArabic ? "البس هويتك" : "Wear Your Identity",
         desc: isArabic
             ? "الزي ليس مجرد ملابس — بل هوية وانتماء وشعور بالفريق."
@@ -90,7 +90,7 @@ const SUB_BRANDS = (lang: string, isArabic: boolean) => [
     },
     {
         emoji: "🎒",
-        title: isArabic ? "ماجيك سبلايز" : "Magic Supplies",
+        title: isArabic ? "ماجيكا سبلايز" : "Magica Supplies",
         tagline: isArabic ? "جهّز نفسك. جهّز مستقبلك." : "Equip Yourself. Equip Your Future.",
         desc: isArabic
             ? "أدوات مصممة لعقول تريد أن تبني وتبتكر."

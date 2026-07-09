@@ -43,7 +43,7 @@ export default function Sidebar({ lang }: { lang: string }) {
                 <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
                     M
                 </div>
-                <h2 className="text-xl font-bold text-green-600 tracking-tight">Magic Camp</h2>
+                <h2 className="text-xl font-bold text-green-600 tracking-tight">Magica Camp</h2>
             </div>
 
             <nav className="flex-1 space-y-2">

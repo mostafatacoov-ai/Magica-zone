@@ -9,12 +9,12 @@ import logoImg from "../../../public/logo.png";
 import { useState } from "react";
 
 const SUB_BRANDS = (lang: string, isArabic: boolean) => [
-    { label: isArabic ? "🏕️ ماجيك كامب" : "🏕️ Magic Camp", href: `/${lang}/magic-camp` },
-    { label: isArabic ? "🛍️ ماجيك بازار" : "🛍️ Magic Bazar", href: `/${lang}/magic-bazar` },
-    { label: isArabic ? "🍱 ماجيك فود" : "🍱 Magic Food", href: `/${lang}/magic-food` },
-    { label: isArabic ? "🎙️ ماجيك بودكاست" : "🎙️ Magic Podcast", href: `/${lang}/magic-podcast` },
-    { label: isArabic ? "👕 ماجيك يونيفورم" : "👕 Magic Uniform", href: `/${lang}/magic-uniform` },
-    { label: isArabic ? "🎒 ماجيك سبلايز" : "🎒 Magic Supplies", href: `/${lang}/magic-supplies` },
+    { label: isArabic ? "🏕️ ماجيكا كامب" : "🏕️ Magica Camp", href: `/${lang}/magic-camp` },
+    { label: isArabic ? "🛍️ ماجيكا بازار" : "🛍️ Magica Bazar", href: `/${lang}/magic-bazar` },
+    { label: isArabic ? "🍱 ماجيكا فود" : "🍱 Magica Food", href: `/${lang}/magic-food` },
+    { label: isArabic ? "🎙️ ماجيكا بودكاست" : "🎙️ Magica Podcast", href: `/${lang}/magic-podcast` },
+    { label: isArabic ? "👕 ماجيكا يونيفورم" : "👕 Magica Uniform", href: `/${lang}/magic-uniform` },
+    { label: isArabic ? "🎒 ماجيكا سبلايز" : "🎒 Magica Supplies", href: `/${lang}/magic-supplies` },
 ];
 
 export default function Navbar({ lang }: { lang: string }) {
