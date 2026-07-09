@@ -126,14 +126,16 @@ export default function MagicaZoneHome({ params: { lang } }: { params: { lang: s
                 <motion.div
                     animate={{ y: [0, -30, 0], rotate: [0, 15, -15, 0] }}
                     transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
-                    className="absolute top-16 left-[10%] text-orange-400 opacity-40 hidden md:block"
+                    className="absolute top-16 left-[5%] md:left-[10%] text-orange-400 opacity-90 drop-shadow-lg"
                 >
-                    <Sparkles className="w-14 h-14" />
+                    <Sparkles className="w-16 h-16" />
                 </motion.div>
                 <motion.div
-                    className="absolute bottom-24 right-[10%] text-magica-purple-400 opacity-30 hidden md:block"
+                    animate={{ y: [0, 40, 0], rotate: [0, -20, 20, 0] }}
+                    transition={{ repeat: Infinity, duration: 7, ease: "easeInOut" }}
+                    className="absolute bottom-24 right-[5%] md:right-[10%] text-magica-purple-500 opacity-90 drop-shadow-lg"
                 >
-                    <Sparkles className="w-20 h-20" />
+                    <Sparkles className="w-24 h-24" />
                 </motion.div>
 
                 <motion.div
@@ -150,10 +152,11 @@ export default function MagicaZoneHome({ params: { lang } }: { params: { lang: s
                         className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-md border border-gray-200/50 shadow-lg text-magica-navy-600 font-bold cursor-default"
                     >
                         <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
+                            animate={{ rotate: 360, scale: [1, 1.2, 1] }}
+                            transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
+                            className="text-magica-orange-500"
                         >
-                            <Sparkles className="w-5 h-5" />
+                            <Sparkles className="w-6 h-6" />
                         </motion.div>
                         {isArabic ? "حيث يبدأ بناء الإنسان" : "Where Human Excellence Begins"}
                     </motion.div>
