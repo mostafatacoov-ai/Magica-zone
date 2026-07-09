@@ -22,19 +22,11 @@ if (!getApps().length) {
     }
 }
 
-// Use getters via Proxies so getAuth() and getFirestore() are not called at build-time
-export const adminAuth = new Proxy({} as Auth, {
-    get: (target, prop) => {
-        const auth = getAuth();
-        const value = auth[prop as keyof Auth];
-        return typeof value === 'function' ? value.bind(auth) : value;
-    }
-});
+// Use getter functions to guarantee getAuth() and getFirestore() are not called at build-time by Webpack inspection
+export const getAdminAuth = () => {
+    return getAuth();
+};
 
-export const adminDb = new Proxy({} as Firestore, {
-    get: (target, prop) => {
-        const db = getFirestore();
-        const value = db[prop as keyof Firestore];
-        return typeof value === 'function' ? value.bind(db) : value;
-    }
-});
+export const getAdminDb = () => {
+    return getFirestore();
+};

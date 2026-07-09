@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { adminAuth, adminDb } from '@/lib/firebase/admin';
+import { getAdminAuth, getAdminDb } from '@/lib/firebase/admin';
 import { FieldValue } from 'firebase-admin/firestore';
 
 export const dynamic = 'force-dynamic';
@@ -12,6 +12,8 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
+        const adminAuth = getAdminAuth();
+        const adminDb = getAdminDb();
         const decodedToken = await adminAuth.verifyIdToken(idToken);
         const parentUid = decodedToken.uid;
         

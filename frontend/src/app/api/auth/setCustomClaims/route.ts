@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { adminAuth } from '@/lib/firebase/admin';
+import { getAdminAuth } from '@/lib/firebase/admin';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,6 +11,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Missing idToken or role' }, { status: 400 });
         }
 
+        const adminAuth = getAdminAuth();
         const decodedToken = await adminAuth.verifyIdToken(idToken);
         const uid = decodedToken.uid;
         
