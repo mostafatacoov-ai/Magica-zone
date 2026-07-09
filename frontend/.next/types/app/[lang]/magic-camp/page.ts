@@ -1,4 +1,4 @@
-// File: E:\MM work\MM work\MagicKamp\frontend\src\app\[lang]\magic-camp\page.tsx
+// File: F:\MM work\MM work\MagicKamp\frontend\src\app\[lang]\magic-camp\page.tsx
 import * as entry from '../../../../../src/app/[lang]/magic-camp/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

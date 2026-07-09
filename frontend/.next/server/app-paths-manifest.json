@@ -1,4 +1,21 @@
 {
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/auth/createChild/route": "app/api/auth/createChild/route.js",
+  "/api/auth/setCustomClaims/route": "app/api/auth/setCustomClaims/route.js",
+  "/page": "app/page.js",
+  "/icon.png/route": "app/icon.png/route.js",
+  "/[lang]/about/page": "app/[lang]/about/page.js",
+  "/[lang]/login/page": "app/[lang]/login/page.js",
+  "/[lang]/magic-bazar/page": "app/[lang]/magic-bazar/page.js",
   "/[lang]/magic-camp/page": "app/[lang]/magic-camp/page.js",
-  "/[lang]/page": "app/[lang]/page.js"
+  "/[lang]/magic-food/page": "app/[lang]/magic-food/page.js",
+  "/[lang]/magic-podcast/page": "app/[lang]/magic-podcast/page.js",
+  "/[lang]/magic-supplies/page": "app/[lang]/magic-supplies/page.js",
+  "/[lang]/magic-uniform/page": "app/[lang]/magic-uniform/page.js",
+  "/[lang]/page": "app/[lang]/page.js",
+  "/[lang]/register/page": "app/[lang]/register/page.js",
+  "/[lang]/dashboard/page": "app/[lang]/dashboard/page.js",
+  "/[lang]/dashboard/approvals/page": "app/[lang]/dashboard/approvals/page.js",
+  "/[lang]/dashboard/messages/page": "app/[lang]/dashboard/messages/page.js",
+  "/[lang]/dashboard/shop/page": "app/[lang]/dashboard/shop/page.js"
 }

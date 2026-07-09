@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { adminAuth, adminDb } from '@/lib/firebase-admin';
-import * as admin from 'firebase-admin';
+import { FieldValue } from 'firebase-admin/firestore';
 
 export async function POST(request: Request) {
     try {
@@ -34,11 +34,11 @@ export async function POST(request: Request) {
             name,
             age,
             parentUid,
-            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            createdAt: FieldValue.serverTimestamp(),
         });
 
         await adminDb.collection('users').doc(parentUid).set({
-            children: admin.firestore.FieldValue.arrayUnion(childUid)
+            children: FieldValue.arrayUnion(childUid)
         }, { merge: true });
 
         return NextResponse.json({ success: true, message: 'Child created', childUid });
