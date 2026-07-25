@@ -3,6 +3,8 @@ import Image from "next/image";
 import logoImg from "../../../public/logo.png";
 
 const SUB_BRANDS = (lang: string, isArabic: boolean) => [
+    { emoji: "🎓", label: isArabic ? "كورسات ماجيكا" : "Magica Courses", href: `/${lang}/magic-courses`, tagline: isArabic ? "مهارات الغد، تصنع اليوم" : "Tomorrow's Skills, Today." },
+    { emoji: "🎮", label: isArabic ? "ألعاب ماجيكا الذهنية" : "Magica Mind Games", href: `/${lang}/magic-games`, tagline: isArabic ? "العب، فكّر، وطور ذكاءك" : "Play, Think & Grow Your IQ" },
     { emoji: "🏕️", label: isArabic ? "ماجيكا كامب" : "Magica Camp", href: `/${lang}/magic-camp`, tagline: isArabic ? "صيف واحد يغيّر كل شيء" : "One Summer Changes Everything" },
     { emoji: "🛍️", label: isArabic ? "ماجيكا بازار" : "Magica Bazar", href: `/${lang}/magic-bazar`, tagline: isArabic ? "اشتري. بيع. تعلّم. انجح." : "Buy. Sell. Learn. Succeed." },
     { emoji: "🍱", label: isArabic ? "ماجيكا فود" : "Magica Food", href: `/${lang}/magic-food`, tagline: isArabic ? "أكل صح = تفكير صح" : "Eat Right = Think Right" },
@@ -25,8 +27,8 @@ export default function Footer({ lang }: { lang: string }) {
 
                     {/* Brand Column */}
                     <div className="lg:col-span-1">
-                        <Link href={`/${lang}`} className="inline-block mb-4 hover:opacity-80 transition-opacity">
-                            <Image src={logoImg} alt="Magica Zone Logo" className="h-16 w-auto object-contain brightness-0 invert" />
+                        <Link href={`/${lang}`} className="inline-block mb-4 bg-white p-2 rounded-2xl hover:opacity-90 transition-opacity shadow-md">
+                            <Image src={logoImg} alt="Magica Zone Logo" className="h-14 w-auto object-contain" />
                         </Link>
                         <p className="text-gray-400 text-sm leading-relaxed mb-4">
                             {isArabic

@@ -9,6 +9,8 @@ import logoImg from "../../../public/logo.png";
 import { useState } from "react";
 
 const SUB_BRANDS = (lang: string, isArabic: boolean) => [
+    { label: isArabic ? "🎓 كورسات ماجيكا" : "🎓 Magica Courses", href: `/${lang}/magic-courses` },
+    { label: isArabic ? "🎮 ألعاب ماجيكا الذهنية" : "🎮 Magica Mind Games", href: `/${lang}/magic-games` },
     { label: isArabic ? "🏕️ ماجيكا كامب" : "🏕️ Magica Camp", href: `/${lang}/magic-camp` },
     { label: isArabic ? "🛍️ ماجيكا بازار" : "🛍️ Magica Bazar", href: `/${lang}/magic-bazar` },
     { label: isArabic ? "🍱 ماجيكا فود" : "🍱 Magica Food", href: `/${lang}/magic-food` },
@@ -65,7 +67,7 @@ export default function Navbar({ lang }: { lang: string }) {
 
                     {/* Logo */}
                     <Link href={`/${lang}`} className="flex items-center gap-3 shrink-0">
-                        <Image src={logoImg} alt="Magica Zone Logo" className="h-16 md:h-20 w-auto object-contain drop-shadow-md hover:scale-105 transition-transform" />
+                        <Image src={logoImg} alt="Magica Zone Logo" className="h-16 md:h-20 w-auto object-contain drop-shadow-md hover:scale-105 transition-transform mix-blend-multiply" />
                     </Link>
 
                     {/* Desktop Links */}
