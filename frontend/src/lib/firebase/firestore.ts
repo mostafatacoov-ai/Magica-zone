@@ -1,7 +1,60 @@
 import { db } from "./firebase";
-import { collection, query, where, getDocs, doc, updateDoc, getDoc, setDoc, serverTimestamp, addDoc, onSnapshot } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, updateDoc, getDoc, setDoc, serverTimestamp, addDoc, onSnapshot, deleteDoc } from "firebase/firestore";
 
-// --- Admin Helpers ---
+// --- Admin User Management Helpers ---
+export async function getAllUsers() {
+    try {
+        const q = query(collection(db, "users"));
+        const snapshot = await getDocs(q);
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch (e) {
+        console.error("Error fetching users from firestore:", e);
+        return [];
+    }
+}
+
+export async function updateUserRole(uid: string, role: string) {
+    try {
+        const userRef = doc(db, "users", uid);
+        await updateDoc(userRef, { role, updatedAt: serverTimestamp() });
+    } catch (e) {
+        console.error("Error updating user role:", e);
+    }
+}
+
+export async function updateUserStatus(uid: string, status: string) {
+    try {
+        const userRef = doc(db, "users", uid);
+        await updateDoc(userRef, { status, updatedAt: serverTimestamp() });
+    } catch (e) {
+        console.error("Error updating user status:", e);
+    }
+}
+
+export async function createAdminUserDoc(userData: any) {
+    try {
+        const docRef = await addDoc(collection(db, "users"), {
+            ...userData,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+        });
+        return docRef.id;
+    } catch (e) {
+        console.error("Error creating user doc in firestore:", e);
+        return null;
+    }
+}
+
+export async function deleteUserDoc(uid: string) {
+    try {
+        const userRef = doc(db, "users", uid);
+        await deleteDoc(userRef);
+    } catch (e) {
+        console.error("Error deleting user doc from firestore:", e);
+    }
+}
+
+// --- Admin Approvals Helpers ---
 export async function getPendingParents() {
     const q = query(
         collection(db, "users"), 
