@@ -21,7 +21,7 @@ const CATEGORIES = [
 export default function MagicSuppliesPage({ params: { lang } }: { params: { lang: string } }) {
     const isArabic = lang === 'ar';
     const { data } = useCMSData();
-    const products = data.supplies || [];
+    const products = useMemo(() => data.supplies || [], [data.supplies]);
 
     // Storefront States
     const [selectedCategory, setSelectedCategory] = useState<string>("ALL");

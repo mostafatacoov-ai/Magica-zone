@@ -202,12 +202,12 @@ export default function MagicUniformPage({ params: { lang } }: { params: { lang:
                                         <p className="text-gray-600 text-sm leading-relaxed mb-4">
                                             {isArabic ? item.descAr : item.descEn}
                                         </p>
-                                        {item.sizes && item.sizes.length > 0 && (
+                                        {((item.sizes || item.sizesEn || []).length > 0) && (
                                             <div className="border-t border-blue-100/60 pt-3 flex items-center gap-2 flex-wrap">
                                                 <span className="text-[10px] font-black uppercase text-gray-400">
                                                     {isArabic ? "المقاسات المتاحة:" : "Available Sizes:"}
                                                 </span>
-                                                {item.sizes.map((s, i) => (
+                                                {(item.sizes || (isArabic ? item.sizesAr : item.sizesEn) || []).map((s: string, i: number) => (
                                                     <span key={i} className="bg-blue-50 text-blue-700 font-black text-[11px] px-2.5 py-0.5 rounded-lg border border-blue-100">
                                                         {s}
                                                     </span>

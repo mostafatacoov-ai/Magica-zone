@@ -283,7 +283,7 @@ export default function MagicCampPage({ params: { lang } }: { params: { lang: st
                                                     {isArabic ? "أهم المزايا والأنشطة:" : "Key Activities & Highlights:"}
                                                 </h4>
                                                 <div className="flex flex-wrap gap-1.5">
-                                                    {(isArabic ? camp.featuresAr : camp.featuresEn).map((feat, idx) => (
+                                                    {((isArabic ? (camp.highlightsAr || camp.featuresAr) : (camp.highlightsEn || camp.featuresEn)) || []).map((feat, idx) => (
                                                         <span key={idx} className="bg-emerald-50 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-xl border border-emerald-100">
                                                             ✦ {feat}
                                                         </span>

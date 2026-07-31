@@ -7,12 +7,29 @@ import { GraduationCap, Sparkles, Star, Users, Calendar, Clock, BookOpen, CheckC
 import Link from "next/link";
 import { useCMSData, CourseItem } from "@/lib/cms/contentStore";
 
+const filterCategories = [
+    { id: "ALL", labelEn: "All Courses & Programs", labelAr: "كل الكورسات والبرامج المتاحة" },
+    { id: "STEM", labelEn: "Science & Robotics", labelAr: "العلوم والروبوتات" },
+    { id: "ART", labelEn: "Arts & Creativity", labelAr: "الفنون والإبداع" },
+    { id: "TECH", labelEn: "Programming & AI", labelAr: "البرمجة والذكاء الاصطناعي" },
+];
+
 export default function MagicCoursesPage({ params: { lang } }: { params: { lang: string } }) {
     const isArabic = lang === "ar";
     const { data } = useCMSData();
     const courses = data.courses;
+    const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
     const [selectedCourseForModal, setSelectedCourseForModal] = useState<CourseItem | null>(null);
     const [enrollSuccess, setEnrollSuccess] = useState<boolean>(false);
+
+    const filteredCourses = courses.filter(course => {
+        if (selectedCategory === "ALL") return true;
+        const text = `${course.titleEn} ${course.titleAr} ${course.descEn} ${course.descAr} ${course.badgeEn || ""}`.toLowerCase();
+        if (selectedCategory === "STEM") return text.includes("robot") || text.includes("science") || text.includes("روبوت") || text.includes("عل");
+        if (selectedCategory === "ART") return text.includes("art") || text.includes("design") || text.includes("فن") || text.includes("تصم");
+        if (selectedCategory === "TECH") return text.includes("code") || text.includes("ai") || text.includes("program") || text.includes("برمج") || text.includes("ذك");
+        return true;
+    });
 
     const handleReservationSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -44,12 +61,12 @@ export default function MagicCoursesPage({ params: { lang } }: { params: { lang:
                         initial={{ y: 25, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ delay: 0.1 }}
-                        className="text-4xl md:text-6xl lg:text-7xl font-black text-gray-900 mb-6 tracking-tight leading-tight"
+                        className="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 tracking-tight mb-6 leading-[1.25] sm:leading-[1.15]"
                     >
                         {isArabic ? (
-                            <>كورسات ماجيكا <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-amber-500 to-purple-600">التعليمية والريادية</span></>
+                            <>اكتشف شغفك الحقيقي مع <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-amber-500 to-purple-600 animate-pulse">كورسات وبرامج ماجيكا</span></>
                         ) : (
-                            <>Magica <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-amber-500 to-purple-600">Educational Courses</span></>
+                            <>Discover Your Passion at <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-amber-500 to-purple-600 animate-pulse">Magica Academy</span></>
                         )}
                     </motion.h1>
 
@@ -57,19 +74,23 @@ export default function MagicCoursesPage({ params: { lang } }: { params: { lang:
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ delay: 0.2 }}
-                        className="text-lg md:text-2xl text-gray-600 max-w-4xl mx-auto mb-12 font-medium leading-relaxed"
+                        className="max-w-2xl mx-auto text-base sm:text-lg md:text-xl text-gray-600 leading-relaxed font-normal mb-10"
                     >
                         {isArabic
-                            ? "نصنع مستقبل أطفالنا عبر برامج تطبيقية مدروسة: الإدارة المالية، الابتكار التقني والتحدث أمام الجمهور — بخبرة عملية مستوحاة من عالم ماجيكا بازار ومعسكرات التميز!"
-                            : "Empowering children with future-proof practical competence: Financial management, tech innovation, AI, and charismatic public speaking — designed directly from Magica Zone experiential worlds!"}
+                            ? "بيئة تعلم تفاعلية استثنائية تدمج بين الابتكار العلمي، الفنون الإبداعية، والبرمجيات المتطورة لصناعة قادة وخبراء المستقبل."
+                            : "An immersive, hands-on learning environment combining STEM, cutting-edge AI, creative arts, and leadership coaching for ambitious creators."}
                     </motion.p>
+                </div>
+            </section>
 
-                    {/* Stats Highlights */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+            {/* Why Choose Academy Chips */}
+            <section className="max-w-7xl mx-auto px-6 mb-16">
+                <div className="bg-gradient-to-r from-orange-500/10 via-purple-500/10 to-amber-500/10 rounded-3xl p-8 border border-orange-500/20 shadow-lg relative overflow-hidden">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 relative z-10">
                         <div className="bg-white/85 backdrop-blur-md p-5 rounded-3xl border border-gray-100 shadow-md text-center">
-                            <Users className="w-8 h-8 text-orange-500 mx-auto mb-2" />
-                            <h4 className="text-xl font-black text-gray-800">{isArabic ? "مدربون خبراء" : "Certified Coaches"}</h4>
-                            <p className="text-xs text-gray-500 font-bold">{isArabic ? "متخصصون في تربية وتوجيه القادة" : "Specialized in youth mentorship"}</p>
+                            <ShieldCheck className="w-8 h-8 text-orange-500 mx-auto mb-2" />
+                            <h4 className="text-xl font-black text-gray-800">{isArabic ? "مدربين خبراء" : "Certified Mentors"}</h4>
+                            <p className="text-xs text-gray-500 font-bold">{isArabic ? "نخبة من المهندسين والمتخصصين المعتمدين" : "Top field engineers & educator specialists"}</p>
                         </div>
                         <div className="bg-white/85 backdrop-blur-md p-5 rounded-3xl border border-gray-100 shadow-md text-center">
                             <Laptop className="w-8 h-8 text-purple-600 mx-auto mb-2" />
@@ -119,7 +140,7 @@ export default function MagicCoursesPage({ params: { lang } }: { params: { lang:
                     className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
                 >
                     <AnimatePresence>
-                        {courses.map((course) => (
+                        {filteredCourses.map((course) => (
                             <motion.div
                                 layout
                                 initial={{ opacity: 0, scale: 0.95 }}

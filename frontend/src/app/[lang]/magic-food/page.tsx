@@ -169,9 +169,10 @@ export default function MagicFoodPage({ params: { lang } }: { params: { lang: st
                                             <span className="text-5xl">🥗</span>
                                         )}
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                                        {item.price > 0 && (
-                                            <span className="absolute bottom-3 right-3 bg-rose-600 text-white font-black text-sm px-3.5 py-1 rounded-full shadow-lg">
-                                                ${item.price}
+                                        {(item.price || 0) > 0 && (
+                                            <span className="absolute bottom-3 right-3 bg-rose-600 text-white font-black text-sm px-3.5 py-1 rounded-full shadow-lg flex items-center gap-1">
+                                                <span>{item.price}</span>
+                                                <span className="text-xs">{isArabic ? "ج.م" : "EGP"}</span>
                                             </span>
                                         )}
                                         {(item.badgeEn || item.badgeAr) && (

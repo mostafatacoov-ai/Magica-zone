@@ -121,6 +121,8 @@ export interface CampProgram {
     descAr: string;
     highlightsEn: string[];
     highlightsAr: string[];
+    featuresEn?: string[];
+    featuresAr?: string[];
     imageUrl?: string;
     galleryPhotos: string[];
 }
@@ -134,6 +136,12 @@ export interface FoodMeal {
     calories: string;
     descEn: string;
     descAr: string;
+    price?: number;
+    badgeEn?: string;
+    badgeAr?: string;
+    ingredientsEn?: string[];
+    ingredientsAr?: string[];
+    galleryPhotos?: string[];
     imageUrl?: string;
 }
 
@@ -142,8 +150,12 @@ export interface UniformItem {
     titleEn: string;
     titleAr: string;
     price: number;
-    sizesEn: string[];
-    sizesAr: string[];
+    sizesEn?: string[];
+    sizesAr?: string[];
+    sizes?: string[];
+    badgeEn?: string;
+    badgeAr?: string;
+    galleryPhotos?: string[];
     descEn: string;
     descAr: string;
     imageUrl?: string;
@@ -177,6 +189,9 @@ export interface PodcastEpisode {
     tagEn: string;
     tagAr: string;
     tagColor: string;
+    category?: string;
+    hostEn?: string;
+    hostAr?: string;
     descEn?: string;
     descAr?: string;
     audioUrl?: string;
@@ -187,15 +202,19 @@ export interface MindGame {
     id: string;
     titleEn: string;
     titleAr: string;
-    difficultyEn: string;
-    difficultyAr: string;
+    difficultyEn?: string;
+    difficultyAr?: string;
     categoryEn: string;
     categoryAr: string;
-    points: number;
+    points?: number | string;
+    pointsReward?: number | string;
+    galleryPhotos?: string[];
     descEn: string;
     descAr: string;
     imageUrl?: string;
 }
+
+export type GameItem = MindGame;
 
 export interface BazarItem {
     id: string;

@@ -98,7 +98,7 @@ export default function UniformEditorSection({ lang }: { lang: string }) {
                                             <span className="flex items-center gap-0.5 text-emerald-600 font-black"><DollarSign className="w-3.5 h-3.5" />${u.price}</span>
                                             <div className="flex items-center gap-1">
                                                 <span>Sizes:</span>
-                                                {(u.sizes || []).map(s => (
+                                                {(u.sizes || u.sizesEn || []).map((s: string) => (
                                                     <span key={s} className="px-1.5 py-0.5 bg-gray-200 text-gray-700 rounded text-[10px] font-black">{s}</span>
                                                 ))}
                                             </div>
