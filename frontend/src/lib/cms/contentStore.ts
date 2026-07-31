@@ -1,6 +1,60 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { ALL_BAG_PHOTOS } from "./bagPhotos";
+
+const generatedBags = ALL_BAG_PHOTOS.map((filename, index) => {
+    const titlesEn = [
+        "Magica Executive CEO School Bag",
+        "Innovation Explorer Camp & School Backpack",
+        "Robotics & Tech Equipment Handbag",
+        "Magica Scholar Premium Laptop & Kit Bag",
+        "Young Founder Sport & Field Adventure Bag",
+        "Magica Daily Adventure School Pack",
+        "Pro Leader Ergonomic School Backpack",
+        "Smart STEM Explorer Expedition Pack",
+        "Junior Entrepreneur Executive Backpack",
+        "Magica Future Star Premium Bag"
+    ];
+    const titlesAr = [
+        "حقيبة ماجيكا التنفيذية المدرسية",
+        "حقيبة المستكشف والمبتكر للمعسكرات والمدرسة",
+        "حقيبة المعدات التكنولوجية وأدوات الروبوت",
+        "حقيبة الباحث الصغير الفاخرة للتابلت والأدوات",
+        "حقيبة الرائد الرياضي للمغامرات والأنشطة",
+        "حقيبة مغامرات ماجيكا المدرسية اليومية",
+        "حقيبة الرائد الملكية المدعمة طبًيا",
+        "حقيبة المستكشف العلمي والابتكار",
+        "حقيبة رائد الأعمال التنفيذية للأطفال",
+        "حقيبة نجم المستقبل الفاخرة من ماجيكا"
+    ];
+    const badgesEn = ["Best Seller 🌟", "New Release 🚀", "Tech Edition ⚙️", "Trending ⚡", "Premium ✨", "Sport Edition 🏃‍♂️", "Limited Offer 🔥"];
+    const badgesAr = ["الأكثر مبيًعا 🌟", "إصدار حديث 🚀", "النسخة التقنية ⚙️", "الأكثر طلًبا ⚡", "جودة ملكية ✨", "النسخة الرياضية 🏃‍♂️", "عرض مميز 🔥"];
+    
+    // Varying price between 850 and 1750 EGP, some without price (0) to demonstrate inquiry option
+    const priceOptions = [1250, 950, 1400, 850, 1100, 1350, 1500, 1650, 900, 1200, 0];
+    
+    const titleIndex = index % titlesEn.length;
+    const badgeIndex = index % badgesEn.length;
+    const priceIndex = index % priceOptions.length;
+    
+    return {
+        id: `sup-bag-${index + 1}`,
+        titleEn: `${titlesEn[titleIndex]} #${index + 1}`,
+        titleAr: `${titlesAr[titleIndex]} (${index + 1}#)`,
+        categoryEn: "Bags & Backpacks",
+        categoryAr: "الحقائب والحزم المدرسية",
+        price: priceOptions[priceIndex],
+        itemsCount: 1,
+        descEn: "Ergonomic, waterproof school backpack designed with dedicated compartments for smart tablets, science kits, and daily learning notebooks.",
+        descAr: "حقيبة مدرسية طبية مقاومة للماء والمجهود، مصممة بأقسام خاصة للتابلت الذكي، أدوات العلوم، ودفاتر الملاحظات اليومية.",
+        imageUrl: `/supplies/${filename}`,
+        badgeEn: badgesEn[badgeIndex],
+        badgeAr: badgesAr[badgeIndex],
+        featuresEn: ["Water Resistant", "Tablet Pocket", "Ergonomic Support", "Durable Fabric"],
+        featuresAr: ["مقاومة للماء", "جيب مخصص للتابلت", "دعم طبي للظهر", "نسيج فائق التحمل"]
+    };
+});
 
 // --- Data Types for all Website Sections ---
 export interface TestimonialItem {
@@ -343,102 +397,7 @@ const INITIAL_CMS_DATA: CompleteCMSData = {
         }
     ],
     supplies: [
-        {
-            id: "sup-bag-1",
-            titleEn: "Magica Executive CEO School Bag",
-            titleAr: "حقيبة ماجيكا التنفيذية المدرسية",
-            categoryEn: "Bags & Backpacks",
-            categoryAr: "الحقائب والحزم المدرسية",
-            price: 1250,
-            itemsCount: 1,
-            descEn: "Ergonomic, waterproof school backpack designed with dedicated compartments for smart tablets, science kits, and daily learning notebooks.",
-            descAr: "حقيبة مدرسية طبية مقاومة للماء والمجهود، مصممة بأقسام خاصة للتابلت الذكي، أدوات العلوم، ودفاتر الملاحظات اليومية.",
-            imageUrl: "/supplies/WhatsApp Image 2026-07-28 at 3.31.33 AM.jpeg",
-            badgeEn: "Best Seller 🌟",
-            badgeAr: "الأكثر مبيًعا 🌟",
-            featuresEn: ["Water Resistant", "Tablet Pocket", "Ergonomic Belts"],
-            featuresAr: ["مقاومة للماء", "جيب مخصص للتابلت", "أحزمة داعمة للظهر"]
-        },
-        {
-            id: "sup-bag-2",
-            titleEn: "Innovation Explorer Camp & School Backpack",
-            titleAr: "حقيبة المستكشف والمبتكر للمعسكرات والمدرسة",
-            categoryEn: "Bags & Backpacks",
-            categoryAr: "الحقائب والحزم المدرسية",
-            price: 0,
-            itemsCount: 1,
-            descEn: "Lightweight, high-durability bag tailored for camp activities and lab field sessions. Price is customized upon school kit inquiry.",
-            descAr: "حقيبة خفيفة وعالية التحمل مخصصة لأنشطة المعسكرات وجلسات المختبر الميدانية. السعر مخصص حسب الطلب الجماعي.",
-            imageUrl: "/supplies/WhatsApp Image 2026-07-28 at 3.31.34 AM.jpeg",
-            badgeEn: "New Release 🚀",
-            badgeAr: "إصدار حديث 🚀",
-            featuresEn: ["Lightweight", "Durable Fabric", "Multi-pocket"],
-            featuresAr: ["وزن خفيف", "نسيج فائق التحمل", "متعددة الجيوب"]
-        },
-        {
-            id: "sup-bag-3",
-            titleEn: "Robotics & Tech Equipment Handbag",
-            titleAr: "حقيبة المعدات التكنولوجية وأدوات الروبوت",
-            categoryEn: "Bags & Backpacks",
-            categoryAr: "الحقائب والحزم المدرسية",
-            price: 950,
-            itemsCount: 1,
-            descEn: "Compact tech gear bag designed specifically to carry electronic sensors, circuit boards, and delicate robotics apparatus securely.",
-            descAr: "حقيبة تقنية مدمجة مصممة خصيصًا لحمل المستشعرات الإلكترونية، لوحات التحكم، وأطقم الروبوت الدقيقة بأمان تام.",
-            imageUrl: "/supplies/WhatsApp Image 2026-07-28 at 3.31.35 AM.jpeg",
-            badgeEn: "Tech Edition ⚙️",
-            badgeAr: "النسخة التقنية ⚙️",
-            featuresEn: ["Shockproof Interior", "Compact Design", "Secure Zippers"],
-            featuresAr: ["مبطنة ضد الصدمات", "تصميم مدمج", "سحابات آمنة"]
-        },
-        {
-            id: "sup-bag-4",
-            titleEn: "Magica Scholar Premium Laptop & Kit Bag",
-            titleAr: "حقيبة الباحث الصغير الفاخرة للتابلت والأدوات",
-            categoryEn: "Bags & Backpacks",
-            categoryAr: "الحقائب والحزم المدرسية",
-            price: 1400,
-            itemsCount: 1,
-            descEn: "Premium hard-shell protected school bag designed to organize high-value electronics and entrepreneurship ledgers effortlessly.",
-            descAr: "حقيبة مدرسية فاخرة مبطنة بهيكل حماية مدعم لتنظيم وحفظ التابلت والأجهزة الإلكترونية ودفاتر القيادة بسهولة فائقة.",
-            imageUrl: "/supplies/WhatsApp Image 2026-07-28 at 3.31.35 AM (1).jpeg",
-            badgeEn: "Premium Quality ✨",
-            badgeAr: "جودة ملكية ✨",
-            featuresEn: ["Hard Shell Protection", "USB Charging Port", "Ultra Durable"],
-            featuresAr: ["هيكل مقوى للحماية", "منفذ شحن خارجي", "فائقة المتانة"]
-        },
-        {
-            id: "sup-bag-5",
-            titleEn: "Young Founder Sport & Field Adventure Bag",
-            titleAr: "حقيبة الرائد الرياضي للمغامرات والأنشطة",
-            categoryEn: "Bags & Backpacks",
-            categoryAr: "الحقائب والحزم المدرسية",
-            price: 850,
-            itemsCount: 1,
-            descEn: "Agile outdoor and sports companion bag designed for Magica Camp outdoor excursions, physical games, and daily travel.",
-            descAr: "حقيبة أنشطة ومغامرات عملية وخفيفة مصممة لرحلات ماجيكا كامب الميدانية، الرياضات، والتنقل اليومي السريع.",
-            imageUrl: "/supplies/WhatsApp Image 2026-07-28 at 3.31.35 AM (2).jpeg",
-            badgeEn: "Sport Edition 🏃‍♂️",
-            badgeAr: "النسخة الرياضية 🏃‍♂️",
-            featuresEn: ["Breathable Back Mesh", "Quick Access Zippers", "Reflective Stripes"],
-            featuresAr: ["ظهر مهوى لمقاومة التعرق", "جيوب سريعة الوصول", "شرائط عاكسة للأمان"]
-        },
-        {
-            id: "sup-bag-6",
-            titleEn: "Magica Daily Adventure School Pack",
-            titleAr: "حقيبة مغامرات ماجيكا المدرسية اليومية",
-            categoryEn: "Bags & Backpacks",
-            categoryAr: "الحقائب والحزم المدرسية",
-            price: 1100,
-            itemsCount: 1,
-            descEn: "A stylish, harmonious blend of vibrant Magica aesthetics with orthopedic spinal support for everyday elementary and middle school journeys.",
-            descAr: "مزيج متناغم من تصميم ماجيكا الأنيق والدعم الطبي لعمدون الظهر، مثالية للمدرسة الابتدائية والإعدادية والاستخدام اليومي.",
-            imageUrl: "/supplies/WhatsApp Image 2026-07-28 at 3.31.36 AM (1).jpeg",
-            badgeEn: "Trending ⚡",
-            badgeAr: "الأكثر طلبًا ⚡",
-            featuresEn: ["Orthopedic Support", "Spacious Interior", "Stain Resistant"],
-            featuresAr: ["دعم طبي للظهر", "مساحة داخلية واسعة", "مقاومة للبقع والاتساخ"]
-        },
+        ...(generatedBags as any),
         {
             id: "sup-ceo-planner",
             titleEn: "The Young Entrepreneur Toolkit & LED Wand Pen",
@@ -555,6 +514,10 @@ export function getCMSData(): CompleteCMSData {
             return INITIAL_CMS_DATA;
         }
         const parsed = JSON.parse(stored);
+        if (!parsed.supplies || parsed.supplies.length < 50) {
+            parsed.supplies = INITIAL_CMS_DATA.supplies;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+        }
         // Merge with defaults to guarantee all keys exist if structure grew
         return {
             hero: { ...INITIAL_CMS_DATA.hero, ...(parsed.hero || {}) },

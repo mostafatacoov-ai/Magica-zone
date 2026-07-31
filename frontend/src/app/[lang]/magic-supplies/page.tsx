@@ -299,6 +299,7 @@ export default function MagicSuppliesPage({ params: { lang } }: { params: { lang
                                                     <img 
                                                         src={item.imageUrl} 
                                                         alt={isArabic ? item.titleAr : item.titleEn} 
+                                                        loading="lazy"
                                                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                                     />
                                                 ) : (
