@@ -85,10 +85,19 @@ export default function Footer({ lang }: { lang: string }) {
                         <h3 className="font-black text-white mt-8 mb-4 text-sm uppercase tracking-widest">
                             {isArabic ? "تواصل معنا" : "Contact Us"}
                         </h3>
-                        <div className="flex flex-col gap-2 text-sm text-gray-400">
-                            <span>📧 hello@magicazone.com</span>
-                            <span>📱 {isArabic ? "واتساب" : "WhatsApp"}: 01003937096</span>
-                            <span>📍 {isArabic ? "مصر، القاهرة" : "Egypt, Cairo"}</span>
+                        <div className="flex flex-col gap-2.5 text-sm text-gray-400">
+                            <a href="mailto:info@magica-group.com" className="hover:text-orange-400 transition-colors flex items-center gap-2">
+                                <span>📧</span>
+                                <span className="font-semibold">info@magica-group.com</span>
+                            </a>
+                            <a href="https://wa.me/201037377505" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-400 transition-colors flex items-center gap-2" dir="ltr">
+                                <span>📱</span>
+                                <span className="font-semibold">{isArabic ? "واتساب:" : "WhatsApp:"} +20 10 37377505</span>
+                            </a>
+                            <div className="flex items-center gap-2">
+                                <span>📍</span>
+                                <span className="font-semibold">{isArabic ? "مصر، القاهرة" : "Egypt, Cairo"}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
