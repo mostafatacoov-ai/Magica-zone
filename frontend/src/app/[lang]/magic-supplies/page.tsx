@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { 
     Package, PenTool, BookOpen, Compass, Sparkles, Star, ArrowRight, CheckCircle, 
-    ShoppingBag, ShoppingCart, Filter, Search, Tag, Check, X, Plus, Minus, Phone, MapPin, User
+    ShoppingBag, ShoppingCart, Filter, Search, Tag, Check, X, Plus, Minus, Phone, MapPin, User,
+    Eye, ChevronLeft, ChevronRight
 } from "lucide-react";
 import MagicalBackground from "@/components/ui/MagicalBackground";
 import { useCMSData, SupplyKit } from "@/lib/cms/contentStore";
@@ -28,6 +29,8 @@ export default function MagicSuppliesPage({ params: { lang } }: { params: { lang
     const [cart, setCart] = useState<{ item: SupplyKit; count: number }[]>([]);
     const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
     const [orderSubmitted, setOrderSubmitted] = useState<boolean>(false);
+    const [selectedProductModal, setSelectedProductModal] = useState<SupplyKit | null>(null);
+    const [activeModalImgIdx, setActiveModalImgIdx] = useState<number>(0);
 
     // Checkout Form State
     const [customerName, setCustomerName] = useState<string>("");
@@ -294,19 +297,32 @@ export default function MagicSuppliesPage({ params: { lang } }: { params: { lang
                                     >
                                         <div>
                                             {/* Image Section */}
-                                            <div className="relative h-64 w-full overflow-hidden bg-gradient-to-br from-rose-50 to-gray-50 flex items-center justify-center">
+                                            <div 
+                                                onClick={() => {
+                                                    setSelectedProductModal(item);
+                                                    setActiveModalImgIdx(0);
+                                                }}
+                                                className="relative h-64 w-full overflow-hidden bg-gradient-to-br from-rose-50 to-gray-50 flex items-center justify-center cursor-pointer group/img"
+                                            >
                                                 {item.imageUrl ? (
                                                     <img 
                                                         src={item.imageUrl} 
                                                         alt={isArabic ? item.titleAr : item.titleEn} 
                                                         loading="lazy"
-                                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                        className="w-full h-full object-cover group-hover:scale-105 group-hover/img:scale-110 transition-transform duration-500"
                                                     />
                                                 ) : (
                                                     <span className="text-7xl animate-pulse">🎒</span>
                                                 )}
-                                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80" />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 group-hover/img:bg-black/30 transition-all" />
                                                 
+                                                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none">
+                                                    <span className="bg-white/95 text-rose-700 font-extrabold text-xs px-4 py-2 rounded-full shadow-lg border border-rose-200 backdrop-blur-md flex items-center gap-1.5">
+                                                        <Eye className="w-4 h-4 text-rose-600" />
+                                                        <span>{isArabic ? "تصفح الصور والتفاصيل" : "Click to View Photos"}</span>
+                                                    </span>
+                                                </div>
+
                                                 {/* Price Chip in EGP */}
                                                 {!isPriceHidden ? (
                                                     <div className="absolute bottom-3 right-3 bg-rose-600 text-white font-black text-sm px-4 py-1.5 rounded-full shadow-lg border border-white/20 flex items-center gap-1">
@@ -358,11 +374,22 @@ export default function MagicSuppliesPage({ params: { lang } }: { params: { lang
                                             </div>
                                         </div>
 
-                                        {/* Action Button */}
-                                        <div className="px-6 pb-6 pt-2">
+                                        {/* Action Buttons */}
+                                        <div className="px-6 pb-6 pt-2 flex items-center gap-2">
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedProductModal(item);
+                                                    setActiveModalImgIdx(0);
+                                                }}
+                                                className="px-3.5 py-3 bg-rose-50 hover:bg-rose-100 text-rose-700 font-extrabold text-xs rounded-2xl transition-all border border-rose-200/60 flex items-center justify-center gap-1.5 active:scale-95 shrink-0 shadow-sm"
+                                                title={isArabic ? "تصفح صور المنتج" : "View Photo Gallery"}
+                                            >
+                                                <Eye className="w-4 h-4 text-rose-600" />
+                                                <span>{isArabic ? "الصور" : "Photos"}</span>
+                                            </button>
                                             <button
                                                 onClick={() => handleAddToCart(item)}
-                                                className="w-full py-3 bg-gray-900 hover:bg-gradient-to-r hover:from-rose-500 hover:to-pink-600 text-white font-black text-sm rounded-2xl transition-all shadow-md flex items-center justify-center gap-2 group/btn active:scale-95"
+                                                className="flex-1 py-3 bg-gray-900 hover:bg-gradient-to-r hover:from-rose-500 hover:to-pink-600 text-white font-black text-xs rounded-2xl transition-all shadow-md flex items-center justify-center gap-1.5 group/btn active:scale-95"
                                             >
                                                 <ShoppingCart className="w-4 h-4 text-rose-400 group-hover/btn:text-white transition-colors" />
                                                 <span>{isArabic ? "إضافة لسلة التسوق" : "Add to Cart"}</span>
@@ -575,6 +602,193 @@ export default function MagicSuppliesPage({ params: { lang } }: { params: { lang
                                     </div>
                                 </form>
                             )}
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
+            {/* Product Details & Multi-Photo Gallery Modal */}
+            <AnimatePresence>
+                {selectedProductModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setSelectedProductModal(null)}
+                            className="absolute inset-0 bg-black/75 backdrop-blur-md"
+                        />
+
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="relative w-full max-w-4xl bg-white rounded-3xl overflow-hidden shadow-2xl z-10 border border-white/20 flex flex-col md:flex-row max-h-[90vh]"
+                        >
+                            {/* Left Column: Interactive Photo Gallery */}
+                            <div className="md:w-1/2 bg-gray-950 flex flex-col justify-between relative select-none">
+                                {(() => {
+                                    const images = (selectedProductModal.galleryPhotos && selectedProductModal.galleryPhotos.length > 0)
+                                        ? selectedProductModal.galleryPhotos
+                                        : (selectedProductModal.imageUrl ? [selectedProductModal.imageUrl] : []);
+                                    const activeImage = images[activeModalImgIdx] || selectedProductModal.imageUrl || "";
+
+                                    return (
+                                        <>
+                                            {/* Large Preview Box */}
+                                            <div className="relative flex-1 h-64 md:h-96 flex items-center justify-center overflow-hidden bg-gradient-to-b from-gray-900 to-black p-4">
+                                                {activeImage ? (
+                                                    <motion.img
+                                                        key={activeModalImgIdx}
+                                                        initial={{ opacity: 0, scale: 0.95 }}
+                                                        animate={{ opacity: 1, scale: 1 }}
+                                                        transition={{ duration: 0.2 }}
+                                                        src={activeImage}
+                                                        alt="Product View"
+                                                        className="max-h-full max-w-full object-contain drop-shadow-2xl rounded-2xl"
+                                                    />
+                                                ) : (
+                                                    <span className="text-8xl animate-pulse">🎒</span>
+                                                )}
+
+                                                {/* Next / Previous Arrows for Multi-Photo Albums */}
+                                                {images.length > 1 && (
+                                                    <>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setActiveModalImgIdx((prev) => (prev > 0 ? prev - 1 : images.length - 1));
+                                                            }}
+                                                            className="absolute left-3 w-10 h-10 rounded-full bg-white/10 hover:bg-white/30 backdrop-blur-md text-white flex items-center justify-center transition-all shadow-md active:scale-90"
+                                                            title="Previous Photo"
+                                                        >
+                                                            <ChevronLeft className="w-6 h-6" />
+                                                        </button>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setActiveModalImgIdx((prev) => (prev < images.length - 1 ? prev + 1 : 0));
+                                                            }}
+                                                            className="absolute right-3 w-10 h-10 rounded-full bg-white/10 hover:bg-white/30 backdrop-blur-md text-white flex items-center justify-center transition-all shadow-md active:scale-90"
+                                                            title="Next Photo"
+                                                        >
+                                                            <ChevronRight className="w-6 h-6" />
+                                                        </button>
+                                                    </>
+                                                )}
+
+                                                {/* Image Counter Chip */}
+                                                {images.length > 1 && (
+                                                    <div className="absolute top-4 left-4 bg-black/60 text-rose-300 border border-white/10 font-black text-[11px] px-3 py-1 rounded-full backdrop-blur-md">
+                                                        {isArabic ? `صورة ${activeModalImgIdx + 1} من ${images.length}` : `${activeModalImgIdx + 1} / ${images.length} Photos`}
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {/* Thumbnail Strip */}
+                                            {images.length > 1 && (
+                                                <div className="p-3 bg-gray-900 border-t border-gray-800 overflow-x-auto flex items-center gap-2 justify-center">
+                                                    {images.map((imgUrl, i) => (
+                                                        <button
+                                                            key={i}
+                                                            onClick={() => setActiveModalImgIdx(i)}
+                                                            className={`relative w-14 h-14 rounded-xl overflow-hidden border-2 transition-all shrink-0 ${activeModalImgIdx === i ? 'border-rose-500 scale-105 shadow-lg shadow-rose-500/30' : 'border-white/10 opacity-60 hover:opacity-100'}`}
+                                                        >
+                                                            <img src={imgUrl} alt="thumbnail" className="w-full h-full object-cover" />
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </>
+                                    );
+                                })()}
+                            </div>
+
+                            {/* Right Column: Product Information & Actions */}
+                            <div className="md:w-1/2 p-6 md:p-8 flex flex-col justify-between overflow-y-auto max-h-[85vh] text-start">
+                                <div>
+                                    <div className="flex items-center justify-between gap-2 mb-3">
+                                        <span className="bg-rose-50 text-rose-700 font-extrabold text-xs px-3 py-1 rounded-full border border-rose-100">
+                                            {isArabic ? (selectedProductModal.categoryAr || "حقائب مدرسية") : (selectedProductModal.categoryEn || "Bags & Backpacks")}
+                                        </span>
+                                        <button
+                                            onClick={() => setSelectedProductModal(null)}
+                                            className="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-colors"
+                                        >
+                                            <X className="w-5 h-5" />
+                                        </button>
+                                    </div>
+
+                                    <h2 className="text-2xl md:text-3xl font-black text-gray-900 mb-3 leading-tight">
+                                        {isArabic ? selectedProductModal.titleAr : selectedProductModal.titleEn}
+                                    </h2>
+
+                                    {/* Price Box */}
+                                    <div className="my-4 p-4 rounded-2xl bg-gradient-to-r from-rose-50 to-pink-50 border border-rose-100 flex items-center justify-between">
+                                        <div>
+                                            <span className="text-xs font-bold text-gray-500 block">
+                                                {isArabic ? "السعر الرسمي والمواصفات:" : "Official Product Price:"}
+                                            </span>
+                                            {selectedProductModal.price && selectedProductModal.price > 0 ? (
+                                                <div className="flex items-baseline gap-1.5 text-rose-600 font-black text-3xl">
+                                                    <span>{selectedProductModal.price}</span>
+                                                    <span className="text-sm font-extrabold">{isArabic ? "ج.م" : "EGP"}</span>
+                                                </div>
+                                            ) : (
+                                                <span className="text-amber-700 font-black text-lg">
+                                                    {isArabic ? "السعر عند الطلب والتوريد" : "Price Upon Inquiry"}
+                                                </span>
+                                            )}
+                                        </div>
+                                        {(selectedProductModal.badgeEn || selectedProductModal.badgeAr) && (
+                                            <span className="bg-rose-600 text-white font-black text-xs px-3.5 py-1.5 rounded-xl shadow-md">
+                                                {isArabic ? selectedProductModal.badgeAr : selectedProductModal.badgeEn}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    <p className="text-gray-600 text-sm leading-relaxed mb-6">
+                                        {isArabic ? selectedProductModal.descAr : selectedProductModal.descEn}
+                                    </p>
+
+                                    {/* Features List */}
+                                    {(selectedProductModal.featuresEn || selectedProductModal.featuresAr) && (
+                                        <div className="mb-6">
+                                            <h4 className="text-xs font-black uppercase text-gray-400 mb-2.5">
+                                                {isArabic ? "المميزات والجودة المضمونة:" : "Guaranteed Specifications:"}
+                                            </h4>
+                                            <div className="grid grid-cols-2 gap-2">
+                                                {(isArabic ? (selectedProductModal.featuresAr || selectedProductModal.featuresEn) : selectedProductModal.featuresEn)?.map((f, idx) => (
+                                                    <div key={idx} className="flex items-center gap-2 p-2.5 rounded-xl bg-gray-50 border border-gray-100 text-gray-800 font-extrabold text-xs">
+                                                        <CheckCircle className="w-4 h-4 text-rose-500 shrink-0" />
+                                                        <span>{f}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Modal Actions */}
+                                <div className="pt-6 border-t border-gray-100 flex items-center gap-3">
+                                    <button
+                                        onClick={() => {
+                                            handleAddToCart(selectedProductModal);
+                                            setSelectedProductModal(null);
+                                        }}
+                                        className="flex-1 py-4 bg-gradient-to-r from-rose-500 to-pink-600 hover:brightness-110 text-white font-black text-sm rounded-2xl shadow-xl shadow-rose-500/30 transition-all flex items-center justify-center gap-2 active:scale-95"
+                                    >
+                                        <ShoppingCart className="w-5 h-5" />
+                                        <span>{isArabic ? "إضافة لسلة التسوق والطلب" : "Add to Cart Now"}</span>
+                                    </button>
+                                    <button
+                                        onClick={() => setSelectedProductModal(null)}
+                                        className="px-6 py-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-black text-sm rounded-2xl transition-all"
+                                    >
+                                        {isArabic ? "إغلاق" : "Close"}
+                                    </button>
+                                </div>
+                            </div>
                         </motion.div>
                     </div>
                 )}

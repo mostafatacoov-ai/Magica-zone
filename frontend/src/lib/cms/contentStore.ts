@@ -49,6 +49,11 @@ const generatedBags = ALL_BAG_PHOTOS.map((filename, index) => {
         descEn: "Ergonomic, waterproof school backpack designed with dedicated compartments for smart tablets, science kits, and daily learning notebooks.",
         descAr: "حقيبة مدرسية طبية مقاومة للماء والمجهود، مصممة بأقسام خاصة للتابلت الذكي، أدوات العلوم، ودفاتر الملاحظات اليومية.",
         imageUrl: `/supplies/${filename}`,
+        galleryPhotos: [
+            `/supplies/${filename}`,
+            `/supplies/${ALL_BAG_PHOTOS[(index + 1) % ALL_BAG_PHOTOS.length]}`,
+            `/supplies/${ALL_BAG_PHOTOS[(index + 2) % ALL_BAG_PHOTOS.length]}`
+        ],
         badgeEn: badgesEn[badgeIndex],
         badgeAr: badgesAr[badgeIndex],
         featuresEn: ["Water Resistant", "Tablet Pocket", "Ergonomic Support", "Durable Fabric"],
@@ -155,6 +160,7 @@ export interface SupplyKit {
     descEn: string;
     descAr: string;
     imageUrl?: string;
+    galleryPhotos?: string[];
     badgeEn?: string;
     badgeAr?: string;
     featuresEn?: string[];
@@ -514,7 +520,7 @@ export function getCMSData(): CompleteCMSData {
             return INITIAL_CMS_DATA;
         }
         const parsed = JSON.parse(stored);
-        if (!parsed.supplies || parsed.supplies.length < 50) {
+        if (!parsed.supplies || parsed.supplies.length < 50 || !parsed.supplies[0]?.galleryPhotos) {
             parsed.supplies = INITIAL_CMS_DATA.supplies;
             localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
         }

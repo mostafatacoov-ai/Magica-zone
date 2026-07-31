@@ -99,7 +99,11 @@ export default function SuppliesEditorSection({ lang }: { lang: string }) {
             itemsCount: 1,
             descEn: "High-grade educational equipment designed for practical daily learning and entrepreneurial projects.",
             descAr: "منتج تعليمي عالي الجودة مصمم للتجارب العملية والمشاريع الابتكارية اليومية.",
-            imageUrl: "/supplies/WhatsApp Image 2026-07-28 at 3.31.33 AM.jpeg"
+            imageUrl: "/supplies/WhatsApp Image 2026-07-28 at 3.31.33 AM.jpeg",
+            galleryPhotos: [
+                "/supplies/WhatsApp Image 2026-07-28 at 3.31.33 AM.jpeg",
+                "/supplies/WhatsApp Image 2026-07-28 at 3.31.34 AM.jpeg"
+            ]
         };
         const updated = [newItem, ...supplies];
         handleSaveAll(updated);
@@ -408,6 +412,17 @@ export default function SuppliesEditorSection({ lang }: { lang: string }) {
                                             onChange={(val: string) => handleUpdateField(idx, "imageUrl", val)}
                                             helperTextEn="Upload custom bag photography file or enter image CDN URL."
                                             helperTextAr="ارفع ملف صورة مخصص أو ألصق رابط الصورة مباشرة."
+                                        />
+
+                                        <PhotoUploader
+                                            labelEn="Additional Product & Bag Gallery Photos (Multi-Photo Supported)"
+                                            labelAr="ألبوم صور المنتج الإضافية (يدعم إضافة صور متتابعة ومن زوايا مختلفة)"
+                                            isArabic={isArabic}
+                                            isGallery={true}
+                                            values={item.galleryPhotos || []}
+                                            onChange={(vals: string[]) => handleUpdateField(idx, "galleryPhotos", vals)}
+                                            helperTextEn="Add multiple photos showing internal compartments, side angles, and details."
+                                            helperTextAr="ارفع صوًرا إضافية لإظهار الجيوب الداخلية، زوايا الحقيبة، وتفاصيل الجودة."
                                         />
 
                                         <div className="flex justify-end pt-2">
