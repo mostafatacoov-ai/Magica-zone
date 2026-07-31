@@ -133,7 +133,7 @@ export default function MessagesPage({ params: { lang } }: { params: { lang: str
                 ) : (
                     <div className="flex-1 flex flex-col items-center justify-center text-gray-400">
                         <MessageSquare className="w-16 h-16 text-gray-200 mb-4" />
-                        <p>{isArabic ? "اختر معلماً لبدء المحادثة" : "Select a teacher to start chatting"}</p>
+                        <p>{isArabic ? "اختر معلمًا لبدء المحادثة" : "Select a teacher to start chatting"}</p>
                     </div>
                 )}
             </div>

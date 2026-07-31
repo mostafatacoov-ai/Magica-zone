@@ -4,9 +4,12 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { Shield, Heart, Users, Star, Award, Zap, ArrowRight, CheckCircle } from "lucide-react";
 import MagicalBackground from "@/components/ui/MagicalBackground";
+import { useCMSData } from "@/lib/cms/contentStore";
 
 export default function MagicUniformPage({ params: { lang } }: { params: { lang: string } }) {
     const isArabic = lang === 'ar';
+    const { data } = useCMSData();
+    const collection = data.uniforms;
 
     const values = [
         {
@@ -33,7 +36,7 @@ export default function MagicUniformPage({ params: { lang } }: { params: { lang:
             bg: "bg-cyan-500/15",
             title: isArabic ? "الاحترافية" : "Professionalism",
             desc: isArabic
-                ? "يمنح الطفل شعوراً بالجدية والاحترافية — يرى نفسه مهنياً من اليوم الأول."
+                ? "يمنح الطفل شعورًا بالجدية والاحترافية — يرى نفسه مهنيًا من اليوم الأول."
                 : "Gives children a sense of seriousness and professionalism — they see themselves as professionals from day one.",
         },
         {
@@ -65,14 +68,7 @@ export default function MagicUniformPage({ params: { lang } }: { params: { lang:
         },
     ];
 
-    const collection = [
-        { emoji: "👕", name: isArabic ? "التيشيرت الرسمي" : "Official T-Shirt", color: "من أخضر إلى برتقالي", colorEn: "Green to Orange" },
-        { emoji: "👖", name: isArabic ? "البنطلون الرياضي" : "Sport Pants", color: "رمادي داكن", colorEn: "Dark Grey" },
-        { emoji: "🧢", name: isArabic ? "قبعة ماجيكا" : "Magica Cap", color: "أخضر وبرتقالي", colorEn: "Green & Orange" },
-        { emoji: "🎒", name: isArabic ? "الحقيبة الرسمية" : "Official Backpack", color: "أسود مع شعار", colorEn: "Black with Logo" },
-        { emoji: "👟", name: isArabic ? "الجوارب الرياضية" : "Sport Socks", color: "أبيض وأخضر", colorEn: "White & Green" },
-        { emoji: "🧥", name: isArabic ? "جاكيت البروودي" : "Hoodie Jacket", color: "أخضر داكن", colorEn: "Dark Green" },
-    ];
+    // Dynamic CMS collection loaded above
 
     return (
         <main className="min-h-screen font-[family-name:var(--font-inter)] text-gray-800 overflow-hidden relative">
@@ -164,20 +160,62 @@ export default function MagicUniformPage({ params: { lang } }: { params: { lang:
                             {isArabic ? "كل قطعة مصممة بعناية" : "Every piece carefully designed"}
                         </p>
                     </div>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {collection.map((item, idx) => (
                             <motion.div
-                                key={idx}
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                whileInView={{ opacity: 1, scale: 1 }}
+                                key={item.id || idx}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: idx * 0.08 }}
-                                whileHover={{ y: -6, scale: 1.02 }}
-                                className="bg-white/90 backdrop-blur-md p-7 rounded-3xl border border-blue-100 shadow-md hover:shadow-xl transition-all duration-300 text-center group"
+                                whileHover={{ y: -6 }}
+                                className="bg-white/90 backdrop-blur-md rounded-3xl border border-blue-100 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between group"
                             >
-                                <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">{item.emoji}</div>
-                                <h3 className="text-lg font-black text-gray-800 mb-1">{item.name}</h3>
-                                <p className="text-xs font-semibold text-blue-400">{isArabic ? item.color : item.colorEn}</p>
+                                <div>
+                                    <div className="relative h-56 w-full overflow-hidden bg-blue-50/50 flex items-center justify-center">
+                                        {item.imageUrl ? (
+                                            <img 
+                                                src={item.imageUrl} 
+                                                alt={isArabic ? item.titleAr : item.titleEn} 
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                            />
+                                        ) : (
+                                            <span className="text-6xl">👕</span>
+                                        )}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                                        {item.price > 0 && (
+                                            <span className="absolute bottom-3 right-3 bg-blue-600 text-white font-black text-sm px-3.5 py-1 rounded-full shadow-lg">
+                                                ${item.price}
+                                            </span>
+                                        )}
+                                        {(item.badgeEn || item.badgeAr) && (
+                                            <span className="absolute top-3 left-3 bg-white/90 text-blue-600 font-black text-xs px-3 py-1 rounded-full shadow-md backdrop-blur-md">
+                                                {isArabic ? item.badgeAr : item.badgeEn}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    <div className="p-6 text-start">
+                                        <h3 className="text-xl font-black text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                                            {isArabic ? item.titleAr : item.titleEn}
+                                        </h3>
+                                        <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                                            {isArabic ? item.descAr : item.descEn}
+                                        </p>
+                                        {item.sizes && item.sizes.length > 0 && (
+                                            <div className="border-t border-blue-100/60 pt-3 flex items-center gap-2 flex-wrap">
+                                                <span className="text-[10px] font-black uppercase text-gray-400">
+                                                    {isArabic ? "المقاسات المتاحة:" : "Available Sizes:"}
+                                                </span>
+                                                {item.sizes.map((s, i) => (
+                                                    <span key={i} className="bg-blue-50 text-blue-700 font-black text-[11px] px-2.5 py-0.5 rounded-lg border border-blue-100">
+                                                        {s}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
                             </motion.div>
                         ))}
                     </div>

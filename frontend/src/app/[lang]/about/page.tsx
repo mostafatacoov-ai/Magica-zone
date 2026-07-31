@@ -52,7 +52,7 @@ export default function AboutPage({ params: { lang } }: { params: { lang: string
         {
             title: isArabic ? "العجائب والخيال" : "Wonder & Imagination",
             desc: isArabic
-                ? "نبقي شرارة الفضول حية في كل ما نقوم به. نشجع الأطفال على السؤال دائماً: 'لماذا؟' و'كيف؟' و'ماذا لو؟'"
+                ? "نبقي شرارة الفضول حية في كل ما نقوم به. نشجع الأطفال على السؤال دائمًا: 'لماذا؟' و'كيف؟' و'ماذا لو؟'"
                 : "We keep the spark of curiosity alive in everything we do. We encourage children to always ask: 'Why?' 'How?' and 'What if?'",
             icon: Sparkles,
             color: "text-amber-500",
@@ -62,7 +62,7 @@ export default function AboutPage({ params: { lang } }: { params: { lang: string
         {
             title: isArabic ? "المتعة هدف حقيقي" : "Fun Is a Real Goal",
             desc: isArabic
-                ? "نؤمن أن البيئة الممتعة هي البيئة الأكثر إنتاجاً. عندما يستمتع الطفل، يتعلم بعمق أكبر وبسرعة أعلى."
+                ? "نؤمن أن البيئة الممتعة هي البيئة الأكثر إنتاجًا. عندما يستمتع الطفل، يتعلم بعمق أكبر وبسرعة أعلى."
                 : "We believe the most enjoyable environment is the most productive. When children enjoy themselves, they learn deeper and faster.",
             icon: Zap,
             color: "text-rose-500",

@@ -6,9 +6,12 @@ import Image from "next/image";
 import foodLogo from "../../../../public/magica-food-print.png";
 import { Utensils, Brain, Heart, Leaf, ChefHat, ArrowRight, CheckCircle, Zap } from "lucide-react";
 import MagicalBackground from "@/components/ui/MagicalBackground";
+import { useCMSData } from "@/lib/cms/contentStore";
 
 export default function MagicFoodPage({ params: { lang } }: { params: { lang: string } }) {
     const isArabic = lang === 'ar';
+    const { data } = useCMSData();
+    const menu = data.food;
 
     const principles = [
         {
@@ -17,7 +20,7 @@ export default function MagicFoodPage({ params: { lang } }: { params: { lang: st
             bg: "bg-magica-navy-500/15",
             title: isArabic ? "وقود العقل" : "Brain Fuel",
             desc: isArabic
-                ? "كل وجبة مصممة علمياً لدعم التركيز، الذاكرة، والإدراك خلال ساعات الأنشطة."
+                ? "كل وجبة مصممة علميًا لدعم التركيز، الذاكرة، والإدراك خلال ساعات الأنشطة."
                 : "Every meal is scientifically designed to support focus, memory, and cognition during activity hours.",
         },
         {
@@ -35,7 +38,7 @@ export default function MagicFoodPage({ params: { lang } }: { params: { lang: st
             bg: "bg-magica-orange-600/15",
             title: isArabic ? "الطفل يطبخ" : "Children Cook",
             desc: isArabic
-                ? "أحياناً يُعلّمهم كيف يُعدّون وجباتهم بأيديهم — لأن من يعرف ما يأكل يعرف كيف يهتم بنفسه."
+                ? "أحيانًا يُعلّمهم كيف يُعدّون وجباتهم بأيديهم — لأن من يعرف ما يأكل يعرف كيف يهتم بنفسه."
                 : "Sometimes we teach them to prepare their own meals — because those who know what they eat know how to care for themselves.",
         },
         {
@@ -44,7 +47,7 @@ export default function MagicFoodPage({ params: { lang } }: { params: { lang: st
             bg: "bg-magica-orange-500/15",
             title: isArabic ? "مكونات طبيعية" : "Natural Ingredients",
             desc: isArabic
-                ? "قوائم طعام مبنية على مكونات طازجة وطبيعية، بعيداً عن المواد الحافظة والإضافات الاصطناعية."
+                ? "قوائم طعام مبنية على مكونات طازجة وطبيعية، بعيدًا عن المواد الحافظة والإضافات الاصطناعية."
                 : "Menus built on fresh, natural ingredients, free from preservatives and artificial additives.",
         },
         {
@@ -53,7 +56,7 @@ export default function MagicFoodPage({ params: { lang } }: { params: { lang: st
             bg: "bg-magica-purple-500/15",
             title: isArabic ? "نكهات الأطفال" : "Kids' Flavors",
             desc: isArabic
-                ? "صحي لا يعني مملاً — وجباتنا شهية، ملوّنة، ومصممة لتكون محبوبة من الأطفال."
+                ? "صحي لا يعني مملًا — وجباتنا شهية، ملوّنة، ومصممة لتكون محبوبة من الأطفال."
                 : "Healthy doesn't mean boring — our meals are delicious, colorful, and designed to be loved by children.",
         },
         {
@@ -67,14 +70,7 @@ export default function MagicFoodPage({ params: { lang } }: { params: { lang: st
         },
     ];
 
-    const menu = [
-        { emoji: "🥗", name: isArabic ? "سلطة الفوز" : "Victory Salad", label: isArabic ? "وجبة الذكاء" : "Brain Booster" },
-        { emoji: "🥪", name: isArabic ? "ساندويتش المبدع" : "Creator Sandwich", label: isArabic ? "وجبة طاقة" : "Energy Meal" },
-        { emoji: "🍱", name: isArabic ? "علبة المغامر" : "Explorer's Box", label: isArabic ? "وجبة متكاملة" : "Complete Meal" },
-        { emoji: "🍌", name: isArabic ? "وجبة الأبطال" : "Heroes Snack", label: isArabic ? "وجبة خفيفة" : "Light Snack" },
-        { emoji: "🥤", name: isArabic ? "عصير السحر" : "Magic Juice", label: isArabic ? "مشروب صحي" : "Healthy Drink" },
-        { emoji: "🌯", name: isArabic ? "رول القائد" : "Leader's Roll", label: isArabic ? "وجبة دفء" : "Warm Meal" },
-    ];
+    // Dynamic CMS menu loaded directly above
 
     return (
         <main className="min-h-screen font-[family-name:var(--font-inter)] text-gray-800 overflow-hidden relative">
@@ -123,7 +119,7 @@ export default function MagicFoodPage({ params: { lang } }: { params: { lang: st
                         className="text-lg text-gray-500 max-w-2xl mx-auto mb-12 leading-relaxed"
                     >
                         {isArabic
-                            ? "ماجيكا فود يقدم وجبات مصممة علمياً لدعم تركيز الأطفال وطاقتهم. وأحياناً — يُعلّمهم كيف يُعدّونها بأيديهم. لأن الطفل الذي يعرف ما يأكل، يعرف كيف يهتم بنفسه."
+                            ? "ماجيكا فود يقدم وجبات مصممة علميًا لدعم تركيز الأطفال وطاقتهم. وأحيانًا — يُعلّمهم كيف يُعدّونها بأيديهم. لأن الطفل الذي يعرف ما يأكل، يعرف كيف يهتم بنفسه."
                             : "Magica Food provides scientifically designed meals to support children's focus and energy. And sometimes — we teach them how to prepare it themselves. Because the child who knows what they eat, knows how to take care of themselves."}
                     </motion.p>
                 </div>
@@ -150,20 +146,64 @@ export default function MagicFoodPage({ params: { lang } }: { params: { lang: st
                             {isArabic ? "كل وجبة لها هدف" : "Every meal has a purpose"}
                         </p>
                     </div>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {menu.map((item, idx) => (
                             <motion.div
-                                key={idx}
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                whileInView={{ opacity: 1, scale: 1 }}
+                                key={item.id || idx}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: idx * 0.08 }}
-                                whileHover={{ y: -6, scale: 1.02 }}
-                                className="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-magica-navy-100 shadow-md hover:shadow-xl transition-all duration-300 text-center"
+                                whileHover={{ y: -6 }}
+                                className="bg-white/90 backdrop-blur-md rounded-3xl border border-rose-100 shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col justify-between group"
                             >
-                                <div className="text-5xl mb-3">{item.emoji}</div>
-                                <div className="text-xs font-black uppercase tracking-widest text-magica-navy-500 mb-1">{item.label}</div>
-                                <h3 className="text-lg font-black text-gray-800">{item.name}</h3>
+                                <div>
+                                    <div className="relative h-48 w-full overflow-hidden bg-rose-50/50 flex items-center justify-center">
+                                        {item.imageUrl ? (
+                                            <img 
+                                                src={item.imageUrl} 
+                                                alt={isArabic ? item.titleAr : item.titleEn} 
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                            />
+                                        ) : (
+                                            <span className="text-5xl">🥗</span>
+                                        )}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                                        {item.price > 0 && (
+                                            <span className="absolute bottom-3 right-3 bg-rose-600 text-white font-black text-sm px-3.5 py-1 rounded-full shadow-lg">
+                                                ${item.price}
+                                            </span>
+                                        )}
+                                        {(item.badgeEn || item.badgeAr) && (
+                                            <span className="absolute top-3 left-3 bg-white/90 text-rose-600 font-black text-xs px-3 py-1 rounded-full shadow-md backdrop-blur-md">
+                                                {isArabic ? item.badgeAr : item.badgeEn}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    <div className="p-6 text-start">
+                                        <h3 className="text-xl font-black text-gray-900 mb-2 group-hover:text-rose-600 transition-colors">
+                                            {isArabic ? item.titleAr : item.titleEn}
+                                        </h3>
+                                        <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                                            {isArabic ? item.descAr : item.descEn}
+                                        </p>
+                                        {(item.ingredientsEn || item.ingredientsAr) && (
+                                            <div className="border-t border-rose-100/60 pt-3">
+                                                <div className="text-[10px] font-black uppercase text-gray-400 mb-1.5">
+                                                    {isArabic ? "المكونات الصحية:" : "Nutritional Ingredients:"}
+                                                </div>
+                                                <div className="flex flex-wrap gap-1">
+                                                    {(isArabic ? (item.ingredientsAr || item.ingredientsEn) : item.ingredientsEn)?.map((ing, i) => (
+                                                        <span key={i} className="bg-rose-50 text-rose-700 font-extrabold text-[11px] px-2.5 py-0.5 rounded-lg border border-rose-100">
+                                                            ✓ {ing}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
                             </motion.div>
                         ))}
                     </div>

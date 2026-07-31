@@ -4,9 +4,12 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { Mic, Play, Heart, Target, Sparkles, Users, ArrowRight, Headphones } from "lucide-react";
 import MagicalBackground from "@/components/ui/MagicalBackground";
+import { useCMSData } from "@/lib/cms/contentStore";
 
 export default function MagicPodcastPage({ params: { lang } }: { params: { lang: string } }) {
     const isArabic = lang === 'ar';
+    const { data } = useCMSData();
+    const episodes = data.podcasts;
 
     const topics = [
         {
@@ -41,7 +44,7 @@ export default function MagicPodcastPage({ params: { lang } }: { params: { lang:
             icon: Users,
             color: "text-violet-600",
             bg: "bg-violet-600/15",
-            title: isArabic ? "للأهالي أيضاً" : "For Parents Too",
+            title: isArabic ? "للأهالي أيضًا" : "For Parents Too",
             desc: isArabic ? "محتوى موجّه للأهالي: كيف تدعم طفلك بالطريقة الصحيحة؟" : "Content for parents: how to support your child in the right way?",
         },
         {
@@ -53,36 +56,7 @@ export default function MagicPodcastPage({ params: { lang } }: { params: { lang:
         },
     ];
 
-    const episodes = [
-        {
-            num: "01",
-            title: isArabic ? "الطفل الذي خاف ثم أصبح قائداً" : "The Child Who Was Afraid, Then Became a Leader",
-            duration: "28 min",
-            tag: isArabic ? "قيادة" : "Leadership",
-            tagColor: "bg-purple-100 text-purple-600",
-        },
-        {
-            num: "02",
-            title: isArabic ? "كيف اكتشفت شغفي في عمر 10 سنوات؟" : "How I Discovered My Passion at Age 10",
-            duration: "32 min",
-            tag: isArabic ? "شغف" : "Passion",
-            tagColor: "bg-violet-100 text-violet-600",
-        },
-        {
-            num: "03",
-            title: isArabic ? "فشلتُ ثلاث مرات — وهذا جعلني أنجح" : "I Failed Three Times — That's What Made Me Succeed",
-            duration: "25 min",
-            tag: isArabic ? "نجاح" : "Success",
-            tagColor: "bg-fuchsia-100 text-fuchsia-600",
-        },
-        {
-            num: "04",
-            title: isArabic ? "رسالة من أب إلى أبناء جيلنا" : "A Message from a Father to Our Generation",
-            duration: "41 min",
-            tag: isArabic ? "للأهالي" : "For Parents",
-            tagColor: "bg-purple-100 text-purple-700",
-        },
-    ];
+    // Dynamic CMS episodes loaded directly above
 
     return (
         <main className="min-h-screen font-[family-name:var(--font-inter)] text-gray-800 overflow-hidden relative">
@@ -119,7 +93,7 @@ export default function MagicPodcastPage({ params: { lang } }: { params: { lang:
                         className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-6 leading-relaxed"
                     >
                         {isArabic
-                            ? "صوت موجّه للأطفال والأهالي معاً."
+                            ? "صوت موجّه للأطفال والأهالي معًا."
                             : "A voice directed to children and parents together."}
                     </motion.p>
 
@@ -180,27 +154,51 @@ export default function MagicPodcastPage({ params: { lang } }: { params: { lang:
                             {isArabic ? "استمع وغيّر نظرتك للحياة" : "Listen and change your perspective on life"}
                         </p>
                     </div>
-                    <div className="space-y-5">
+                    <div className="space-y-6">
                         {episodes.map((ep, idx) => (
                             <motion.div
-                                key={idx}
+                                key={ep.id || idx}
                                 initial={{ opacity: 0, x: -20 }}
                                 whileInView={{ opacity: 1, x: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: idx * 0.1 }}
-                                className="flex items-center gap-5 bg-white/80 backdrop-blur-md p-6 rounded-2xl border border-purple-100 shadow-sm hover:shadow-xl hover:border-purple-300 transition-all duration-300 group cursor-pointer"
+                                className="flex flex-col sm:flex-row items-center gap-6 bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-purple-100 shadow-md hover:shadow-xl hover:border-purple-300 transition-all duration-300 group"
                             >
-                                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-fuchsia-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform shadow-lg">
-                                    <Play className="w-6 h-6 text-white fill-current" />
-                                </div>
-                                <div className="flex-grow">
-                                    <div className="flex items-center gap-2 mb-1">
-                                        <span className="text-xs font-black text-gray-400">EP {ep.num}</span>
-                                        <span className={`text-xs font-black px-2 py-0.5 rounded-full ${ep.tagColor}`}>{ep.tag}</span>
+                                <div className="relative w-full sm:w-36 h-36 rounded-2xl overflow-hidden bg-purple-50 shrink-0 flex items-center justify-center border border-purple-100">
+                                    {ep.imageUrl ? (
+                                        <img src={ep.imageUrl} alt={isArabic ? ep.titleAr : ep.titleEn} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                    ) : (
+                                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-fuchsia-600 flex items-center justify-center shadow-lg">
+                                            <Play className="w-8 h-8 text-white fill-current ml-1" />
+                                        </div>
+                                    )}
+                                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+                                        <div className="w-12 h-12 rounded-full bg-white/90 text-purple-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                                            <Play className="w-6 h-6 fill-current ml-0.5" />
+                                        </div>
                                     </div>
-                                    <h3 className="font-black text-gray-800 group-hover:text-purple-600 transition-colors">{ep.title}</h3>
                                 </div>
-                                <div className="text-sm font-bold text-gray-400 shrink-0">{ep.duration}</div>
+
+                                <div className="flex-grow text-start">
+                                    <div className="flex items-center gap-2 mb-2 flex-wrap">
+                                        <span className="text-xs font-black px-3 py-1 rounded-full bg-purple-100 text-purple-700">{ep.category || (isArabic ? "حلقة خاصة" : "Special Episode")}</span>
+                                        <span className="text-xs font-bold text-gray-400">• {ep.duration}</span>
+                                        {(ep.hostEn || ep.hostAr) && (
+                                            <span className="text-xs font-bold text-fuchsia-600">
+                                                | {isArabic ? "المضيف:" : "Host:"} {isArabic ? ep.hostAr : ep.hostEn}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <h3 className="text-xl font-black text-gray-900 group-hover:text-purple-600 transition-colors mb-2">
+                                        {isArabic ? ep.titleAr : ep.titleEn}
+                                    </h3>
+                                    <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                                        {isArabic ? ep.descAr : ep.descEn}
+                                    </p>
+                                    {ep.audioUrl && (
+                                        <audio controls src={ep.audioUrl} className="w-full h-10 rounded-lg outline-none" />
+                                    )}
+                                </div>
                             </motion.div>
                         ))}
                     </div>
@@ -255,7 +253,7 @@ export default function MagicPodcastPage({ params: { lang } }: { params: { lang:
                         </h2>
                         <p className="text-purple-100 mb-8 text-lg max-w-xl mx-auto">
                             {isArabic
-                                ? "اشترك الآن واستمع لكل جديد من ماجيكا بودكاست — مجاناً."
+                                ? "اشترك الآن واستمع لكل جديد من ماجيكا بودكاست — مجانًا."
                                 : "Subscribe now and listen to everything new from Magica Podcast — for free."}
                         </p>
                         <Link

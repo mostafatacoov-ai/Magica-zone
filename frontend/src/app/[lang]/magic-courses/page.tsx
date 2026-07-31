@@ -5,168 +5,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import MagicalBackground from "@/components/ui/MagicalBackground";
 import { GraduationCap, Sparkles, Star, Users, Calendar, Clock, BookOpen, CheckCircle2, ArrowRight, ShieldCheck, Laptop, Flame, Award, Filter, X } from "lucide-react";
 import Link from "next/link";
-
-interface Course {
-    id: string;
-    titleEn: string;
-    titleAr: string;
-    category: "business" | "tech" | "leadership" | "creative";
-    categoryLabelEn: string;
-    categoryLabelAr: string;
-    ageGroup: string;
-    sessionsCount: number;
-    hours: number;
-    descEn: string;
-    descAr: string;
-    skillsEn: string[];
-    skillsAr: string[];
-    color: string;
-    bgGradient: string;
-    badgeEn: string;
-    badgeAr: string;
-    icon: string;
-}
-
-const COURSES_DATA: Course[] = [
-    {
-        id: "junior-entrepreneur",
-        titleEn: "Junior Entrepreneurship & Bazar Secrets",
-        titleAr: "ريادة الأعمال الصعيرة وأسرار التجارة في ماجيكا بازار",
-        category: "business",
-        categoryLabelEn: "Entrepreneurship & Money",
-        categoryLabelAr: "ريادة الأعمال والذكاء المالي",
-        ageGroup: "8 - 14",
-        sessionsCount: 8,
-        hours: 16,
-        descEn: "Learn how to transform a simple creative idea into a profitable real-world product! Students master product design, pricing strategy, customer communication, and salesmanship.",
-        descAr: "تعلم كيف تحول فكرتك البسيطة والمبتكرة إلى منتج حقيقي ومربح! يتدرب الأطفال على تصميم المنتجات، استراتيجيات التسعير، التفاوض ومهارات البيع الحية.",
-        skillsEn: ["Financial Literacy", "Value Pricing", "Sales Negotiation", "Business Planning"],
-        skillsAr: ["الذكاء المالي", "تسعير القيمة", "التفاوض والإقناع", "التخطيط التجاري"],
-        color: "from-orange-500 to-amber-600",
-        bgGradient: "bg-orange-500/10 border-orange-500/20 text-orange-600",
-        badgeEn: "Most Popular 🔥",
-        badgeAr: "الأكثر طلباً 🔥",
-        icon: "business"
-    },
-    {
-        id: "ai-robotics",
-        titleEn: "AI & Robotics Coding Wizards",
-        titleAr: "سحرة البرمجيات، الروبوتات والذكاء الاصطناعي",
-        category: "tech",
-        categoryLabelEn: "Technology & Coding",
-        categoryLabelAr: "التقنية والبرمجة",
-        ageGroup: "9 - 15",
-        sessionsCount: 10,
-        hours: 20,
-        descEn: "Step into the modern magical tech arena! Children learn intuitive logic programming, robot algorithm sequencing, and basics of AI problem-solving in a fun hands-on laboratory.",
-        descAr: "ادخل إلى عالم التقنية السحري! يتعلم الطفل منطق البرمجة المبتكرة، خوارزميات حركة الروبوت، ومبادئ حل المشكلات بالذكاء الاصطناعي عبر ورش تطبيقية تفاعلية.",
-        skillsEn: ["Algorithmic Logic", "Robotics Assembly", "AI Prompting & Thinking", "Problem Solving"],
-        skillsAr: ["المنطق الخوارزمي", "تجميع وبرمجة الروبوت", "تفكير الذكاء الاصطناعي", "حل المشكلات بذكاء"],
-        color: "from-purple-600 to-indigo-600",
-        bgGradient: "bg-purple-500/10 border-purple-500/20 text-purple-600",
-        badgeEn: "Future Skills 🚀",
-        badgeAr: "مهارات المستقبل 🚀",
-        icon: "tech"
-    },
-    {
-        id: "public-speaking",
-        titleEn: "Charismatic Leadership & Public Speaking",
-        titleAr: "الخطابة، قوة التأثير وبناء الكاريزما القيادية",
-        category: "leadership",
-        categoryLabelEn: "Leadership & Communication",
-        categoryLabelAr: "القيادة وفن التواصل",
-        ageGroup: "7 - 15",
-        sessionsCount: 6,
-        hours: 12,
-        descEn: "Overcome stage fright and develop genuine vocal presence! Inspired by Magica Podcast, this course coaches children on confidence, speech structuring, eye contact, and emotional intelligence.",
-        descAr: "اكسر حاجز الخوف وابنِ حضوراً مقنعاً وصوتًا قياديًا مميزًا! مستوحى من تجربة ماجيكا بودكاست لتدريب الأطفال على لغة الجسد، ترتيب الخطاب، والثقة العالية بالنفس.",
-        skillsEn: ["Stage Presence", "Storytelling", "Body Language Mastery", "Emotional Intelligence"],
-        skillsAr: ["الحضور والجاذبية", "فن رواية القصص", "لغة الجسد المؤثرة", "الذكاء العاطفي والاجتماعي"],
-        color: "from-emerald-500 to-teal-600",
-        bgGradient: "bg-emerald-500/10 border-emerald-500/20 text-emerald-600",
-        badgeEn: "Essential Growth ⭐",
-        badgeAr: "مهارة أساسية ⭐",
-        icon: "leadership"
-    },
-    {
-        id: "creative-design",
-        titleEn: "Magica Art & Brand Identity Studio",
-        titleAr: "استوديو الفنون التصميمية وهوية العلامات التجارية",
-        category: "creative",
-        categoryLabelEn: "Arts & Innovation",
-        categoryLabelAr: "الفنون والابتكار",
-        ageGroup: "6 - 13",
-        sessionsCount: 8,
-        hours: 16,
-        descEn: "Where art meets entrepreneurship! Young designers explore color psychology, branding logos (like Magica Uniform), creative crafts, and visual packaging of ideas to make them stand out.",
-        descAr: "حيث يلتقي الفن بالتجارة والإنجاز! يستكشف المصممون الصغار سيكولوجية الألوان، تصميم الشعارات (مثل ماجيكا يونيفورم)، والحرف الإبداعية لتغليف الأفكار وبناء الهوية.",
-        skillsEn: ["Brand Logo Design", "Color Psychology", "Creative Packaging", "Visual Aesthetics"],
-        skillsAr: ["تصميم الشعارات والهوية", "سيكولوجية الألوان", "التغليف الابتكاري", "الحس الفني والبصري"],
-        color: "from-rose-500 to-pink-600",
-        bgGradient: "bg-rose-500/10 border-rose-500/20 text-rose-600",
-        badgeEn: "Creative Spark 🎨",
-        badgeAr: "شرارة الإبداع 🎨",
-        icon: "creative"
-    },
-    {
-        id: "financial-intelligence",
-        titleEn: "Smart Money & Budget Mastery",
-        titleAr: "الذكاء المالي، الاستثمار الصغير وإدارة الميزانية",
-        category: "business",
-        categoryLabelEn: "Entrepreneurship & Money",
-        categoryLabelAr: "ريادة الأعمال والذكاء المالي",
-        ageGroup: "9 - 15",
-        sessionsCount: 6,
-        hours: 12,
-        descEn: "An interactive gateway to understanding money efficiency, saving vs investing, cost computation, and smart consumption choices. Builds the economic foundations of future CEOs!",
-        descAr: "بوابة تفاعلية لفهم قيمة المال، الفرق بين الادخار والاستثمار، حساب التكاليف والأرباح، واتخاذ قرارات إنفاق ذكية لبناء الثاقبة الاقتصادية لقادة الغد!",
-        skillsEn: ["Budget Allocation", "Investment Basics", "Profit & Loss Calculation", "Smart Saving"],
-        skillsAr: ["توزيع الميزانية", "مبادئ الاستثمار الصغير", "حساب المكسب والتكلفة", "الادخار التراكمي"],
-        color: "from-amber-500 to-yellow-600",
-        bgGradient: "bg-amber-500/10 border-amber-500/20 text-amber-600",
-        badgeEn: "High Value 💰",
-        badgeAr: "قيمة فائقة 💰",
-        icon: "business"
-    },
-    {
-        id: "young-pioneers",
-        titleEn: "Young Pioneers Survival & Problem Solving",
-        titleAr: "الرواد الصغار: مهارات القيادة والمغامرة وحل المشكلات",
-        category: "leadership",
-        categoryLabelEn: "Leadership & Communication",
-        categoryLabelAr: "القيادة وفن التواصل",
-        ageGroup: "8 - 15",
-        sessionsCount: 8,
-        hours: 16,
-        descEn: "Directly adapted from Magica Camp adventures! Teams tackle interactive survival scenarios, team collaboration dilemmas, strategic resource gathering, and fast adaptive decision-making.",
-        descAr: "مقتبس مباشرة من مغامرات ماجيكا كامب الحية! يواجه الفرق سيناريوهات تفاعلية، تحديات التفاوض الجماعي، إدارة الموارد تحت الضغط، واتخاذ القرارات الذكية الشجاعة.",
-        skillsEn: ["Team Synergy", "Crisis Strategy", "Resource Management", "Adaptive Thinking"],
-        skillsAr: ["روح الفريق العالي", "استراتيجيات تجاوز الأزمات", "إدارة الموارد", "التفكير المرن والفعال"],
-        color: "from-blue-600 to-cyan-600",
-        bgGradient: "bg-blue-500/10 border-blue-500/20 text-blue-600",
-        badgeEn: "Action Packed ⛺",
-        badgeAr: "مغامرة وتحدي ⛺",
-        icon: "leadership"
-    }
-];
+import { useCMSData, CourseItem } from "@/lib/cms/contentStore";
 
 export default function MagicCoursesPage({ params: { lang } }: { params: { lang: string } }) {
     const isArabic = lang === "ar";
-    const [selectedCategory, setSelectedCategory] = useState<string>("all");
-    const [selectedCourseForModal, setSelectedCourseForModal] = useState<Course | null>(null);
+    const { data } = useCMSData();
+    const courses = data.courses;
+    const [selectedCourseForModal, setSelectedCourseForModal] = useState<CourseItem | null>(null);
     const [enrollSuccess, setEnrollSuccess] = useState<boolean>(false);
-
-    const filterCategories = [
-        { id: "all", labelEn: "All Courses 🌟", labelAr: "كل الكورسات 🌟" },
-        { id: "business", labelEn: "Entrepreneurship & Money 💡", labelAr: "ريادة الأعمال والذكاء المالي 💡" },
-        { id: "tech", labelEn: "Tech, AI & Coding 🤖", labelAr: "التقنية، الذكاء الاصطناعي والبرمجة 🤖" },
-        { id: "leadership", labelEn: "Leadership & Speaking 🎙️", labelAr: "القيادة، الكاريزما والخطابة 🎙️" },
-        { id: "creative", labelEn: "Arts & Brand Design 🎨", labelAr: "الفنون، التصميم والابتكار 🎨" },
-    ];
-
-    const filteredCourses = selectedCategory === "all" 
-        ? COURSES_DATA 
-        : COURSES_DATA.filter(c => c.category === selectedCategory);
 
     const handleReservationSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -273,7 +119,7 @@ export default function MagicCoursesPage({ params: { lang } }: { params: { lang:
                     className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
                 >
                     <AnimatePresence>
-                        {filteredCourses.map((course) => (
+                        {courses.map((course) => (
                             <motion.div
                                 layout
                                 initial={{ opacity: 0, scale: 0.95 }}
@@ -284,18 +130,35 @@ export default function MagicCoursesPage({ params: { lang } }: { params: { lang:
                                 className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 hover:border-orange-300 transition-all duration-300 flex flex-col justify-between relative overflow-hidden group"
                             >
                                 {/* Top Banner Decoration */}
-                                <div className={`h-3 bg-gradient-to-r ${course.color} w-full`} />
+                                <div className={`h-3 bg-gradient-to-r ${course.color || "from-orange-500 to-amber-600"} w-full`} />
+
+                                {/* Course Image Banner */}
+                                {course.imageUrl && (
+                                    <div className="relative h-48 w-full overflow-hidden bg-gray-100">
+                                        <img 
+                                            src={course.imageUrl} 
+                                            alt={isArabic ? course.titleAr : course.titleEn}
+                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                                        <span className="absolute bottom-3 right-3 bg-white/90 text-orange-600 px-3 py-1 rounded-full text-xs font-black shadow-md">
+                                            ${course.price}
+                                        </span>
+                                    </div>
+                                )}
 
                                 <div className="p-8 flex-1 flex flex-col justify-between">
                                     <div>
-                                        {/* Badge & Category */}
+                                        {/* Badge */}
                                         <div className="flex items-center justify-between gap-2 mb-4">
-                                            <span className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider ${course.bgGradient}`}>
-                                                {isArabic ? course.categoryLabelAr : course.categoryLabelEn}
+                                            <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-orange-500/10 text-orange-600 border border-orange-500/20">
+                                                {isArabic ? course.datesAr : course.datesEn}
                                             </span>
-                                            <span className="bg-gray-100 text-gray-800 text-xs font-black px-3 py-1 rounded-full shadow-sm">
-                                                {isArabic ? course.badgeAr : course.badgeEn}
-                                            </span>
+                                            {(course.badgeEn || course.badgeAr) && (
+                                                <span className="bg-gray-900 text-white text-xs font-black px-3 py-1 rounded-full shadow-sm">
+                                                    {isArabic ? course.badgeAr : course.badgeEn}
+                                                </span>
+                                            )}
                                         </div>
 
                                         {/* Title */}
@@ -314,7 +177,7 @@ export default function MagicCoursesPage({ params: { lang } }: { params: { lang:
                                                 <Users className="w-5 h-5 text-orange-500 shrink-0" />
                                                 <div>
                                                     <div className="text-gray-400 text-[10px] uppercase">{isArabic ? "الفئة العمرية" : "Age Group"}</div>
-                                                    <div>{course.ageGroup} {isArabic ? "سنوات" : "Years"}</div>
+                                                    <div>{isArabic ? course.ageAr : course.ageEn}</div>
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-2 bg-gray-50 p-2.5 rounded-2xl border border-gray-100">
@@ -348,10 +211,10 @@ export default function MagicCoursesPage({ params: { lang } }: { params: { lang:
                                             whileHover={{ scale: 1.02 }}
                                             whileTap={{ scale: 0.98 }}
                                             onClick={() => setSelectedCourseForModal(course)}
-                                            className={`w-full py-4 rounded-2xl font-black text-white shadow-lg bg-gradient-to-r ${course.color} hover:brightness-110 transition-all flex items-center justify-center gap-2 text-lg`}
+                                            className={`w-full py-4 rounded-2xl font-black text-white shadow-lg bg-gradient-to-r ${course.color || "from-orange-500 to-amber-600"} hover:brightness-110 transition-all flex items-center justify-center gap-2 text-lg`}
                                         >
                                             <CheckCircle2 className="w-5 h-5" />
-                                            <span>{isArabic ? "تسجيل وحجز مقعد" : "Enroll & Reserve Seat"}</span>
+                                            <span>{isArabic ? "تسجيل وحجز مقعد ($" + course.price + ")" : "Enroll ($" + course.price + ")"}</span>
                                             <ArrowRight className={`w-5 h-5 ${isArabic ? "rotate-180" : ""}`} />
                                         </motion.button>
                                     </div>
@@ -380,7 +243,7 @@ export default function MagicCoursesPage({ params: { lang } }: { params: { lang:
 
                         <p className="text-gray-300 text-base md:text-lg leading-relaxed font-medium">
                             {isArabic
-                                ? "جميع كورسات ماجيكا مصممة كتدريب تفاعلي يدمج بين تحديات الألعاب الذهنية، تجارب البيع في البازار الحقيقي، واستوديو التحدث الفوري. يحصل كل طفل على تقرير تقييم مهارات دوري متاح فوراً للأهالي!"
+                                ? "جميع كورسات ماجيكا مصممة كتدريب تفاعلي يدمج بين تحديات الألعاب الذهنية، تجارب البيع في البازار الحقيقي، واستوديو التحدث الفوري. يحصل كل طفل على تقرير تقييم مهارات دوري متاح فورًا للأهالي!"
                                 : "Every Magica course is crafted as an interactive training experience that infuses mind game challenges, real Bazar salesmanship experiments, and podcast public speaking studios. Every student earns a progress portfolio available to parents instantly!"}
                         </p>
 
@@ -388,7 +251,7 @@ export default function MagicCoursesPage({ params: { lang } }: { params: { lang:
                             <Link href={`/${lang}/magic-games`}>
                                 <button className="px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-full font-black text-base shadow-xl shadow-orange-500/30 transition-all flex items-center gap-2">
                                     <Star className="w-5 h-5 fill-current" />
-                                    <span>{isArabic ? "جرب الألعاب الذهنية أيضاً" : "Try Our Mind Games Too"}</span>
+                                    <span>{isArabic ? "جرب الألعاب الذهنية أيضًا" : "Try Our Mind Games Too"}</span>
                                 </button>
                             </Link>
                             <Link href={`/${lang}/contact`}>
@@ -424,7 +287,7 @@ export default function MagicCoursesPage({ params: { lang } }: { params: { lang:
                                 {isArabic ? selectedCourseForModal.titleAr : selectedCourseForModal.titleEn}
                             </h3>
                             <p className="text-xs text-gray-500 font-bold mt-1">
-                                {isArabic ? `الفئة العمرية (${selectedCourseForModal.ageGroup} سنة) - ${selectedCourseForModal.sessionsCount} جلسات` : `Age (${selectedCourseForModal.ageGroup} yrs) - ${selectedCourseForModal.sessionsCount} Sessions`}
+                                {isArabic ? `الفئة العمرية (${selectedCourseForModal.ageAr}) - ${selectedCourseForModal.sessionsCount} جلسات` : `Age (${selectedCourseForModal.ageEn}) - ${selectedCourseForModal.sessionsCount} Sessions`}
                             </p>
                         </div>
 
@@ -501,7 +364,7 @@ export default function MagicCoursesPage({ params: { lang } }: { params: { lang:
                                     <ShieldCheck className="w-6 h-6 text-orange-500 shrink-0" />
                                     <span>
                                         {isArabic
-                                            ? "الحجز المبدئي مجاني تماماً ومتاح حتى اكتمال العدد المقرر في المجموعة لضمان أعلى جودة تفاعلية."
+                                            ? "الحجز المبدئي مجاني تمامًا ومتاح حتى اكتمال العدد المقرر في المجموعة لضمان أعلى جودة تفاعلية."
                                             : "Initial reservation is 100% free and secures priority assessment until cohort seats are filled."}
                                     </span>
                                 </div>

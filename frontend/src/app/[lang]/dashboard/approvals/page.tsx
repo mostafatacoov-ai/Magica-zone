@@ -53,7 +53,7 @@ export default function ApprovalsPage({ params: { lang } }: { params: { lang: st
                 <div className="bg-white p-8 rounded-2xl border border-gray-100 text-center shadow-sm">
                     <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
                     <p className="text-gray-600 text-lg">
-                        {isArabic ? "لا توجد طلبات معلقة حالياً." : "No pending registrations."}
+                        {isArabic ? "لا توجد طلبات معلقة حاليًا." : "No pending registrations."}
                     </p>
                 </div>
             ) : (

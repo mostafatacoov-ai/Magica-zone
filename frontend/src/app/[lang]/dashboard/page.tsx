@@ -25,7 +25,7 @@ export default function DashboardPage({ params: { lang } }: { params: { lang: st
             <header className="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
                 <div>
                     <h1 className="text-4xl font-bold text-gray-800">
-                        {isArabic ? "مرحباً،" : "Welcome,"} <span className="text-orange-500">{displayName}</span>
+                        {isArabic ? "مرحبًا،" : "Welcome,"} <span className="text-orange-500">{displayName}</span>
                     </h1>
                     <p className="text-gray-500 mt-2 text-lg">
                         {isArabic ? `أنت مسجل كـ ${role}` : `You are logged in as a ${role}`}

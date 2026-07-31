@@ -11,9 +11,11 @@ import MathAlchemyGame from "@/components/games/MathAlchemyGame";
 import PatternSeerGame from "@/components/games/PatternSeerGame";
 import WordSpellGame from "@/components/games/WordSpellGame";
 import SpatialMosaicGame from "@/components/games/SpatialMosaicGame";
+import { useCMSData } from "@/lib/cms/contentStore";
 
 export default function MagicGamesPage({ params: { lang } }: { params: { lang: string } }) {
     const isArabic = lang === "ar";
+    const { data: cmsData } = useCMSData();
     const [selectedGame, setSelectedGame] = useState<string>("memory-match");
     const [scores, setScores] = useState<Record<string, GameScore>>({});
     const [totalStars, setTotalStars] = useState<number>(0);
@@ -130,8 +132,14 @@ export default function MagicGamesPage({ params: { lang } }: { params: { lang: s
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                     {ALL_GAMES_INFO.map((game) => {
+                        const cmsMatch = cmsData.games.find(g => g.id === game.id);
                         const scoreData = scores[game.id] || { bestScore: 0, stars: 0, playsCount: 0 };
                         const isSelected = selectedGame === game.id;
+
+                        const displayTitleAr = cmsMatch ? cmsMatch.titleAr : game.titleAr;
+                        const displayTitleEn = cmsMatch ? cmsMatch.titleEn : game.titleEn;
+                        const displayDescAr = cmsMatch ? cmsMatch.descAr : game.descAr;
+                        const displayDescEn = cmsMatch ? cmsMatch.descEn : game.descEn;
 
                         return (
                             <motion.button
@@ -150,23 +158,35 @@ export default function MagicGamesPage({ params: { lang } }: { params: { lang: s
                                 )}
 
                                 <div>
-                                    <div className="flex items-center justify-between mb-4">
-                                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm ${isSelected ? "bg-orange-500 text-white" : game.bgGradient}`}>
-                                            {renderIcon(game.iconName, "w-7 h-7")}
+                                    {cmsMatch?.imageUrl ? (
+                                        <div className="w-full h-32 mb-4 rounded-2xl overflow-hidden shadow-sm relative border border-gray-100">
+                                            <img src={cmsMatch.imageUrl} alt={isArabic ? displayTitleAr : displayTitleEn} className="w-full h-full object-cover" />
+                                            {scoreData.stars > 0 && (
+                                                <div className="absolute top-2 right-2 flex items-center gap-1 bg-amber-500 text-white px-2 py-0.5 rounded-full text-[11px] font-black shadow">
+                                                    <Star className="w-3 h-3 fill-current" />
+                                                    <span>{scoreData.stars}</span>
+                                                </div>
+                                            )}
                                         </div>
-                                        {scoreData.stars > 0 && (
-                                            <div className="flex items-center gap-1 bg-amber-500/10 text-amber-500 px-2.5 py-1 rounded-full text-xs font-black border border-amber-500/20">
-                                                <Star className="w-3.5 h-3.5 fill-current" />
-                                                <span>{scoreData.stars}</span>
+                                    ) : (
+                                        <div className="flex items-center justify-between mb-4">
+                                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm ${isSelected ? "bg-orange-500 text-white" : game.bgGradient}`}>
+                                                {renderIcon(game.iconName, "w-7 h-7")}
                                             </div>
-                                        )}
-                                    </div>
+                                            {scoreData.stars > 0 && (
+                                                <div className="flex items-center gap-1 bg-amber-500/10 text-amber-500 px-2.5 py-1 rounded-full text-xs font-black border border-amber-500/20">
+                                                    <Star className="w-3.5 h-3.5 fill-current" />
+                                                    <span>{scoreData.stars}</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
 
                                     <h3 className="text-lg font-black leading-tight mb-2">
-                                        {isArabic ? game.titleAr : game.titleEn}
+                                        {isArabic ? displayTitleAr : displayTitleEn}
                                     </h3>
                                     <p className={`text-xs leading-relaxed line-clamp-2 ${isSelected ? "text-gray-300" : "text-gray-500"}`}>
-                                        {isArabic ? game.descAr : game.descEn}
+                                        {isArabic ? displayDescAr : displayDescEn}
                                     </p>
                                 </div>
 
@@ -213,7 +233,7 @@ export default function MagicGamesPage({ params: { lang } }: { params: { lang: s
                         </h3>
                         <p className="text-white/90 text-sm md:text-base leading-relaxed font-medium">
                             {isArabic
-                                ? "نحن نؤمن بأن الذكاء التجاري والريادي لا ينفصل عن سرعة البديهة، الذاكرة المتينة، وحل الألغاز المنطقية. كل نتيجة يسجلها طفلك هنا تتم مزامنتها فوراً على لوحة تحكم ولي الأمر والمتابع التعليمي!"
+                                ? "نحن نؤمن بأن الذكاء التجاري والريادي لا ينفصل عن سرعة البديهة، الذاكرة المتينة، وحل الألغاز المنطقية. كل نتيجة يسجلها طفلك هنا تتم مزامنتها فورًا على لوحة تحكم ولي الأمر والمتابع التعليمي!"
                                 : "We believe entrepreneurial intelligence is intertwined with intuitive calculation, retention, and problem solving. Every score earned here synchronizes dynamically to the Parent and Child Dashboards!"}
                         </p>
                     </div>

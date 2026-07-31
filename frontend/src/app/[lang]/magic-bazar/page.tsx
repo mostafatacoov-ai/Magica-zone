@@ -8,9 +8,11 @@ import { ShoppingBag, TrendingUp, Users, DollarSign, Lightbulb, Star, ArrowRight
 import MagicalBackground from "@/components/ui/MagicalBackground";
 import { useState, useEffect } from "react";
 import { getKidStores, KidStore } from "@/lib/bazar/kidStores";
+import { useCMSData } from "@/lib/cms/contentStore";
 
 export default function MagicBazarPage({ params: { lang } }: { params: { lang: string } }) {
     const isArabic = lang === 'ar';
+    const { data: cmsData } = useCMSData();
     const [stores, setStores] = useState<KidStore[]>([]);
 
     useEffect(() => {
@@ -120,7 +122,7 @@ export default function MagicBazarPage({ params: { lang } }: { params: { lang: s
                         className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-6 leading-relaxed"
                     >
                         {isArabic
-                            ? "هنا لا يكون الطفل زائراً — بل صاحب عمل ومتجر مستقل."
+                            ? "هنا لا يكون الطفل زائرًا — بل صاحب عمل ومتجر مستقل."
                             : "Here, the child isn't a visitor — they're an official business & store owner."}
                     </motion.p>
 
@@ -158,6 +160,82 @@ export default function MagicBazarPage({ params: { lang } }: { params: { lang: s
                     </motion.div>
                 </div>
             </section>
+
+            {/* ========================================================= */}
+            {/* FEATURED CMS BAZAR MARKETPLACE & PHOTO GALLERY */}
+            {/* ========================================================= */}
+            {cmsData.bazar && cmsData.bazar.length > 0 && (
+                <section className="relative z-10 py-16 px-6 max-w-7xl mx-auto border-t border-b border-gray-100 mb-16 bg-gradient-to-b from-orange-50/20 via-white to-purple-50/20 rounded-3xl">
+                    <div className="text-center max-w-3xl mx-auto mb-12">
+                        <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-purple-500/10 text-purple-600 font-extrabold text-xs uppercase tracking-wider mb-4 border border-purple-500/20">
+                            <ShoppingBag className="w-4 h-4 text-purple-500" />
+                            <span>{isArabic ? "المنتجات المميزة في السوق" : "Featured Marketplace Products"}</span>
+                        </span>
+                        <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-4">
+                            {isArabic ? "أحدث منتجات أبطالنا بالصور الحية" : "Latest Products with Live Photography"}
+                        </h2>
+                        <p className="text-gray-500 text-sm md:text-base font-medium">
+                            {isArabic ? "تصفح أحدث المنتجات المضافة مباشرة من إدارة السوق والمؤسسين الصغار" : "Browse latest merchandise listed directly by our marketplace management & young founders"}
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {cmsData.bazar.map((item, idx) => (
+                            <motion.div
+                                key={item.id || idx}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: idx * 0.08 }}
+                                whileHover={{ y: -6 }}
+                                className="bg-white rounded-3xl border border-gray-100 shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col justify-between group"
+                            >
+                                <div>
+                                    <div className="relative h-56 w-full bg-gradient-to-tr from-purple-50 to-orange-50 overflow-hidden flex items-center justify-center">
+                                        {item.imageUrl ? (
+                                            <img src={item.imageUrl} alt={isArabic ? item.titleAr : item.titleEn} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                        ) : (
+                                            <span className="text-6xl">🛍️</span>
+                                        )}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                                        <span className="absolute bottom-3 right-3 bg-orange-500 text-white font-black text-sm px-3.5 py-1 rounded-full shadow-md">
+                                            ${item.price}
+                                        </span>
+                                        {item.category && (
+                                            <span className="absolute top-3 left-3 bg-white/90 text-purple-700 font-black text-xs px-3 py-1 rounded-full shadow backdrop-blur-md">
+                                                {item.category}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    <div className="p-6 text-start">
+                                        {(item.storeName || item.childName) && (
+                                            <div className="text-xs font-black uppercase text-orange-500 tracking-wide mb-1.5 flex items-center gap-1.5">
+                                                <span>🏬 {item.storeName}</span>
+                                                {item.childName && <span>• 👤 {item.childName}</span>}
+                                            </div>
+                                        )}
+                                        <h3 className="text-xl font-black text-gray-900 mb-2 group-hover:text-purple-600 transition-colors">
+                                            {isArabic ? item.titleAr : item.titleEn}
+                                        </h3>
+                                        <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                                            {isArabic ? item.descAr : item.descEn}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="px-6 pb-6">
+                                    <Link href="#kid-stores-gallery" className="block w-full">
+                                        <button className="w-full py-3 bg-gray-900 hover:bg-orange-500 text-white rounded-2xl font-black text-sm transition-colors flex items-center justify-center gap-2 shadow">
+                                            <span>{isArabic ? "تصفح المتجر للشراء" : "Browse Store to Support"} 🛍️</span>
+                                        </button>
+                                    </Link>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </section>
+            )}
 
             {/* ========================================================= */}
             {/* LIVE KID MINI-STORES GALLERY SECTION */}
@@ -267,7 +345,7 @@ export default function MagicBazarPage({ params: { lang } }: { params: { lang: s
                         </h3>
                         <p className="text-gray-300 text-xs md:text-sm leading-relaxed mb-8 font-medium">
                             {isArabic
-                                ? "انضم الآن إلى قائمة المتاجر الملكية في ماجيكا بازار! سجل الدخول إلى لوحة الطفل وابدأ بإضافة أفكارك ومنتجاتك فوراً."
+                                ? "انضم الآن إلى قائمة المتاجر الملكية في ماجيكا بازار! سجل الدخول إلى لوحة الطفل وابدأ بإضافة أفكارك ومنتجاتك فورًا."
                                 : "Launch your entrepreneurial journey! Log into the Child Dashboard, set your store name, logo, and list items with calculated profits!"}
                         </p>
                         <Link href={`/${lang}/login`} className="w-full">

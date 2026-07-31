@@ -43,7 +43,7 @@ export default function ProtectedRoute({
                 </h1>
                 <p className="text-gray-600 max-w-md">
                     {lang === 'ar' 
-                        ? "شكراً لتسجيلك! سيقوم المسؤول بمراجعة حسابك وتفعيله قريباً."
+                        ? "شكرًا لتسجيلك! سيقوم المسؤول بمراجعة حسابك وتفعيله قريبًا."
                         : "Thank you for registering! An admin will review and approve your account shortly."}
                 </p>
             </div>

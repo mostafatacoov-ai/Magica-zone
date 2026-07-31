@@ -8,9 +8,12 @@ import { Sparkles, Star, Users, Lightbulb, Handshake, Brain, ArrowRight } from "
 import MagicalBackground from "@/components/ui/MagicalBackground";
 import Gallery from "@/components/ui/Gallery";
 import heroImg from "../../../../public/DSC09956_edited.jpg";
+import { useCMSData } from "@/lib/cms/contentStore";
 
 export default function MagicCampPage({ params: { lang } }: { params: { lang: string } }) {
     const isArabic = lang === 'ar';
+    const { data } = useCMSData();
+    const camps = data.camps;
 
     const skills = [
         {
@@ -37,7 +40,7 @@ export default function MagicCampPage({ params: { lang } }: { params: { lang: st
             bg: "bg-magica-navy-500/15",
             title: isArabic ? "التعاون" : "Collaboration",
             desc: isArabic
-                ? "الفريق الذي يعمل معاً ينجح معاً. نعلّم الأطفال كيف يبنون علاقات حقيقية تقوم على الاحترام والثقة."
+                ? "الفريق الذي يعمل معًا ينجح معًا. نعلّم الأطفال كيف يبنون علاقات حقيقية تقوم على الاحترام والثقة."
                 : "A team that works together succeeds together. We teach children how to build real relationships based on respect and trust.",
         },
         {
@@ -218,6 +221,91 @@ export default function MagicCampPage({ params: { lang } }: { params: { lang: st
                     </div>
                 </div>
             </div>
+
+            {/* Dynamic CMS Camp Programs & Tracks */}
+            {camps.length > 0 && (
+                <div className="py-20 bg-emerald-50/30 relative z-10">
+                    <div className="max-w-7xl mx-auto px-6">
+                        <div className="text-center mb-16">
+                            <span className="bg-emerald-100 text-emerald-700 font-extrabold text-xs px-4 py-1.5 rounded-full uppercase tracking-wider mb-3 inline-block shadow-sm">
+                                {isArabic ? "برامج ومعسكرات متاحة للتسجيل" : "Open Camp Programs"}
+                            </span>
+                            <h2 className="text-4xl font-black text-gray-900 mb-4">
+                                {isArabic ? "اختر المغامرة الصيفية المناسبة لطِفلك" : "Choose Your Child's Summer Adventure"}
+                            </h2>
+                            <p className="text-gray-500 max-w-2xl mx-auto text-base font-medium">
+                                {isArabic ? "تعرف على البرامج الحالية بمواقعها ومواعيدها وتصويرها الحي من داخل المخيمات" : "Explore our current live tracks with locations, schedules, and camp real photography"}
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {camps.map((camp) => (
+                                <motion.div
+                                    key={camp.id}
+                                    whileHover={{ y: -6 }}
+                                    className="bg-white rounded-3xl overflow-hidden shadow-xl shadow-gray-200/50 border border-gray-100 flex flex-col justify-between group transition-all"
+                                >
+                                    <div>
+                                        {/* Image Banner */}
+                                        <div className="relative h-56 w-full overflow-hidden bg-gray-100">
+                                            {camp.imageUrl ? (
+                                                <img 
+                                                    src={camp.imageUrl} 
+                                                    alt={isArabic ? camp.titleAr : camp.titleEn}
+                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-4xl bg-emerald-50 text-emerald-500">🏕️</div>
+                                            )}
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                                            <span className="absolute bottom-3 right-3 bg-emerald-600 text-white font-black text-sm px-3.5 py-1 rounded-full shadow-lg">
+                                                ${camp.price}
+                                            </span>
+                                            <span className="absolute top-3 left-3 bg-white/90 text-gray-900 font-black text-xs px-3 py-1 rounded-full shadow-md backdrop-blur-md">
+                                                {isArabic ? camp.locationAr : camp.locationEn}
+                                            </span>
+                                        </div>
+
+                                        <div className="p-6">
+                                            <div className="flex items-center justify-between text-xs font-black text-emerald-600 mb-2">
+                                                <span>📅 {isArabic ? camp.datesAr : camp.datesEn}</span>
+                                                <span>🧒 {isArabic ? camp.ageAr : camp.ageEn}</span>
+                                            </div>
+                                            <h3 className="text-2xl font-black text-gray-900 mb-3 group-hover:text-emerald-600 transition-colors">
+                                                {isArabic ? camp.titleAr : camp.titleEn}
+                                            </h3>
+                                            <p className="text-gray-600 text-sm leading-relaxed mb-6">
+                                                {isArabic ? camp.descAr : camp.descEn}
+                                            </p>
+
+                                            <div className="border-t border-gray-100 pt-4">
+                                                <h4 className="text-xs font-black text-gray-400 uppercase tracking-wider mb-2">
+                                                    {isArabic ? "أهم المزايا والأنشطة:" : "Key Activities & Highlights:"}
+                                                </h4>
+                                                <div className="flex flex-wrap gap-1.5">
+                                                    {(isArabic ? camp.featuresAr : camp.featuresEn).map((feat, idx) => (
+                                                        <span key={idx} className="bg-emerald-50 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-xl border border-emerald-100">
+                                                            ✦ {feat}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="p-6 pt-0">
+                                        <Link href={`/${lang}/register`}>
+                                            <button className="w-full py-3.5 bg-gray-900 hover:bg-emerald-600 text-white font-black rounded-2xl shadow-md transition-colors flex items-center justify-center gap-2">
+                                                <span>{isArabic ? "تسجيل وحجز مكان في المعسكر" : "Enroll in this Camp"}</span>
+                                            </button>
+                                        </Link>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Daily Schedule */}
             <div className="py-24 relative z-10">

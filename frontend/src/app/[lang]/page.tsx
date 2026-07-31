@@ -8,8 +8,45 @@ import Image from "next/image";
 import campLogo from "../../../public/magica-camp-print.png";
 import bazarLogo from "../../../public/magica-bazar-print.png";
 import foodLogo from "../../../public/magica-food-print.png";
+import podcastLogo from "../../../public/magica-Podcast-print.png";
+import uniformLogo from "../../../public/magica-Uniform-print.png";
+import suppliesLogo from "../../../public/magica-Supplies-print.png";
+import coursesLogo from "../../../public/magica-Courses-print.png";
+import gamesLogo from "../../../public/magica-games-print.png";
 
 const SUB_BRANDS = (lang: string, isArabic: boolean) => [
+    {
+        emoji: "🎓",
+        logoImg: coursesLogo,
+        title: isArabic ? "ماجيكا كورسات" : "Magica Courses",
+        tagline: isArabic ? "مهارات الغد، تصنع اليوم" : "Tomorrow's Skills, Today.",
+        desc: isArabic
+            ? "مسارات قيادية وتقنية وتجارة إلكترونية متطورة تبني قادة المستقبل."
+            : "Leadership, technology, and e-commerce tracks that empower tomorrow's innovators.",
+        href: `/${lang}/magic-courses`,
+        from: "from-magica-orange-500",
+        to: "to-magica-orange-600",
+        border: "border-magica-orange-200",
+        bg: "bg-magica-orange-50",
+        text: "text-magica-orange-600",
+        shadowHover: "hover:shadow-magica-orange-500/20",
+    },
+    {
+        emoji: "🎮",
+        logoImg: gamesLogo,
+        title: isArabic ? "ماجيكا ألعاب" : "Magica Games",
+        tagline: isArabic ? "العب، فكّر، وطوّر ذكاءك" : "Play, Think & Grow Your IQ",
+        desc: isArabic
+            ? "ألعاب وتحديات ذكاء ورياضيات مالية تبني الحنكة والقدرة على حل المعضلات."
+            : "Mind challenges and financial mathematics puzzles that build strategic intuition and IQ.",
+        href: `/${lang}/magic-games`,
+        from: "from-magica-purple-500",
+        to: "to-magica-purple-600",
+        border: "border-magica-purple-200",
+        bg: "bg-magica-purple-50",
+        text: "text-magica-purple-600",
+        shadowHover: "hover:shadow-magica-purple-500/20",
+    },
     {
         emoji: "🏕️",
         logoImg: campLogo,
@@ -48,7 +85,7 @@ const SUB_BRANDS = (lang: string, isArabic: boolean) => [
         title: isArabic ? "ماجيكا فود" : "Magica Food",
         tagline: isArabic ? "أكل صح = تفكير صح" : "Eat Right = Think Right",
         desc: isArabic
-            ? "وجبات مصممة علمياً لدعم تركيز الأطفال وطاقتهم."
+            ? "وجبات مصممة علميًا لدعم تركيز الأطفال وطاقتهم."
             : "Scientifically designed meals to fuel children's focus and energy.",
         href: `/${lang}/magic-food`,
         from: "from-magica-navy-400",
@@ -60,6 +97,7 @@ const SUB_BRANDS = (lang: string, isArabic: boolean) => [
     },
     {
         emoji: "🎙️",
+        logoImg: podcastLogo,
         title: isArabic ? "ماجيكا بودكاست" : "Magica Podcast",
         tagline: isArabic ? "كلام بيفرق" : "Words That Matter",
         desc: isArabic
@@ -75,6 +113,7 @@ const SUB_BRANDS = (lang: string, isArabic: boolean) => [
     },
     {
         emoji: "👕",
+        logoImg: uniformLogo,
         title: isArabic ? "ماجيكا يونيفورم" : "Magica Uniform",
         tagline: isArabic ? "البس هويتك" : "Wear Your Identity",
         desc: isArabic
@@ -90,6 +129,7 @@ const SUB_BRANDS = (lang: string, isArabic: boolean) => [
     },
     {
         emoji: "🎒",
+        logoImg: suppliesLogo,
         title: isArabic ? "ماجيكا سبلايز" : "Magica Supplies",
         tagline: isArabic ? "جهّز نفسك. جهّز مستقبلك." : "Equip Yourself. Equip Your Future.",
         desc: isArabic
@@ -268,7 +308,7 @@ export default function MagicaZoneHome({ params: { lang } }: { params: { lang: s
                     </h2>
                 </motion.div>
 
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {brands.map((brand, idx) => (
                         <motion.div
                             key={idx}

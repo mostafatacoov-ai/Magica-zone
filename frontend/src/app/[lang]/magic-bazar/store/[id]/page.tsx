@@ -225,7 +225,7 @@ export default function KidMiniStorePage({ params: { lang, id } }: { params: { l
                                         <CheckCircle className="w-10 h-10" />
                                     </div>
                                     <h5 className="font-black text-xl text-gray-900">
-                                        {isArabic ? "شكراً لدعمك الرائد الصغير! 🎉" : "Thank You For Supporting Our Entrepreneur! 🎉"}
+                                        {isArabic ? "شكرًا لدعمك الرائد الصغير! 🎉" : "Thank You For Supporting Our Entrepreneur! 🎉"}
                                     </h5>
                                     <p className="text-gray-500 text-xs leading-relaxed max-w-xs mx-auto">
                                         {isArabic
@@ -242,7 +242,7 @@ export default function KidMiniStorePage({ params: { lang, id } }: { params: { l
                             ) : cart.length === 0 ? (
                                 <div className="py-12 text-center text-gray-400 space-y-3">
                                     <ShoppingCart className="w-12 h-12 mx-auto opacity-30" />
-                                    <p className="text-sm font-extrabold">{isArabic ? "سلتك فارغة حالياً" : "Your cart is currently empty"}</p>
+                                    <p className="text-sm font-extrabold">{isArabic ? "سلتك فارغة حاليًا" : "Your cart is currently empty"}</p>
                                     <p className="text-xs text-gray-400">{isArabic ? "اختر من منتجات الرائد الصغير أعلاه لدعمه وشراء منتجاته السحرية." : "Select items from above to support our champion's entrepreneurial dream."}</p>
                                 </div>
                             ) : (
@@ -292,7 +292,7 @@ export default function KidMiniStorePage({ params: { lang, id } }: { params: { l
 
                         {/* Educational Note */}
                         <div className="mt-6 pt-4 border-t border-gray-100 text-[11px] text-gray-400 text-center leading-relaxed">
-                            {isArabic ? "* التفاعل والشراء في هذا المتجر هو جزء من المحاكاة التعليمية في ماجيكا بازار لتأهيل الأطفال تجارياً ومالياً." : "* Interacting and ordering here is part of Magica Bazar's practical simulation teaching financial & retail fluency."}
+                            {isArabic ? "* التفاعل والشراء في هذا المتجر هو جزء من المحاكاة التعليمية في ماجيكا بازار لتأهيل الأطفال تجاريًا وماليًا." : "* Interacting and ordering here is part of Magica Bazar's practical simulation teaching financial & retail fluency."}
                         </div>
                     </div>
                 </div>

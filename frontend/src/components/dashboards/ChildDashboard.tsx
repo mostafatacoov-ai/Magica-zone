@@ -76,7 +76,7 @@ export default function ChildDashboard({ lang }: { lang: string }) {
             storeNameAr: storeForm.storeNameAr || storeForm.storeNameEn,
             logo: storeForm.logo,
             descriptionEn: storeForm.descriptionEn || "Welcome to my official mini-store in Magica Bazar!",
-            descriptionAr: storeForm.descriptionAr || storeForm.descriptionEn || "مرحباً بكم في متجري السحري على ماجيكا بازار!",
+            descriptionAr: storeForm.descriptionAr || storeForm.descriptionEn || "مرحبًا بكم في متجري السحري على ماجيكا بازار!",
             colorTheme: storeForm.colorTheme,
             bgGradient: storeForm.bgGradient
         });
@@ -227,7 +227,7 @@ export default function ChildDashboard({ lang }: { lang: string }) {
                                     className="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-full font-black text-sm shadow-lg shadow-orange-500/30 hover:brightness-105 transition-all flex-1 md:flex-initial justify-center"
                                 >
                                     <Plus className="w-5 h-5" />
-                                    <span>{isArabic ? "أضف منتجاً جديداً" : "Add New Product"}</span>
+                                    <span>{isArabic ? "أضف منتجًا جديدًا" : "Add New Product"}</span>
                                 </button>
                                 <Link
                                     href={`/${lang}/magic-bazar/store/${myStore.id}`}
