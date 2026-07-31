@@ -10,6 +10,13 @@ import {
 import MagicalBackground from "@/components/ui/MagicalBackground";
 import { useCMSData, SupplyKit } from "@/lib/cms/contentStore";
 
+const CATEGORIES = [
+    { id: "ALL", en: "All Supplies & Store", ar: "جميع المنتجات والمتجر", icon: "🏬" },
+    { id: "Bags & Backpacks", en: "Bags & Backpacks", ar: "الحقائب والحزم المدرسية", icon: "🎒", highlight: true },
+    { id: "Robotics & AI Kits", en: "Robotics & AI Kits", ar: "أطقم الروبوت والذكاء الاصطناعي", icon: "🤖" },
+    { id: "Stationery & Tools", en: "Stationery & Tools", ar: "الأدوات والقرطاسية الذكية", icon: "✏️" },
+];
+
 export default function MagicSuppliesPage({ params: { lang } }: { params: { lang: string } }) {
     const isArabic = lang === 'ar';
     const { data } = useCMSData();
@@ -26,13 +33,6 @@ export default function MagicSuppliesPage({ params: { lang } }: { params: { lang
     const [customerName, setCustomerName] = useState<string>("");
     const [customerPhone, setCustomerPhone] = useState<string>("");
     const [customerAddress, setCustomerAddress] = useState<string>("");
-
-    const CATEGORIES = [
-        { id: "ALL", en: "All Supplies & Store", ar: "جميع المنتجات والمتجر", icon: "🏬" },
-        { id: "Bags & Backpacks", en: "Bags & Backpacks", ar: "الحقائب والحزم المدرسية", icon: "🎒", highlight: true },
-        { id: "Robotics & AI Kits", en: "Robotics & AI Kits", ar: "أطقم الروبوت والذكاء الاصطناعي", icon: "🤖" },
-        { id: "Stationery & Tools", en: "Stationery & Tools", ar: "الأدوات والقرطاسية الذكية", icon: "✏️" },
-    ];
 
     // Filter Products by Category and Search Query
     const filteredProducts = useMemo(() => {

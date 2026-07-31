@@ -137,6 +137,19 @@ export interface MindGame {
     imageUrl?: string;
 }
 
+export interface BazarItem {
+    id: string;
+    titleEn: string;
+    titleAr: string;
+    descEn: string;
+    descAr: string;
+    price: number;
+    category?: string;
+    storeName?: string;
+    childName?: string;
+    imageUrl?: string;
+}
+
 export interface CompleteCMSData {
     hero: HeroSectionContent;
     courses: CourseItem[];
@@ -146,6 +159,7 @@ export interface CompleteCMSData {
     supplies: SupplyKit[];
     podcasts: PodcastEpisode[];
     games: MindGame[];
+    bazar?: BazarItem[];
 }
 
 // --- Initial Seed Data ---
