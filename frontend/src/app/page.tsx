@@ -2,21 +2,24 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import MagicaLoader from '@/components/ui/MagicaLoader';
 
 export default function RootPage() {
     const router = useRouter();
 
     useEffect(() => {
-        // Detect browser language
-        const userLang = navigator.language;
-        const targetLang = userLang.startsWith('ar') ? 'ar' : 'en';
+        // Automatically route visitors entering magica-group.com directly to the home page
+        const userLang = typeof window !== 'undefined' && navigator.language ? navigator.language : 'ar';
+        const targetLang = userLang.toLowerCase().startsWith('ar') ? 'ar' : 'en';
         
         router.replace(`/${targetLang}`);
     }, [router]);
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#f3f4f6' }}>
-            <p>Loading...</p>
-        </div>
+        <MagicaLoader 
+            fullScreen={true} 
+            text="MAGICA GROUP" 
+            subText="مرحباً بكم في عالم ماجيكا / Welcome to Magica..." 
+        />
     );
 }

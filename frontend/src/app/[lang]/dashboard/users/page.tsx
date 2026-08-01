@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { getAllUsers, updateUserRole, updateUserStatus, createAdminUserDoc, deleteUserDoc } from "@/lib/firebase/firestore";
 import { motion, AnimatePresence } from "framer-motion";
+import MagicaLoader from "@/components/ui/MagicaLoader";
 import { 
     Users, UserPlus, Search, Shield, UserCheck, UserX, Trash2, Edit3, 
     CheckCircle2, AlertCircle, Filter, Sparkles, Mail, Phone, Calendar, 
@@ -526,9 +527,7 @@ export default function UsersManagementPage({ params: { lang } }: { params: { la
 
             {/* Users Table / Cards List */}
             {loading ? (
-                <div className="py-20 text-center text-gray-500 font-bold animate-pulse text-lg">
-                    {isArabic ? "جاري تحميل بيانات المستخدمين حاليًا..." : "Loading system user profiles..."}
-                </div>
+                <MagicaLoader fullScreen={false} lang={lang} text={isArabic ? "إدارة المستخدمين" : "USER MANAGEMENT"} subText={isArabic ? "جارٍ تحميل قائمة المستخدمين والصلاحيات..." : "Loading user accounts and roles..."} />
             ) : filteredUsers.length === 0 ? (
                 <div className="bg-white rounded-3xl border border-gray-200 p-16 text-center shadow-sm">
                     <UserX className="w-16 h-16 text-gray-300 mx-auto mb-4" />

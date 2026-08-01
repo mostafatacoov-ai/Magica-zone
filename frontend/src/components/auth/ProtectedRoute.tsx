@@ -3,7 +3,7 @@
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { Loader2 } from "lucide-react";
+import MagicaLoader from "@/components/ui/MagicaLoader";
 
 export default function ProtectedRoute({ 
     children, 
@@ -25,9 +25,12 @@ export default function ProtectedRoute({
 
     if (loading) {
         return (
-            <div className="flex h-screen w-full items-center justify-center bg-orange-50">
-                <Loader2 className="w-12 h-12 text-orange-500 animate-spin" />
-            </div>
+            <MagicaLoader 
+                fullScreen={true} 
+                lang={lang} 
+                text={lang === 'ar' ? 'بوابة ماجيكا' : 'MAGICA PORTAL'} 
+                subText={lang === 'ar' ? 'جارٍ التحقق من أمان وصلاحيات الدخول...' : 'Verifying portal authentication & permissions...'} 
+            />
         );
     }
 

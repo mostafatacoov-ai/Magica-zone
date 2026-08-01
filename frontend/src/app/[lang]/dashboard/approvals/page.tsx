@@ -5,6 +5,7 @@ import { getPendingParents, approveParent } from "@/lib/firebase/firestore";
 import { useAuth } from "@/context/AuthContext";
 import { CheckCircle, Clock } from "lucide-react";
 import { motion } from "framer-motion";
+import MagicaLoader from "@/components/ui/MagicaLoader";
 
 export default function ApprovalsPage({ params: { lang } }: { params: { lang: string } }) {
     const { role } = useAuth();
@@ -14,28 +15,27 @@ export default function ApprovalsPage({ params: { lang } }: { params: { lang: st
 
     useEffect(() => {
         if (role === "admin") {
-            fetchPending();
+            loadPending();
         }
     }, [role]);
 
-    const fetchPending = async () => {
+    const loadPending = async () => {
         setLoading(true);
         try {
-            const parents = await getPendingParents();
-            setPendingParents(parents);
+            const data = await getPendingParents();
+            setPendingParents(data);
         } catch (error) {
-            console.error("Failed to fetch pending parents", error);
+            console.error(error);
         }
         setLoading(false);
     };
 
-    const handleApprove = async (uid: string) => {
+    const handleApprove = async (id: string) => {
         try {
-            await approveParent(uid);
-            // Refresh list
-            setPendingParents(prev => prev.filter(p => p.id !== uid));
+            await approveParent(id);
+            setPendingParents(prev => prev.filter(p => p.id !== id));
         } catch (error) {
-            console.error("Failed to approve", error);
+            console.error("Error approving parent:", error);
         }
     };
 
@@ -48,7 +48,7 @@ export default function ApprovalsPage({ params: { lang } }: { params: { lang: st
             </h1>
 
             {loading ? (
-                <div className="text-gray-500">Loading...</div>
+                <MagicaLoader fullScreen={false} lang={lang} text={isArabic ? "طلبات التسجيل" : "REGISTRATIONS"} subText={isArabic ? "جارٍ تحميل الطلبات المعلقة..." : "Loading pending registration requests..."} />
             ) : pendingParents.length === 0 ? (
                 <div className="bg-white p-8 rounded-2xl border border-gray-100 text-center shadow-sm">
                     <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
