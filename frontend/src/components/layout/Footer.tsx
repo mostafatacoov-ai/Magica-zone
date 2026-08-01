@@ -90,9 +90,9 @@ export default function Footer({ lang }: { lang: string }) {
                                 <span>📧</span>
                                 <span className="font-semibold">info@magica-group.com</span>
                             </a>
-                            <a href="https://wa.me/201037377505" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-400 transition-colors flex items-center gap-2" dir="ltr">
+                            <a href="https://wa.me/201003937096" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-400 transition-colors flex items-center gap-2" dir="ltr">
                                 <span>📱</span>
-                                <span className="font-semibold">{isArabic ? "واتساب:" : "WhatsApp:"} +20 10 37377505</span>
+                                <span className="font-semibold">{isArabic ? "واتساب:" : "WhatsApp:"} +2 01003937096</span>
                             </a>
                             <div className="flex items-center gap-2">
                                 <span>📍</span>
