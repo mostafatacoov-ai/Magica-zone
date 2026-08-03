@@ -10,15 +10,23 @@ interface BackgroundMusicProps {
 export default function BackgroundMusic({ lang = "ar" }: BackgroundMusicProps) {
     const isArabic = lang === "ar";
     const audioRef = useRef<HTMLAudioElement | null>(null);
+    const [mounted, setMounted] = useState<boolean>(false);
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [volume, setVolume] = useState<number>(0.35);
     const [userManuallyToggled, setUserManuallyToggled] = useState<boolean>(false);
 
+    // Ensure hydration safety: render only on client after mount to prevent React Error #423
     useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    useEffect(() => {
+        if (!mounted) return;
         const audio = audioRef.current;
         if (!audio) return;
 
-        audio.volume = volume;
+        // Set initial starting volume without triggering dependency loops
+        audio.volume = 0.35;
 
         // Try autoplaying on component mount
         const attemptPlay = () => {
@@ -55,7 +63,7 @@ export default function BackgroundMusic({ lang = "ar" }: BackgroundMusicProps) {
             document.removeEventListener("keydown", handleFirstInteraction);
             document.removeEventListener("touchstart", handleFirstInteraction);
         };
-    }, [userManuallyToggled]);
+    }, [mounted, userManuallyToggled]);
 
     const handleToggleMusic = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -84,6 +92,9 @@ export default function BackgroundMusic({ lang = "ar" }: BackgroundMusicProps) {
             }
         }
     };
+
+    // Return null during server-side rendering and initial React hydration to guarantee zero mismatch
+    if (!mounted) return null;
 
     return (
         <div className="fixed bottom-6 left-6 z-[99] select-none flex items-center">
