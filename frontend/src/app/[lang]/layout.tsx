@@ -3,6 +3,7 @@ import "../globals.css";
 import { AuthProvider } from "../../context/AuthContext";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import BackgroundMusic from "@/components/layout/BackgroundMusic";
 
 export const metadata: Metadata = {
   title: "Magica Group",
@@ -40,6 +41,7 @@ export default function RootLayout({
               {children}
             </div>
             <Footer lang={params.lang} />
+            <BackgroundMusic lang={params.lang} />
         </AuthProvider>
       </body>
     </html>

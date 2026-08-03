@@ -31,8 +31,8 @@ const generatedBags = ALL_BAG_PHOTOS.map((filename, index) => {
     const badgesEn = ["Best Seller 🌟", "New Release 🚀", "Tech Edition ⚙️", "Trending ⚡", "Premium ✨", "Sport Edition 🏃‍♂️", "Limited Offer 🔥"];
     const badgesAr = ["الأكثر مبيًعا 🌟", "إصدار حديث 🚀", "النسخة التقنية ⚙️", "الأكثر طلًبا ⚡", "جودة ملكية ✨", "النسخة الرياضية 🏃‍♂️", "عرض مميز 🔥"];
     
-    // Varying price between 850 and 1750 EGP, some without price (0) to demonstrate inquiry option
-    const priceOptions = [1250, 950, 1400, 850, 1100, 1350, 1500, 1650, 900, 1200, 0];
+    // Prices removed for bags for now as requested by user (0 hides price tag and shows inquiry status)
+    const priceOptions = [0];
     
     const titleIndex = index % titlesEn.length;
     const badgeIndex = index % badgesEn.length;

@@ -21,7 +21,16 @@ const CATEGORIES = [
 export default function MagicSuppliesPage({ params: { lang } }: { params: { lang: string } }) {
     const isArabic = lang === 'ar';
     const { data } = useCMSData();
-    const products = useMemo(() => data.supplies || [], [data.supplies]);
+    const products = useMemo(() => {
+        return (data.supplies || []).map(item => {
+            // Remove price for bags for now as requested by user (will add later)
+            const isBag = item.categoryEn === "Bags & Backpacks" || item.categoryAr === "الحقائب والحزم المدرسية" || item.id?.startsWith("sup-bag-");
+            if (isBag) {
+                return { ...item, price: 0 };
+            }
+            return item;
+        });
+    }, [data.supplies]);
 
     // Storefront States
     const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
@@ -534,7 +543,7 @@ export default function MagicSuppliesPage({ params: { lang } }: { params: { lang
                                                 <div className="flex-grow text-start">
                                                     <h5 className="font-black text-sm text-gray-900 line-clamp-1">{isArabic ? c.item.titleAr : c.item.titleEn}</h5>
                                                     <div className="text-xs font-black text-rose-600 mt-1">
-                                                        {(c.item.price || 0)} {isArabic ? "ج.م" : "EGP"}
+                                                        {c.item.price && c.item.price > 0 ? `${c.item.price} ${isArabic ? "ج.م" : "EGP"}` : (isArabic ? "السعر عند الطلب والتوريد" : "Price Upon Inquiry")}
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center gap-2 bg-white px-2 py-1 rounded-xl border border-gray-200 shadow-xs shrink-0">
