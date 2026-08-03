@@ -98,11 +98,11 @@ export default function BackgroundMusic({ lang = "ar" }: BackgroundMusicProps) {
 
     return (
         <div className="fixed bottom-6 left-6 z-[99] select-none flex items-center">
-            {/* Audio element with fallback sources. Add a file named bg-music.mp3 inside frontend/public/ to override default music */}
+            {/* Audio element playing Magica custom background song */}
             <audio ref={audioRef} loop preload="auto">
+                <source src="/Magica,%20Ready%20for%20the%20Week.mp3" type="audio/mpeg" />
+                <source src="/Magica, Ready for the Week.mp3" type="audio/mpeg" />
                 <source src="/bg-music.mp3" type="audio/mpeg" />
-                <source src="https://ia801602.us.archive.org/11/items/HappyBee_431/Happy%20Bee.mp3" type="audio/mpeg" />
-                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg" />
             </audio>
 
             <div className="flex items-center gap-2 px-4 py-3 bg-gray-950/90 hover:bg-gray-900 text-white rounded-full shadow-2xl backdrop-blur-md border border-rose-500/40 hover:border-rose-500 transition-all duration-300 group">
