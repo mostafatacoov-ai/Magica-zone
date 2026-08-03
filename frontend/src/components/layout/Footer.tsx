@@ -11,6 +11,7 @@ const SUB_BRANDS = (lang: string, isArabic: boolean) => [
     { emoji: "🎙️", label: isArabic ? "ماجيكا بودكاست" : "Magica Podcast", href: `/${lang}/magic-podcast`, tagline: isArabic ? "كلام بيفرق" : "Words That Matter" },
     { emoji: "👕", label: isArabic ? "ماجيكا يونيفورم" : "Magica Uniform", href: `/${lang}/magic-uniform`, tagline: isArabic ? "البس هويتك" : "Wear Your Identity" },
     { emoji: "🎒", label: isArabic ? "ماجيكا سبلايز" : "Magica Supplies", href: `/${lang}/magic-supplies`, tagline: isArabic ? "جهّز نفسك. جهّز مستقبلك." : "Equip Yourself. Equip Your Future." },
+    { emoji: "🎵", label: isArabic ? "أغاني ونغمات ماجيكا" : "Magica Songs & Anthems", href: `/${lang}/magic-songs`, tagline: isArabic ? "استمع وحمل النغمات" : "Listen & Download Anthems" },
 ];
 
 export default function Footer({ lang }: { lang: string }) {

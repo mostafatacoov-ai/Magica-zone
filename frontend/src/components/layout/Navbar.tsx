@@ -17,6 +17,7 @@ const SUB_BRANDS = (lang: string, isArabic: boolean) => [
     { label: isArabic ? "🎙️ ماجيكا بودكاست" : "🎙️ Magica Podcast", href: `/${lang}/magic-podcast` },
     { label: isArabic ? "👕 ماجيكا يونيفورم" : "👕 Magica Uniform", href: `/${lang}/magic-uniform` },
     { label: isArabic ? "🎒 ماجيكا سبلايز" : "🎒 Magica Supplies", href: `/${lang}/magic-supplies` },
+    { label: isArabic ? "🎵 أغانٍ ونغمات ماجيكا" : "🎵 Magica Songs & Anthems", href: `/${lang}/magic-songs` },
 ];
 
 export default function Navbar({ lang }: { lang: string }) {

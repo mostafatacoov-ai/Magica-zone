@@ -29,7 +29,7 @@ interface PreviewItem {
 
 const STATS = (isArabic: boolean) => [
     { value: "500+", label: isArabic ? "طفل ورائد صغير" : "Young Founders" },
-    { value: "8", label: isArabic ? "قطاعات وبرامج متكاملة" : "Core Sectors & Programs" },
+    { value: "9", label: isArabic ? "قطاعات ومكتبات متكاملة" : "Core Sectors & Music Library" },
     { value: "100%", label: isArabic ? "بيئة آمنة وتجهيز للمستقبل" : "Future-Ready Safe Space" },
 ];
 
@@ -295,6 +295,35 @@ export default function MagicaZoneHome({ params: { lang } }: { params: { lang: s
                 imageUrl: u.imageUrl || u.galleryPhotos?.[0]
             })) as PreviewItem[]
         },
+        {
+            id: "songs",
+            emoji: "🎵",
+            logoImg: null,
+            title: isArabic ? "أغانٍ ونغمات ماجيكا" : "Magica Songs & Anthems",
+            shortName: isArabic ? "مكتبة الموسيقى والنغمات" : "Songs & Anthems",
+            tagline: isArabic ? "استمع، استلهم، وحمّل موسيقى النجاح" : "Listen, Inspire & Download Success Anthems",
+            desc: isArabic
+                ? "المكتبة الصوتية والموسيقى الخاصة بعالم ماجيكا — تصفح، استمع مباشرة، وحمل مجاناً جميع الأناشيد ونغمات الطاقة لدعم تحفيز وتركيز طفلك."
+                : "The official audio hub and soundtrack of Magica Zone — stream previews live or download all 9 exclusive theme songs, motivation beats, and STEM scores completely free.",
+            href: `/${lang}/magic-songs`,
+            from: "from-rose-500",
+            to: "to-purple-600",
+            border: "border-rose-200",
+            bg: "bg-rose-50",
+            text: "text-rose-600",
+            badgeBg: "bg-rose-100/80 text-rose-900 border-rose-200",
+            shadowHover: "hover:shadow-rose-500/20",
+            spanClass: "lg:col-span-2",
+            offerings: isArabic
+                ? ["استماع ومُعاينة مباشرة لـ 9 أغاني حصرية", "تحميل مجاني وفوري بصيغة MP3 فائقة النقاء", "نغمات مخصصة لتحفيز الصباح وأوقات المذاكرة", "أناشيد رسمية لدعم مشروعات وفيديوهات الأطفال"]
+                : ["Live Online Streaming of 9 Exclusive Soundtracks", "100% Free Instant Studio-Quality MP3 Downloads", "Motivational Alarm Beats & STEM Study Playlists", "Official Anthems for Kid Video & Bazar Pitches"],
+            previewHeader: isArabic ? "🎧 أمثلة من النغمات والموسيقى المتاحة للتحميل المجاني:" : "🎧 Sample Anthems Available for Instant Free Download:",
+            previewItems: [
+                { id: "s1", title: isArabic ? "صنّاع المستقبل المشرق (Making Futures Bright)" : "Magica! Making Futures Bright", subtitle: isArabic ? "النشيد الرسمي للأبطال والمبتكرين" : "Official Anthem for Young Innovators", badge: isArabic ? "تحميل مجاني (MP3)" : "Free MP3 Download", icon: "🎵" },
+                { id: "s3", title: isArabic ? "مستعدون للمستقبل (Ready for the Week)" : "Magica, Ready for the Week", subtitle: isArabic ? "نغمة الطاقة والتحفيز لصباح الدراسة" : "Morning Motivation & School Energy Score", badge: isArabic ? "تحميل مجاني (MP3)" : "Free MP3 Download", icon: "⏰" },
+                { id: "s4", title: isArabic ? "أحلام وتطلعات ماجيكا (Magica Dreams)" : "Magica Dreams", subtitle: isArabic ? "موسيقى التركيز الهادئ والتفكير الإبداعي" : "Inspirational Focus & STEM Study Beats", badge: isArabic ? "تحميل مجاني (MP3)" : "Free MP3 Download", icon: "🎧" }
+            ] as PreviewItem[]
+        },
     ];
 
     return (
@@ -410,8 +439,8 @@ export default function MagicaZoneHome({ params: { lang } }: { params: { lang: s
                     </h2>
                     <p className="text-gray-600 text-base md:text-lg font-medium">
                         {isArabic 
-                            ? "تصفح الأقسام الثمانية أدناه لمعرفة الخدمات والعناصر المتاحة في كل قطاع مع نماذج وأمثلة حية من منتجاتنا وبرامجنا:"
-                            : "Explore our 8 specialized divisions below to discover core offerings along with live previews of featured items and programs:"}
+                            ? "تصفح الأقسام والمكتبات التسعة أدناه لمعرفة الخدمات والعناصر المتاحة في كل قطاع مع نماذج وأمثلة حية من منتجاتنا وبرامجنا:"
+                            : "Explore our 9 specialized divisions and hubs below to discover core offerings along with live previews of featured items and soundtracks:"}
                     </p>
                 </div>
 
@@ -419,7 +448,7 @@ export default function MagicaZoneHome({ params: { lang } }: { params: { lang: s
                     {SUB_BRANDS.map((brand, idx) => (
                         <div 
                             key={brand.id || idx} 
-                            className={`flex flex-col h-full p-6 md:p-8 rounded-3xl bg-white/90 backdrop-blur-md border ${brand.border} shadow-lg hover:shadow-2xl ${brand.shadowHover} transition-all duration-300 relative overflow-hidden group`}
+                            className={`flex flex-col h-full p-6 md:p-8 rounded-3xl bg-white/90 backdrop-blur-md border ${brand.border} shadow-lg hover:shadow-2xl ${brand.shadowHover} transition-all duration-300 relative overflow-hidden group ${(brand as any).spanClass || ""}`}
                         >
                             {/* Top colored highlight line */}
                             <div className={`absolute top-0 left-0 right-0 h-2 bg-gradient-to-r ${brand.from} ${brand.to}`} />
