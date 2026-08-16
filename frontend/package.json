@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "prebuild": "node clean.js",
     "dev": "next dev",
     "build": "next build && node copy-static.js",
     "start": "next start",
