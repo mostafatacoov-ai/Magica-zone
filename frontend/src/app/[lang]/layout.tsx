@@ -28,22 +28,15 @@ export default function RootLayout({
   const fontClass = params.lang === "ar" ? "font-cairo" : "font-inter";
 
   return (
-    <html lang={params.lang} dir={dir}>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-      </head>
-      <body className={`antialiased ${fontClass} flex flex-col min-h-screen`}>
-        <AuthProvider>
-            <Navbar lang={params.lang} />
-            <div className="flex-grow flex flex-col relative w-full">
-              {children}
-            </div>
-            <Footer lang={params.lang} />
-            <BackgroundMusic lang={params.lang} />
-        </AuthProvider>
-      </body>
-    </html>
+    <div dir={dir} className={`antialiased ${fontClass} flex flex-col min-h-screen`}>
+      <AuthProvider>
+          <Navbar lang={params.lang} />
+          <div className="flex-grow flex flex-col relative w-full">
+            {children}
+          </div>
+          <Footer lang={params.lang} />
+          <BackgroundMusic lang={params.lang} />
+      </AuthProvider>
+    </div>
   );
 }

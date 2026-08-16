@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Sparkles, TrendingUp, Target, CheckCircle2 } from "lucide-react";
-import MagicalBackground from "@/components/ui/MagicalBackground";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useCMSData } from "@/lib/cms/contentStore";
@@ -327,87 +326,135 @@ export default function MagicaZoneHome({ params: { lang } }: { params: { lang: s
     ];
 
     return (
-        <main className="min-h-screen font-[family-name:var(--font-inter)] text-gray-800 overflow-hidden relative pb-24 pt-24">
-            <MagicalBackground />
-
-            {/* Hero Section */}
-            <header className="relative z-10 py-16 md:py-24 px-6 text-center flex flex-col justify-center items-center">
-                {/* Floating sparkles */}
-                <motion.div
-                    animate={{ y: [0, -25, 0], rotate: [0, 15, -15, 0] }}
-                    transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
-                    className="absolute top-12 left-[5%] md:left-[10%] text-orange-400 opacity-90 drop-shadow-lg pointer-events-none"
+        <main className="min-h-screen font-[family-name:var(--font-inter)] text-gray-800 overflow-hidden relative pb-24 bg-gray-50">
+            
+            {/* Professional Video Hero Section */}
+            <section className="relative w-full h-[90vh] min-h-[600px] flex items-center justify-center overflow-hidden">
+                {/* Background Video */}
+                <video 
+                    autoPlay 
+                    loop 
+                    muted 
+                    playsInline 
+                    className="absolute inset-0 w-full h-full object-cover z-0"
                 >
-                    <Sparkles className="w-12 h-12 md:w-16 md:h-16" />
-                </motion.div>
-                <motion.div
-                    animate={{ y: [0, 35, 0], rotate: [0, -20, 20, 0] }}
-                    transition={{ repeat: Infinity, duration: 7, ease: "easeInOut" }}
-                    className="absolute bottom-20 right-[5%] md:right-[10%] text-purple-500 opacity-90 drop-shadow-lg pointer-events-none"
-                >
-                    <Sparkles className="w-16 h-16 md:w-20 md:h-20" />
-                </motion.div>
+                    <source src="/Hero_Video.mp4" type="video/mp4" />
+                </video>
+
+                {/* Dark Overlay for readability */}
+                <div className="absolute inset-0 bg-black/60 z-0" />
+                
+                {/* Bottom gradient fade into page content */}
+                <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-gray-50 to-transparent z-0" />
 
                 <motion.div
-                    initial={{ y: -30, opacity: 0 }}
+                    initial={{ y: 30, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ duration: 0.8 }}
-                    className="flex flex-col items-center justify-center gap-6 relative max-w-5xl mx-auto"
+                    className="relative z-10 flex flex-col items-center justify-center gap-6 max-w-5xl mx-auto px-6 text-center mt-10"
                 >
-                    {/* Glowing background aura */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-orange-500/15 via-purple-500/15 to-teal-500/15 blur-[120px] rounded-full w-full h-full -z-10" />
-
-                    <div className="inline-flex items-center gap-2.5 px-6 py-2.5 rounded-full bg-white/90 backdrop-blur-md border border-gray-200/60 shadow-lg text-gray-800 font-extrabold text-sm md:text-base">
-                        <span className="text-orange-500 animate-spin" style={{ animationDuration: "8s" }}>
-                            <Sparkles className="w-5 h-5" />
-                        </span>
+                    <div className="inline-flex items-center gap-2.5 px-6 py-2.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg text-white font-semibold text-sm tracking-wide">
+                        <Sparkles className="w-4 h-4 text-orange-400" />
                         <span>{isArabic ? "حيث يبدأ بناء الإنسان وصناعة القادة" : "Where Human Excellence & Leadership Begin"}</span>
                     </div>
 
-                    <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-br from-orange-500 via-purple-600 to-teal-600 tracking-tighter drop-shadow-sm pb-2 leading-none">
+                    <h1 className="text-5xl sm:text-7xl md:text-8xl font-black text-white tracking-tight drop-shadow-xl leading-[1.1]">
                         {isArabic ? "ماجيكا زون" : "Magica Zone"}
                     </h1>
 
-                    <p className="text-2xl md:text-3xl font-black text-gray-800 tracking-tight">
+                    <p className="text-2xl md:text-3xl font-bold text-gray-200 tracking-wide drop-shadow-md">
                         {isArabic ? "هنا يُصنع قادة الغد." : "Where Children Become Leaders."}
                     </p>
 
-                    <p className="text-base md:text-lg text-gray-600 max-w-2xl text-center leading-relaxed font-medium">
+                    <p className="text-base md:text-xl text-gray-300 max-w-2xl text-center leading-relaxed font-medium drop-shadow-md">
                         {isArabic
                             ? "مهمتنا ليست التسلية المؤقتة — بل التجهيز الشامل للمستقبل. نزوّد الأطفال بمهارات القيادة، الذكاء المالي، ريادة الأعمال، والأدوات الحية التي يحتاجها الإنسان الناجح."
                             : "Our mission isn't passive entertainment — it's comprehensive life preparation. We equip youth with financial literacy, entrepreneurship, leadership, and hands-on skills for life."}
                     </p>
 
-                    <div className="flex flex-col sm:flex-row gap-4 mt-4 w-full sm:w-auto">
-                        <div className="relative group">
-                            <div className="absolute -inset-1 bg-gradient-to-r from-orange-600 to-purple-600 rounded-full blur opacity-40 group-hover:opacity-70 transition duration-500 animate-pulse" />
-                            <Link
-                                href="#sectors-showcase"
-                                className="relative inline-flex items-center justify-center gap-3 px-10 py-4 bg-gradient-to-r from-orange-500 to-purple-600 text-white rounded-full font-black text-lg hover:scale-105 transition-all shadow-xl hover:shadow-orange-500/40 w-full sm:w-auto"
-                            >
-                                <span>{isArabic ? "اكتشف قطاعات ومنتجات ماجيكا" : "Explore Sectors & Offerings"}</span>
-                                <span>{isArabic ? "↓" : "↓"}</span>
-                            </Link>
-                        </div>
+                    <div className="flex flex-col sm:flex-row gap-4 mt-8 w-full sm:w-auto">
+                        <Link
+                            href="#sectors-showcase"
+                            className="inline-flex items-center justify-center gap-3 px-10 py-4 bg-orange-500 text-white rounded-full font-bold text-lg hover:bg-orange-600 transition-all shadow-lg w-full sm:w-auto tracking-wide"
+                        >
+                            <span>{isArabic ? "اكتشف قطاعات ومنتجات ماجيكا" : "Explore Sectors & Offerings"}</span>
+                            <span>{isArabic ? "↓" : "↓"}</span>
+                        </Link>
                         <Link
                             href={`/${lang}/login`}
-                            className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-white/90 backdrop-blur-md border-2 border-gray-200 text-gray-800 rounded-full font-extrabold text-lg hover:border-orange-400 hover:text-orange-600 transition-all shadow-md w-full sm:w-auto"
+                            className="inline-flex items-center justify-center gap-3 px-10 py-4 bg-white/10 backdrop-blur-md border border-white/30 text-white rounded-full font-bold text-lg hover:bg-white/20 transition-all shadow-lg w-full sm:w-auto tracking-wide"
                         >
                             {isArabic ? "بوابة الأهالي والطلاب" : "Parent & Student Portal"}
                         </Link>
                     </div>
                 </motion.div>
 
-                {/* Stats Bar */}
-                <div className="mt-16 pt-8 border-t border-gray-200/60 w-full max-w-4xl mx-auto flex flex-wrap items-center justify-around gap-8">
+                {/* Stats Bar Overlaid */}
+                <div className="absolute bottom-10 left-0 right-0 z-10 w-full max-w-5xl mx-auto px-6 hidden md:flex items-center justify-around gap-8">
                     {stats.map((stat, i) => (
-                        <div key={i} className="text-center px-4">
-                            <div className="text-3xl md:text-5xl font-black bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">{stat.value}</div>
-                            <div className="text-sm md:text-base font-bold text-gray-600 mt-1">{stat.label}</div>
+                        <div key={i} className="text-center px-6 py-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-xl">
+                            <div className="text-3xl lg:text-4xl font-black text-white drop-shadow-sm">{stat.value}</div>
+                            <div className="text-sm font-semibold text-gray-200 mt-1">{stat.label}</div>
                         </div>
                     ))}
                 </div>
-            </header>
+            </section>
+
+            {/* Mobile Stats Bar (shown below hero) */}
+            <div className="md:hidden w-full px-6 py-8 bg-gray-50 flex flex-wrap items-center justify-around gap-6 border-b border-gray-200">
+                {stats.map((stat, i) => (
+                    <div key={i} className="text-center">
+                        <div className="text-3xl font-black text-gray-900">{stat.value}</div>
+                        <div className="text-xs font-bold text-gray-600 mt-1">{stat.label}</div>
+                    </div>
+                ))}
+            </div>
+
+            {/* Global Background Floating Elements */}
+            <div className="absolute top-[100vh] bottom-0 left-0 right-0 overflow-hidden pointer-events-none z-0">
+                <motion.div
+                    animate={{ y: [0, -25, 0], rotate: [0, 15, -15, 0] }}
+                    transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
+                    className="absolute top-[5%] left-[8%] text-orange-400 opacity-20 drop-shadow-xl"
+                >
+                    <Sparkles className="w-12 h-12" />
+                </motion.div>
+                <motion.div
+                    animate={{ y: [0, 35, 0], rotate: [0, -20, 20, 0] }}
+                    transition={{ repeat: Infinity, duration: 7, ease: "easeInOut" }}
+                    className="absolute top-[15%] right-[10%] text-teal-400 opacity-20 drop-shadow-xl"
+                >
+                    <Sparkles className="w-10 h-10" />
+                </motion.div>
+                <motion.div
+                    animate={{ y: [0, -40, 0], x: [0, 20, 0], rotate: [0, 10, -10, 0] }}
+                    transition={{ repeat: Infinity, duration: 9, ease: "easeInOut" }}
+                    className="absolute top-[30%] left-[15%] opacity-15 w-24 h-24"
+                >
+                    <Image src={coursesLogo} alt="Floating Courses Logo" fill className="object-contain" />
+                </motion.div>
+                <motion.div
+                    animate={{ y: [0, 30, 0], x: [0, -15, 0], rotate: [0, -15, 15, 0] }}
+                    transition={{ repeat: Infinity, duration: 11, ease: "easeInOut" }}
+                    className="absolute top-[45%] right-[15%] opacity-10 w-32 h-32"
+                >
+                    <Image src={campLogo} alt="Floating Camp Logo" fill className="object-contain" />
+                </motion.div>
+                <motion.div
+                    animate={{ y: [0, -20, 0], rotate: [0, 10, -5, 0] }}
+                    transition={{ repeat: Infinity, duration: 12, ease: "easeInOut" }}
+                    className="absolute top-[70%] left-[10%] opacity-15 w-20 h-20"
+                >
+                    <Image src={gamesLogo} alt="Floating Games Logo" fill className="object-contain" />
+                </motion.div>
+                <motion.div
+                    animate={{ y: [0, 25, 0], x: [0, 15, 0], rotate: [0, -10, 5, 0] }}
+                    transition={{ repeat: Infinity, duration: 14, ease: "easeInOut" }}
+                    className="absolute top-[85%] right-[20%] opacity-15 w-24 h-24"
+                >
+                    <Image src={bazarLogo} alt="Floating Bazar Logo" fill className="object-contain" />
+                </motion.div>
+            </div>
 
             {/* Philosophy Section */}
             <section className="relative z-10 max-w-5xl mx-auto px-6 py-12 text-center">
@@ -445,10 +492,14 @@ export default function MagicaZoneHome({ params: { lang } }: { params: { lang: s
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10">
-                    {SUB_BRANDS.map((brand, idx) => (
+                    {[
+                        ...SUB_BRANDS.filter(b => b.id === "camp"),
+                        ...SUB_BRANDS.filter(b => b.id === "courses"),
+                        ...SUB_BRANDS.filter(b => b.id !== "camp" && b.id !== "courses")
+                    ].map((brand, idx) => (
                         <div 
                             key={brand.id || idx} 
-                            className={`flex flex-col h-full p-6 md:p-8 rounded-3xl bg-white/90 backdrop-blur-md border ${brand.border} shadow-lg hover:shadow-2xl ${brand.shadowHover} transition-all duration-300 relative overflow-hidden group ${(brand as any).spanClass || ""}`}
+                            className={`flex flex-col h-full p-6 md:p-10 rounded-3xl bg-white border border-gray-100 shadow-xl hover:shadow-2xl ${brand.shadowHover} transition-all duration-300 relative overflow-hidden group ${(brand as any).spanClass || ""}`}
                         >
                             {/* Top colored highlight line */}
                             <div className={`absolute top-0 left-0 right-0 h-2 bg-gradient-to-r ${brand.from} ${brand.to}`} />
