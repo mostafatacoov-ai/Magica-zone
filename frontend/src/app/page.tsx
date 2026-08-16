@@ -1,25 +1,14 @@
-'use client';
-
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import MagicaLoader from '@/components/ui/MagicaLoader';
+import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 
 export default function RootPage() {
-    const router = useRouter();
-
-    useEffect(() => {
-        // Automatically route visitors entering magica-group.com directly to the home page
-        const userLang = typeof window !== 'undefined' && navigator.language ? navigator.language : 'ar';
-        const targetLang = userLang.toLowerCase().startsWith('ar') ? 'ar' : 'en';
-        
-        router.replace(`/${targetLang}`);
-    }, [router]);
-
-    return (
-        <MagicaLoader 
-            fullScreen={true} 
-            text="MAGICA GROUP" 
-            subText="مرحباً بكم في عالم ماجيكا / Welcome to Magica..." 
-        />
-    );
+    // Read the user's preferred language from the headers
+    const headersList = headers();
+    const acceptLanguage = headersList.get('accept-language') || '';
+    
+    // Default to Arabic unless English is preferred
+    const targetLang = acceptLanguage.toLowerCase().includes('en') && !acceptLanguage.toLowerCase().startsWith('ar') ? 'en' : 'ar';
+    
+    // Instantly redirect on the server
+    redirect(`/${targetLang}`);
 }
