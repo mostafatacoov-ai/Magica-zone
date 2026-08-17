@@ -163,7 +163,7 @@ export default function MagicCoursesPage({ params: { lang } }: { params: { lang:
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                                         <span className="absolute bottom-3 right-3 bg-white/90 text-orange-600 px-3 py-1 rounded-full text-xs font-black shadow-md">
-                                            ${course.price}
+                                            {course.price} {isArabic ? "ج.م" : "EGP"}
                                         </span>
                                     </div>
                                 )}
@@ -235,7 +235,7 @@ export default function MagicCoursesPage({ params: { lang } }: { params: { lang:
                                             className={`w-full py-4 rounded-2xl font-black text-white shadow-lg bg-gradient-to-r ${course.color || "from-orange-500 to-amber-600"} hover:brightness-110 transition-all flex items-center justify-center gap-2 text-lg`}
                                         >
                                             <CheckCircle2 className="w-5 h-5" />
-                                            <span>{isArabic ? "تسجيل وحجز مقعد ($" + course.price + ")" : "Enroll ($" + course.price + ")"}</span>
+                                            <span>{isArabic ? "تسجيل وحجز مقعد (" + course.price + " ج.م)" : "Enroll (" + course.price + " EGP)"}</span>
                                             <ArrowRight className={`w-5 h-5 ${isArabic ? "rotate-180" : ""}`} />
                                         </motion.button>
                                     </div>

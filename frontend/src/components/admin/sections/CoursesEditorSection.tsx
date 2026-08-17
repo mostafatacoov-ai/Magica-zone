@@ -117,7 +117,7 @@ export default function CoursesEditorSection({ lang }: { lang: string }) {
                                             )}
                                         </div>
                                         <div className="flex items-center gap-4 text-xs font-bold text-gray-500 mt-1 flex-wrap">
-                                            <span className="flex items-center gap-1 text-emerald-600 font-black"><DollarSign className="w-3.5 h-3.5" />${course.price}</span>
+                                            <span className="flex items-center gap-1 text-emerald-600 font-black">{course.price} EGP</span>
                                             <span className="flex items-center gap-1"><UsersIcon className="w-3.5 h-3.5 text-blue-500" />{isArabic ? course.ageAr : course.ageEn}</span>
                                             <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5 text-purple-500" />{course.hours} hrs ({course.sessionsCount} sessions)</span>
                                         </div>
@@ -190,7 +190,7 @@ export default function CoursesEditorSection({ lang }: { lang: string }) {
                                             </div>
 
                                             <div>
-                                                <label className="block text-xs font-bold text-gray-700 mb-1">Price in USD ($)</label>
+                                                <label className="block text-xs font-bold text-gray-700 mb-1">Price in EGP (ج.م)</label>
                                                 <input
                                                     type="number"
                                                     value={course.price}
