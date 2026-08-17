@@ -2,85 +2,18 @@
 
 import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useCMSData, ScheduleEvent } from "@/lib/cms/contentStore";
 import { motion } from "framer-motion";
 import { 
     CalendarDays, Clock, MapPin, Plus, CheckCircle2, 
-    Sparkles, Filter, Users, GraduationCap, Tent, Gamepad2 
+    Sparkles, Filter, Users, GraduationCap, Tent, Gamepad2, Monitor, Building2 
 } from "lucide-react";
-
-interface ScheduleEvent {
-    id: string;
-    titleEn: string;
-    titleAr: string;
-    date: string;
-    timeEn: string;
-    timeAr: string;
-    category: "camp" | "course" | "workshop" | "game";
-    locationEn: string;
-    locationAr: string;
-    statusEn: string;
-    statusAr: string;
-}
-
-const INITIAL_EVENTS: ScheduleEvent[] = [
-    {
-        id: "ev-1",
-        titleEn: "Magica Innovation Camp - Phase 1 Launch",
-        titleAr: "افتتاح معسكر ماجيكا للابتكار الملكي (المرحلة الأولى)",
-        date: "2026-08-05",
-        timeEn: "09:00 AM - 03:00 PM",
-        timeAr: "٠٩:٠٠ صباحًا - ٠٣:٠٠ عصراً",
-        category: "camp",
-        locationEn: "Main Innovation Campus, Cairo",
-        locationAr: "الحرم الرئيسي للابتكار بالقاهرة",
-        statusEn: "Confirmed & Open",
-        statusAr: "مؤكد ومفتوح للتسجيل"
-    },
-    {
-        id: "ev-2",
-        titleEn: "Mental Math & Cognitive Alchemy Workshop",
-        titleAr: "ورشة عمل الحساب الذهني الخيمياء المعرفية",
-        date: "2026-08-08",
-        timeEn: "01:00 PM - 04:00 PM",
-        timeAr: "٠١:٠٠ ظهرًا - ٠٤:٠٠ عصراً",
-        category: "course",
-        locationEn: "STEM Lab B • Online Interactive Hybrid",
-        locationAr: "قاعة العلوم B • بث مباشر تفاعلي",
-        statusEn: "Few Seats Left",
-        statusAr: "مقاعد محدودة متبقية"
-    },
-    {
-        id: "ev-3",
-        titleEn: "Robotics Arena & Championship Trials",
-        titleAr: "بطولة الروبوتات وتحديات التفكير الإنشائي",
-        date: "2026-08-12",
-        timeEn: "10:30 AM - 02:00 PM",
-        timeAr: "١٠:٣٠ صباحًا - ٠٢:٠٠ ظهرًا",
-        category: "game",
-        locationEn: "Magica Arena Hall",
-        locationAr: "القاعة الكبرى للمسابقات والتحديات",
-        statusEn: "Tournament Day",
-        statusAr: "يوم البطولة المفتوحة"
-    },
-    {
-        id: "ev-4",
-        titleEn: "Parents Guidance & Progress Consultations",
-        titleAr: "جلسات التقييم والتوجيه الأسري لأولياء الأمور",
-        date: "2026-08-15",
-        timeEn: "05:00 PM - 08:00 PM",
-        timeAr: "٠٥:٠٠ مساءً - ٠٨:٠٠ مساءً",
-        category: "workshop",
-        locationEn: "Executive Conference Rooms / Zoom",
-        locationAr: "قاعات المؤتمرات التنفيذية / اجتماعات عبر الإنترنت",
-        statusEn: "By Appointment",
-        statusAr: "بحجز مسبق ومواعيد مخصصة"
-    }
-];
 
 export default function CalendarPage({ params: { lang } }: { params: { lang: string } }) {
     const { role } = useAuth();
     const isArabic = lang === 'ar';
-    const [events, setEvents] = useState<ScheduleEvent[]>(INITIAL_EVENTS);
+    const { data } = useCMSData();
+    const events = data.events || [];
     const [activeFilter, setActiveFilter] = useState<string>("all");
 
     const filteredEvents = activeFilter === "all" ? events : events.filter(e => e.category === activeFilter);
@@ -182,6 +115,16 @@ export default function CalendarPage({ params: { lang } }: { params: { lang: str
                                         <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-lg border border-emerald-200">
                                             ✔ {isArabic ? ev.statusAr : ev.statusEn}
                                         </span>
+                                        {ev.locationMode && (
+                                            <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-xs font-black border ${
+                                                ev.locationMode === 'online' ? 'bg-blue-50 text-blue-600 border-blue-200' : 
+                                                ev.locationMode === 'offline' ? 'bg-orange-50 text-orange-600 border-orange-200' : 
+                                                'bg-purple-50 text-purple-600 border-purple-200'
+                                            }`}>
+                                                {ev.locationMode === 'online' ? <Monitor className="w-3 h-3" /> : ev.locationMode === 'offline' ? <Building2 className="w-3 h-3" /> : <MapPin className="w-3 h-3" />}
+                                                <span>{isArabic ? (ev.locationMode === 'online' ? 'أونلاين' : ev.locationMode === 'offline' ? 'مقر الأكاديمية' : 'مدمج (Hybrid)') : (ev.locationMode === 'online' ? 'Online' : ev.locationMode === 'offline' ? 'Offline (Campus)' : 'Hybrid')}</span>
+                                            </span>
+                                        )}
                                     </div>
                                     
                                     <h3 className="text-xl font-black text-gray-900 group-hover:text-orange-600 transition-colors">

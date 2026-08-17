@@ -232,6 +232,21 @@ export interface BazarItem {
     imageUrl?: string;
 }
 
+export interface ScheduleEvent {
+    id: string;
+    titleEn: string;
+    titleAr: string;
+    date: string;
+    timeEn: string;
+    timeAr: string;
+    category: "camp" | "course" | "workshop" | "game";
+    locationEn: string;
+    locationAr: string;
+    locationMode?: "online" | "offline" | "hybrid";
+    statusEn: string;
+    statusAr: string;
+}
+
 export interface CompleteCMSData {
     hero: HeroSectionContent;
     courses: CourseItem[];
@@ -242,10 +257,65 @@ export interface CompleteCMSData {
     podcasts: PodcastEpisode[];
     games: MindGame[];
     bazar?: BazarItem[];
+    events?: ScheduleEvent[];
 }
 
 // --- Initial Seed Data ---
 const INITIAL_CMS_DATA: CompleteCMSData = {
+    events: [
+        {
+            id: "ev-1",
+            titleEn: "Magica Innovation Camp - Phase 1 Launch",
+            titleAr: "افتتاح معسكر ماجيكا للابتكار الملكي (المرحلة الأولى)",
+            date: "2026-08-05",
+            timeEn: "09:00 AM - 03:00 PM",
+            timeAr: "٠٩:٠٠ صباحًا - ٠٣:٠٠ عصراً",
+            category: "camp",
+            locationEn: "Main Innovation Campus, Cairo",
+            locationAr: "الحرم الرئيسي للابتكار بالقاهرة",
+            statusEn: "Confirmed & Open",
+            statusAr: "مؤكد ومفتوح للتسجيل"
+        },
+        {
+            id: "ev-2",
+            titleEn: "Mental Math & Cognitive Alchemy Workshop",
+            titleAr: "ورشة عمل الحساب الذهني الخيمياء المعرفية",
+            date: "2026-08-08",
+            timeEn: "01:00 PM - 04:00 PM",
+            timeAr: "٠١:٠٠ ظهرًا - ٠٤:٠٠ عصراً",
+            category: "course",
+            locationEn: "STEM Lab B • Online Interactive Hybrid",
+            locationAr: "قاعة العلوم B • بث مباشر تفاعلي",
+            statusEn: "Few Seats Left",
+            statusAr: "مقاعد محدودة متبقية"
+        },
+        {
+            id: "ev-3",
+            titleEn: "Robotics Arena & Championship Trials",
+            titleAr: "بطولة الروبوتات وتحديات التفكير الإنشائي",
+            date: "2026-08-12",
+            timeEn: "10:30 AM - 02:00 PM",
+            timeAr: "١٠:٣٠ صباحًا - ٠٢:٠٠ ظهرًا",
+            category: "game",
+            locationEn: "Magica Arena Hall",
+            locationAr: "القاعة الكبرى للمسابقات والتحديات",
+            statusEn: "Tournament Day",
+            statusAr: "يوم البطولة المفتوحة"
+        },
+        {
+            id: "ev-4",
+            titleEn: "Parents Guidance & Progress Consultations",
+            titleAr: "جلسات التقييم والتوجيه الأسري لأولياء الأمور",
+            date: "2026-08-15",
+            timeEn: "05:00 PM - 08:00 PM",
+            timeAr: "٠٥:٠٠ مساءً - ٠٨:٠٠ مساءً",
+            category: "workshop",
+            locationEn: "Executive Conference Rooms / Zoom",
+            locationAr: "قاعات المؤتمرات التنفيذية / اجتماعات عبر الإنترنت",
+            statusEn: "By Appointment",
+            statusAr: "بحجز مسبق ومواعيد مخصصة"
+        }
+    ],
     hero: {
         titleEn: "Magica Kamp & Academy",
         titleAr: "أكاديمية ومعسكر ماجيكا",
@@ -565,6 +635,7 @@ export function getCMSData(): CompleteCMSData {
             supplies: parsed.supplies || INITIAL_CMS_DATA.supplies,
             podcasts: parsed.podcasts || INITIAL_CMS_DATA.podcasts,
             games: parsed.games || INITIAL_CMS_DATA.games,
+            events: parsed.events || INITIAL_CMS_DATA.events,
         };
     } catch (e) {
         console.error("Failed to read CMS data from storage:", e);

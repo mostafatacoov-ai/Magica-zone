@@ -18,11 +18,12 @@ import FoodEditorSection from "@/components/admin/sections/FoodEditorSection";
 import UniformEditorSection from "@/components/admin/sections/UniformEditorSection";
 import SuppliesEditorSection from "@/components/admin/sections/SuppliesEditorSection";
 import GamesEditorSection from "@/components/admin/sections/GamesEditorSection";
+import CalendarEditorSection from "@/components/admin/sections/CalendarEditorSection";
 
 export default function AdminDashboard({ lang = "en" }: { lang?: string }) {
     const isArabic = lang === 'ar';
     const [activeTab, setActiveTab] = useState<
-        "overview" | "hero" | "courses" | "camps" | "bazar" | "podcasts" | "food" | "uniforms" | "supplies" | "games"
+        "overview" | "hero" | "courses" | "camps" | "bazar" | "podcasts" | "food" | "uniforms" | "supplies" | "games" | "calendar"
     >("overview");
 
     const tabs = [
@@ -36,6 +37,7 @@ export default function AdminDashboard({ lang = "en" }: { lang?: string }) {
         { id: "uniforms", nameEn: "Magic Uniforms", nameAr: "الأزياء والبدلات الرسمية", icon: Shirt, color: "text-teal-600", bg: "bg-teal-50" },
         { id: "supplies", nameEn: "Magic Supplies", nameAr: "حقائب الروبوت وأدوات العلوم", icon: Wrench, color: "text-cyan-600", bg: "bg-cyan-50" },
         { id: "games", nameEn: "Magic Games", nameAr: "ألعاب الذكاء والمحاكاة", icon: Gamepad2, color: "text-violet-600", bg: "bg-violet-50" },
+        { id: "calendar", nameEn: "Events Calendar", nameAr: "التقويم والفعاليات", icon: LayoutDashboard, color: "text-pink-600", bg: "bg-pink-50" },
     ] as const;
 
     return (
@@ -112,6 +114,7 @@ export default function AdminDashboard({ lang = "en" }: { lang?: string }) {
                             {activeTab === "uniforms" && <UniformEditorSection lang={lang} />}
                             {activeTab === "supplies" && <SuppliesEditorSection lang={lang} />}
                             {activeTab === "games" && <GamesEditorSection lang={lang} />}
+                            {activeTab === "calendar" && <CalendarEditorSection lang={lang} />}
                         </motion.div>
                     </AnimatePresence>
                 </div>
