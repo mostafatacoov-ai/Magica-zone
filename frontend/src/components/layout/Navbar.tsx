@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, Globe, Menu, X } from "lucide-react";
+import { ChevronDown, Globe, Menu, X, UserCircle } from "lucide-react";
 import Image from "next/image";
 import logoImg from "../../../public/logo.png";
 import { useState, useEffect } from "react";
+import { useAuth } from "@/context/AuthContext";
 
 const SUB_BRANDS = (lang: string, isArabic: boolean) => [
     { label: isArabic ? "ماجيكا كامب" : "Magica Camp", href: `/${lang}/magic-camp` },
@@ -28,6 +29,8 @@ export default function Navbar({ lang }: { lang: string }) {
     const [mobileOpen, setMobileOpen] = useState(false);
     const [mobileSubOpen, setMobileSubOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const { user, role } = useAuth();
+    const displayName = user?.email?.split('@')[0] || "User";
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -103,12 +106,28 @@ export default function Navbar({ lang }: { lang: string }) {
                             {otherLangLabel}
                         </Link>
 
-                        <Link
-                            href={`/${lang}/login`}
-                            className="px-6 py-2.5 rounded-full bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 transition-all shadow-md hover:shadow-lg whitespace-nowrap shrink-0"
-                        >
-                            {isArabic ? "بوابة الدخول" : "Portal Login"}
-                        </Link>
+                        {user ? (
+                            <Link href={`/${lang}/dashboard`} className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-200 hover:bg-gray-50 transition-colors shadow-sm bg-white">
+                                {user.photoURL ? (
+                                    <img src={user.photoURL} alt={displayName} className="w-8 h-8 rounded-full object-cover border border-gray-200" />
+                                ) : (
+                                    <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-black text-sm shrink-0">
+                                        {displayName[0].toUpperCase()}
+                                    </div>
+                                )}
+                                <div className="flex flex-col text-left mr-1">
+                                    <span className="text-sm font-black text-gray-900 leading-tight truncate max-w-[90px]">{displayName}</span>
+                                    <span className="text-[9px] font-bold text-gray-500 uppercase tracking-wider leading-none mt-0.5">{role}</span>
+                                </div>
+                            </Link>
+                        ) : (
+                            <Link
+                                href={`/${lang}/login`}
+                                className="px-6 py-2.5 rounded-full bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 transition-all shadow-md hover:shadow-lg whitespace-nowrap shrink-0"
+                            >
+                                {isArabic ? "بوابة الدخول" : "Portal Login"}
+                            </Link>
+                        )}
                     </div>
 
                     {/* Mobile Controls */}
@@ -189,13 +208,33 @@ export default function Navbar({ lang }: { lang: string }) {
                             </div>
 
                             <div className="pt-6 mt-4 border-t border-gray-100">
-                                <Link
-                                    href={`/${lang}/login`}
-                                    onClick={() => setMobileOpen(false)}
-                                    className="block w-full py-3.5 text-center bg-gray-900 text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors shadow-md"
-                                >
-                                    {isArabic ? "بوابة الدخول" : "Portal Login"}
-                                </Link>
+                                {user ? (
+                                    <Link
+                                        href={`/${lang}/dashboard`}
+                                        onClick={() => setMobileOpen(false)}
+                                        className="flex items-center justify-center gap-3 w-full py-3.5 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors border border-gray-200 shadow-sm"
+                                    >
+                                        {user.photoURL ? (
+                                            <img src={user.photoURL} alt={displayName} className="w-10 h-10 rounded-full object-cover border border-gray-200" />
+                                        ) : (
+                                            <div className="w-10 h-10 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-black text-lg">
+                                                {displayName[0].toUpperCase()}
+                                            </div>
+                                        )}
+                                        <div className="flex flex-col text-left">
+                                            <span className="text-base font-black text-gray-900 leading-tight">{displayName}</span>
+                                            <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider leading-none mt-0.5">{role}</span>
+                                        </div>
+                                    </Link>
+                                ) : (
+                                    <Link
+                                        href={`/${lang}/login`}
+                                        onClick={() => setMobileOpen(false)}
+                                        className="block w-full py-3.5 text-center bg-gray-900 text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors shadow-md"
+                                    >
+                                        {isArabic ? "بوابة الدخول" : "Portal Login"}
+                                    </Link>
+                                )}
                             </div>
                         </div>
                     </motion.div>
