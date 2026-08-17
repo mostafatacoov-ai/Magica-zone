@@ -210,6 +210,27 @@ export default function MagicCoursesPage({ params: { lang } }: { params: { lang:
                                             </div>
                                         </div>
 
+                                        {/* Instructor Info */}
+                                        {(course.instructorNameEn || course.instructorNameAr) && (
+                                            <div className="flex items-center gap-3 mb-6 bg-orange-50/50 p-3 rounded-2xl border border-orange-100/50">
+                                                {course.instructorImageUrl ? (
+                                                    <img src={course.instructorImageUrl} alt="Instructor" className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm" />
+                                                ) : (
+                                                    <div className="w-10 h-10 rounded-full bg-orange-200 text-orange-600 flex items-center justify-center font-bold text-lg">
+                                                        {(isArabic ? course.instructorNameAr?.[0] : course.instructorNameEn?.[0]) || "M"}
+                                                    </div>
+                                                )}
+                                                <div>
+                                                    <div className="text-[10px] uppercase font-bold text-orange-500 tracking-wider">
+                                                        {isArabic ? "المدرب المعتمد" : "Lead Instructor"}
+                                                    </div>
+                                                    <div className="font-black text-gray-900 text-sm">
+                                                        {isArabic ? course.instructorNameAr : course.instructorNameEn}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
                                         {/* Skills Learned */}
                                         <div className="mb-6">
                                             <h4 className="text-xs font-extrabold text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">

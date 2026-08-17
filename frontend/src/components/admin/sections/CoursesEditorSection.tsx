@@ -279,6 +279,39 @@ export default function CoursesEditorSection({ lang }: { lang: string }) {
                                             </div>
                                         </div>
 
+                                        <div className="grid md:grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="block text-xs font-bold text-gray-700 mb-1">Instructor Name (EN)</label>
+                                                <input
+                                                    type="text"
+                                                    value={course.instructorNameEn || ""}
+                                                    onChange={e => handleUpdateField(idx, "instructorNameEn", e.target.value)}
+                                                    className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs"
+                                                    placeholder="e.g. Ahmed Magdy"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-bold text-gray-700 mb-1">اسم المدرب (عربي)</label>
+                                                <input
+                                                    type="text"
+                                                    value={course.instructorNameAr || ""}
+                                                    onChange={e => handleUpdateField(idx, "instructorNameAr", e.target.value)}
+                                                    className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs text-right"
+                                                    placeholder="مثال: أحمد مجدي"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <PhotoUploader
+                                            labelEn={`Instructor Photo: ${course.instructorNameEn || 'New Instructor'}`}
+                                            labelAr={`صورة المدرب: ${course.instructorNameAr || 'مدرب جديد'}`}
+                                            isArabic={isArabic}
+                                            value={course.instructorImageUrl || ""}
+                                            onChange={(val: string) => handleUpdateField(idx, "instructorImageUrl", val)}
+                                            helperTextEn="Upload a professional headshot for the instructor."
+                                            helperTextAr="قم برفع صورة احترافية وشخصية للمدرب."
+                                        />
+
                                         {/* Photo Uploader for this specific Course */}
                                         <PhotoUploader
                                             labelEn={`Course Photo / Banner: ${course.titleEn}`}

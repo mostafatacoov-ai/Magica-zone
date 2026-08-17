@@ -104,6 +104,9 @@ export interface CourseItem {
     color?: string;
     bgGradient?: string;
     imageUrl?: string;
+    instructorNameEn?: string;
+    instructorNameAr?: string;
+    instructorImageUrl?: string;
 }
 
 export interface CampProgram {
@@ -297,7 +300,10 @@ const INITIAL_CMS_DATA: CompleteCMSData = {
             skillsAr: ["الذكاء المالي", "حساب هوامش الربح", "إدارة الميزانية", "مهارات التفاوض والإقناع"],
             color: "from-orange-500 to-amber-600",
             bgGradient: "bg-orange-500/10 border-orange-500/20 text-orange-600",
-            imageUrl: "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&q=80&w=600"
+            imageUrl: "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&q=80&w=600",
+            instructorNameEn: "Ahmed Magdy",
+            instructorNameAr: "أحمد مجدي",
+            instructorImageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=200"
         },
         {
             id: "course-public-speaking",
@@ -316,7 +322,10 @@ const INITIAL_CMS_DATA: CompleteCMSData = {
             skillsAr: ["الحضور والجاذبية", "فن رواية القصص", "لغة الجسد المؤثرة", "الذكاء العاطفي والاجتماعي"],
             color: "from-emerald-500 to-teal-600",
             bgGradient: "bg-emerald-500/10 border-emerald-500/20 text-emerald-600",
-            imageUrl: "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&q=80&w=600"
+            imageUrl: "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&q=80&w=600",
+            instructorNameEn: "Sarah Ali",
+            instructorNameAr: "سارة علي",
+            instructorImageUrl: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200"
         },
         {
             id: "course-bazar-maker",
@@ -335,7 +344,10 @@ const INITIAL_CMS_DATA: CompleteCMSData = {
             skillsAr: ["بناء الهوية والعلامة", "خدمة العملاء", "عروض البيع الساحرة", "إدارة وتجميل المتجر"],
             color: "from-indigo-500 to-purple-600",
             bgGradient: "bg-indigo-500/10 border-indigo-500/20 text-indigo-600",
-            imageUrl: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=600"
+            imageUrl: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=600",
+            instructorNameEn: "Omar Youssef",
+            instructorNameAr: "عمر يوسف",
+            instructorImageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200"
         }
     ],
     camps: [
