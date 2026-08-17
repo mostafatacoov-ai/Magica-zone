@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { usePathname } from "next/navigation";
 
 interface MagicaLoaderProps {
     fullScreen?: boolean;
@@ -15,9 +16,11 @@ export default function MagicaLoader({
     fullScreen = true, 
     text, 
     subText, 
-    lang = "en" 
+    lang
 }: MagicaLoaderProps) {
-    const isArabic = lang === "ar";
+    const pathname = usePathname();
+    const resolvedLang = lang || (pathname?.startsWith("/ar") ? "ar" : "en");
+    const isArabic = resolvedLang === "ar";
     
     const displayTitle = text || (isArabic ? "عـالـم مـاجـيـكـا" : "MAGICA ZONE");
     const displaySubtitle = subText || (isArabic ? "جارٍ تجميع السحر والابتكار..." : "Gathering Magic & Innovation...");
@@ -85,7 +88,6 @@ export default function MagicaLoader({
                         width={90}
                         height={90}
                         className="object-contain w-auto h-auto max-w-full max-h-full mix-blend-multiply"
-                        priority
                     />
                 </motion.div>
             </div>

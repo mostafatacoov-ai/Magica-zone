@@ -37,6 +37,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             return;
         }
 
+        // Safety timeout: if auth state takes too long, stop loading
+        const fallbackTimer = setTimeout(() => {
+            if (loading) setLoading(false);
+        }, 3500);
+
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             if (currentUser) {
                 setUser(currentUser);
@@ -64,9 +69,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 setStatus(null);
             }
             setLoading(false);
+            clearTimeout(fallbackTimer);
         });
 
-        return () => unsubscribe();
+        return () => {
+            unsubscribe();
+            clearTimeout(fallbackTimer);
+        };
     }, []);
 
     return (
