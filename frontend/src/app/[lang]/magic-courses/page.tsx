@@ -17,7 +17,7 @@ const filterCategories = [
 export default function MagicCoursesPage({ params: { lang } }: { params: { lang: string } }) {
     const isArabic = lang === "ar";
     const { data } = useCMSData();
-    const courses = data.courses;
+    const courses = (data.courses || []).filter(course => course.published !== false);
     const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
     const [selectedCourseForModal, setSelectedCourseForModal] = useState<CourseItem | null>(null);
     const [enrollSuccess, setEnrollSuccess] = useState<boolean>(false);

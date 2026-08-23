@@ -65,7 +65,7 @@ export default function MagicaZoneHome({ params: { lang } }: { params: { lang: s
                 ? ["مسارات القيادة وإدارة المشروعات", "التجارة الإلكترونية والتسويق", "الروبوتات والذكاء الاصطناعي", "برمجة وبناء العقول القيادية"]
                 : ["Leadership & Project Management", "E-Commerce & Digital Marketing", "Robotics & Artificial Intelligence", "Executive Mindset & Coding"],
             previewHeader: isArabic ? "💡 نبذة من المسارات والدورات التدريبية المتاحة:" : "💡 Preview of Featured Training Tracks:",
-            previewItems: (cmsData.courses || []).slice(0, 3).map(c => ({
+            previewItems: (cmsData.courses || []).filter(c => c.published !== false).slice(0, 3).map(c => ({
                 id: c.id,
                 title: isArabic ? c.titleAr : c.titleEn,
                 subtitle: isArabic ? c.ageAr : c.ageEn,

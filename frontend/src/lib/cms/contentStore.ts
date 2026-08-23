@@ -107,6 +107,9 @@ export interface CourseItem {
     instructorNameEn?: string;
     instructorNameAr?: string;
     instructorImageUrl?: string;
+    published?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 export interface CampProgram {
@@ -373,7 +376,8 @@ const INITIAL_CMS_DATA: CompleteCMSData = {
             imageUrl: "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&q=80&w=600",
             instructorNameEn: "Ahmed Magdy",
             instructorNameAr: "أحمد مجدي",
-            instructorImageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=200"
+            instructorImageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=200",
+            published: true
         },
         {
             id: "course-public-speaking",
@@ -395,7 +399,8 @@ const INITIAL_CMS_DATA: CompleteCMSData = {
             imageUrl: "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&q=80&w=600",
             instructorNameEn: "Sarah Ali",
             instructorNameAr: "سارة علي",
-            instructorImageUrl: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200"
+            instructorImageUrl: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200",
+            published: true
         },
         {
             id: "course-bazar-maker",
@@ -417,7 +422,8 @@ const INITIAL_CMS_DATA: CompleteCMSData = {
             imageUrl: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=600",
             instructorNameEn: "Omar Youssef",
             instructorNameAr: "عمر يوسف",
-            instructorImageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200"
+            instructorImageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200",
+            published: true
         }
     ],
     camps: [
@@ -643,11 +649,58 @@ export function getCMSData(): CompleteCMSData {
     }
 }
 
+// Background asynchronous synchronization to cloud Firestore backend
+async function syncToCloudBackend(section?: string, data?: any): Promise<void> {
+    if (typeof window === "undefined") return;
+    try {
+        await fetch('/api/cms', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(section ? { section, data } : { data })
+        });
+    } catch (e) {
+        console.warn("Could not sync CMS data to cloud backend (offline mode active):", e);
+    }
+}
+
+export async function syncCMSWithBackend(): Promise<CompleteCMSData> {
+    if (typeof window === "undefined") return INITIAL_CMS_DATA;
+    try {
+        const res = await fetch('/api/cms', { method: 'GET', cache: 'no-store' });
+        if (res.ok) {
+            const json = await res.json();
+            if (json.success && json.data) {
+                const cloudData = json.data;
+                const local = getCMSData();
+                const merged: CompleteCMSData = {
+                    hero: cloudData.hero || local.hero,
+                    courses: cloudData.courses || local.courses,
+                    camps: cloudData.camps || local.camps,
+                    food: cloudData.food || local.food,
+                    uniforms: cloudData.uniforms || local.uniforms,
+                    supplies: cloudData.supplies || local.supplies,
+                    podcasts: cloudData.podcasts || local.podcasts,
+                    games: cloudData.games || local.games,
+                    events: cloudData.events || local.events,
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+                window.dispatchEvent(new CustomEvent(UPDATE_EVENT, { detail: merged }));
+                return merged;
+            }
+        }
+    } catch (e) {
+        console.warn("Could not fetch remote CMS data, using local cache:", e);
+    }
+    return getCMSData();
+}
+
 export function saveCMSData(data: CompleteCMSData): void {
     if (typeof window === "undefined") return;
     try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
         window.dispatchEvent(new CustomEvent(UPDATE_EVENT, { detail: data }));
+        // Sync to cloud backend in background
+        syncToCloudBackend(undefined, data);
     } catch (e) {
         console.error("Failed to save CMS data:", e);
     }
@@ -656,7 +709,16 @@ export function saveCMSData(data: CompleteCMSData): void {
 export function updateCMSSection<K extends keyof CompleteCMSData>(section: K, value: CompleteCMSData[K]): void {
     const current = getCMSData();
     current[section] = value;
-    saveCMSData(current);
+    if (typeof window !== "undefined") {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+            window.dispatchEvent(new CustomEvent(UPDATE_EVENT, { detail: current }));
+            // Sync specific section to cloud backend in background
+            syncToCloudBackend(section, value);
+        } catch (e) {
+            console.error(`Failed to update CMS section ${section}:`, e);
+        }
+    }
 }
 
 export function resetCMSDataToDefault(): void {
@@ -667,9 +729,20 @@ export function resetCMSDataToDefault(): void {
 // --- Reactive React Hook ---
 export function useCMSData() {
     const [data, setData] = useState<CompleteCMSData>(INITIAL_CMS_DATA);
+    const [isSyncing, setIsSyncing] = useState<boolean>(false);
 
     useEffect(() => {
+        // 1. Immediately initialize from local storage for fast render
         setData(getCMSData());
+
+        // 2. Fetch latest data from cloud Firestore in background
+        setIsSyncing(true);
+        syncCMSWithBackend().then((latest) => {
+            setData(latest);
+            setIsSyncing(false);
+        }).catch(() => {
+            setIsSyncing(false);
+        });
 
         const handleUpdate = () => {
             setData(getCMSData());
@@ -684,8 +757,18 @@ export function useCMSData() {
         };
     }, []);
 
+    const manualSync = async () => {
+        setIsSyncing(true);
+        const res = await syncCMSWithBackend();
+        setData(res);
+        setIsSyncing(false);
+        return res;
+    };
+
     return {
         data,
+        isSyncing,
+        syncWithCloud: manualSync,
         saveData: saveCMSData,
         updateSection: updateCMSSection,
         resetToDefault: resetCMSDataToDefault
