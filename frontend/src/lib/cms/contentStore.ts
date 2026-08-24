@@ -653,21 +653,30 @@ export function getCMSData(): CompleteCMSData {
     }
 }
 
+import { db } from "../firebase/firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+
 // Background asynchronous synchronization to cloud Firestore backend
 async function syncToCloudBackend(section?: string, data?: any): Promise<void> {
     if (typeof window === "undefined") return;
     try {
-        const res = await fetch('/api/cms', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(section ? { section, data } : { data })
-        });
-        if (!res.ok) {
-            const errorText = await res.text();
-            throw new Error(`Failed with status ${res.status}: ${errorText}`);
+        const docRef = doc(db, 'cms_content', 'main');
+        let updatePayload: Record<string, any> = {
+            updatedAt: new Date().toISOString()
+        };
+
+        if (section) {
+            updatePayload[section] = data;
+        } else if (typeof data === 'object') {
+            updatePayload = {
+                ...data,
+                updatedAt: new Date().toISOString()
+            };
         }
+
+        await setDoc(docRef, updatePayload, { merge: true });
     } catch (e) {
-        console.error("Could not sync CMS data to cloud backend (offline mode active):", e);
+        console.error("Could not sync CMS data to cloud backend:", e);
         alert("Database sync failed. The changes were only saved locally. Please check your connection and Firebase configuration.");
     }
 }
@@ -675,13 +684,13 @@ async function syncToCloudBackend(section?: string, data?: any): Promise<void> {
 export async function syncCMSWithBackend(): Promise<CompleteCMSData> {
     if (typeof window === "undefined") return INITIAL_CMS_DATA;
     try {
-        const res = await fetch('/api/cms', { method: 'GET', cache: 'no-store' });
-        if (res.ok) {
-            const json = await res.json();
-            if (json.success && json.data) {
-                const cloudData = json.data;
-                const local = getCMSData();
-                const merged: CompleteCMSData = {
+        const docRef = doc(db, 'cms_content', 'main');
+        const docSnap = await getDoc(docRef);
+        
+        if (docSnap.exists()) {
+            const cloudData = docSnap.data();
+            const local = getCMSData();
+            const merged: CompleteCMSData = {
                     hero: cloudData.hero || local.hero,
                     courses: cloudData.courses || local.courses,
                     camps: cloudData.camps || local.camps,
@@ -692,13 +701,11 @@ export async function syncCMSWithBackend(): Promise<CompleteCMSData> {
                     games: cloudData.games || local.games,
                     events: cloudData.events || local.events,
                 };
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-                window.dispatchEvent(new CustomEvent(UPDATE_EVENT, { detail: merged }));
+                saveCMSData(merged);
                 return merged;
-            }
         }
     } catch (e) {
-        console.warn("Could not fetch remote CMS data, using local cache:", e);
+        console.error("Failed to fetch CMS data from backend:", e);
     }
     return getCMSData();
 }

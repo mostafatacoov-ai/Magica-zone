@@ -1,37 +1,25 @@
-import { auth } from './firebase';
+import { doc, setDoc } from 'firebase/firestore';
 import { 
     createUserWithEmailAndPassword, 
     signInWithEmailAndPassword, 
     signOut 
 } from 'firebase/auth';
+import { auth, db } from './firebase';
 
 export const registerParent = async (email: string, password: string) => {
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // Force token refresh to get a fresh token to send to our API
-        const idToken = await user.getIdToken(true);
-
-        // Call our API route to set the custom claim to "parent" and create Firestore doc
-        const res = await fetch(`/api/auth/setCustomClaims`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                idToken,
-                role: 'parent',
-                uid: user.uid,
-                email: user.email
-            })
+        // Set user role in Firestore directly instead of using Admin API
+        const userDocRef = doc(db, 'users', user.uid);
+        await setDoc(userDocRef, {
+            email: user.email,
+            role: 'parent',
+            createdAt: new Date().toISOString()
         });
 
-        if (!res.ok) {
-            throw new Error('Failed to set parent role');
-        }
-
-        // Refresh token again so the client has the claim locally
+        // Trigger token refresh to propagate auth state
         await user.getIdToken(true);
 
         return user;
