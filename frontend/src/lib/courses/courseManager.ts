@@ -1,7 +1,3 @@
-import { db } from "../firebase/firebase";
-import { collection, query, where, getDocs, doc, setDoc, addDoc, updateDoc, serverTimestamp, getDoc } from "firebase/firestore";
-import { awardPoints } from "../firebase/firestore";
-
 // --- Types ---
 export interface Enrollment {
     id: string;
@@ -39,22 +35,13 @@ export interface Submission {
 // --- Enrollments ---
 export async function enrollChildInCourse(childId: string, courseId: string, titleEn: string, titleAr: string): Promise<boolean> {
     try {
-        // Check if already enrolled
-        const q = query(collection(db, "enrollments"), where("childId", "==", childId), where("courseId", "==", courseId));
-        const snap = await getDocs(q);
-        if (!snap.empty) {
-            return true; // Already enrolled
-        }
-
-        await addDoc(collection(db, "enrollments"), {
-            childId,
-            courseId,
-            titleEn,
-            titleAr,
-            status: "active",
-            createdAt: serverTimestamp()
+        const res = await fetch("/api/enrollments", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ childId, courseId, titleEn, titleAr, status: "active" })
         });
-        return true;
+        const data = await res.json();
+        return data.success;
     } catch (e) {
         console.error("Error enrolling child:", e);
         return false;
@@ -63,9 +50,9 @@ export async function enrollChildInCourse(childId: string, courseId: string, tit
 
 export async function getChildEnrollments(childId: string): Promise<Enrollment[]> {
     try {
-        const q = query(collection(db, "enrollments"), where("childId", "==", childId));
-        const snap = await getDocs(q);
-        return snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Enrollment));
+        const res = await fetch(`/api/enrollments?childId=${childId}`);
+        if (!res.ok) return [];
+        return await res.json();
     } catch (e) {
         console.error("Error fetching enrollments:", e);
         return [];
@@ -74,9 +61,9 @@ export async function getChildEnrollments(childId: string): Promise<Enrollment[]
 
 export async function getCourseEnrollments(courseId: string): Promise<Enrollment[]> {
     try {
-        const q = query(collection(db, "enrollments"), where("courseId", "==", courseId));
-        const snap = await getDocs(q);
-        return snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Enrollment));
+        const res = await fetch(`/api/enrollments?courseId=${courseId}`);
+        if (!res.ok) return [];
+        return await res.json();
     } catch (e) {
         console.error("Error fetching course enrollments:", e);
         return [];
@@ -86,15 +73,13 @@ export async function getCourseEnrollments(courseId: string): Promise<Enrollment
 // --- Assignments ---
 export async function createAssignment(courseId: string, teacherId: string, title: string, description: string, maxScore: number): Promise<boolean> {
     try {
-        await addDoc(collection(db, "assignments"), {
-            courseId,
-            teacherId,
-            title,
-            description,
-            maxScore,
-            createdAt: serverTimestamp()
+        const res = await fetch("/api/assignments", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ courseId, teacherId, title, description, maxScore })
         });
-        return true;
+        const data = await res.json();
+        return data.success;
     } catch (e) {
         console.error("Error creating assignment:", e);
         return false;
@@ -103,15 +88,9 @@ export async function createAssignment(courseId: string, teacherId: string, titl
 
 export async function getCourseAssignments(courseId: string): Promise<Assignment[]> {
     try {
-        const q = query(collection(db, "assignments"), where("courseId", "==", courseId));
-        const snap = await getDocs(q);
-        // Sort manually if no index exists, or just return as is (client can sort)
-        const assignments = snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Assignment));
-        return assignments.sort((a, b) => {
-            const timeA = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
-            const timeB = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
-            return timeB - timeA;
-        });
+        const res = await fetch(`/api/assignments?courseId=${courseId}`);
+        if (!res.ok) return [];
+        return await res.json();
     } catch (e) {
         console.error("Error fetching assignments:", e);
         return [];
@@ -121,36 +100,13 @@ export async function getCourseAssignments(courseId: string): Promise<Assignment
 // --- Submissions ---
 export async function submitAssignment(assignmentId: string, childId: string, courseId: string, content: string, link: string): Promise<boolean> {
     try {
-        // Check if already submitted
-        const q = query(collection(db, "submissions"), where("assignmentId", "==", assignmentId), where("childId", "==", childId));
-        const snap = await getDocs(q);
-        
-        if (!snap.empty) {
-            // Update existing submission if it hasn't been graded yet
-            const existingDoc = snap.docs[0];
-            const data = existingDoc.data() as Submission;
-            if (data.status === "graded") return false; // Can't update graded
-            
-            await updateDoc(doc(db, "submissions", existingDoc.id), {
-                content,
-                link,
-                createdAt: serverTimestamp()
-            });
-            return true;
-        }
-
-        await addDoc(collection(db, "submissions"), {
-            assignmentId,
-            childId,
-            courseId,
-            content,
-            link,
-            score: null,
-            feedback: null,
-            status: "submitted",
-            createdAt: serverTimestamp()
+        const res = await fetch("/api/submissions", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ assignmentId, childId, courseId, content, link })
         });
-        return true;
+        const data = await res.json();
+        return data.success;
     } catch (e) {
         console.error("Error submitting assignment:", e);
         return false;
@@ -159,9 +115,9 @@ export async function submitAssignment(assignmentId: string, childId: string, co
 
 export async function getAssignmentSubmissions(assignmentId: string): Promise<Submission[]> {
     try {
-        const q = query(collection(db, "submissions"), where("assignmentId", "==", assignmentId));
-        const snap = await getDocs(q);
-        return snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Submission));
+        const res = await fetch(`/api/submissions?assignmentId=${assignmentId}`);
+        if (!res.ok) return [];
+        return await res.json();
     } catch (e) {
         console.error("Error fetching submissions:", e);
         return [];
@@ -170,9 +126,9 @@ export async function getAssignmentSubmissions(assignmentId: string): Promise<Su
 
 export async function getCourseSubmissions(courseId: string): Promise<Submission[]> {
     try {
-        const q = query(collection(db, "submissions"), where("courseId", "==", courseId));
-        const snap = await getDocs(q);
-        return snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Submission));
+        const res = await fetch(`/api/submissions?courseId=${courseId}`);
+        if (!res.ok) return [];
+        return await res.json();
     } catch (e) {
         console.error("Error fetching course submissions:", e);
         return [];
@@ -181,9 +137,9 @@ export async function getCourseSubmissions(courseId: string): Promise<Submission
 
 export async function getChildSubmissions(childId: string): Promise<Submission[]> {
     try {
-        const q = query(collection(db, "submissions"), where("childId", "==", childId));
-        const snap = await getDocs(q);
-        return snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Submission));
+        const res = await fetch(`/api/submissions?childId=${childId}`);
+        if (!res.ok) return [];
+        return await res.json();
     } catch (e) {
         console.error("Error fetching child submissions:", e);
         return [];
@@ -192,19 +148,29 @@ export async function getChildSubmissions(childId: string): Promise<Submission[]
 
 export async function gradeSubmission(submissionId: string, score: number, feedback: string, teacherId: string, childId: string): Promise<boolean> {
     try {
-        const subRef = doc(db, "submissions", submissionId);
-        await updateDoc(subRef, {
-            score,
-            feedback,
-            status: "graded"
+        const res = await fetch("/api/submissions", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ submissionId, score, feedback })
         });
-
+        
         // Award points to child automatically!
         if (score > 0) {
-            await awardPoints(childId, teacherId, score);
+            // we should call the users API to add points
+            const userRes = await fetch(`/api/users/${childId}`);
+            if (userRes.ok) {
+                const user = await userRes.json();
+                const currentPoints = user.points || 0;
+                await fetch(`/api/users/${childId}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ points: currentPoints + score })
+                });
+            }
         }
         
-        return true;
+        const data = await res.json();
+        return data.success;
     } catch (e) {
         console.error("Error grading submission:", e);
         return false;

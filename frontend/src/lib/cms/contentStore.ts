@@ -580,53 +580,41 @@ export function getCMSData(): CompleteCMSData {
     }
 }
 
-import { auth, db } from "../firebase/firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { signInAnonymously } from "firebase/auth";
-
-// Background asynchronous synchronization to cloud Firestore backend
+// Background asynchronous synchronization to cloud MongoDB backend
 async function syncToCloudBackend(section?: string, data?: any): Promise<void> {
     if (typeof window === "undefined") return;
     try {
-        const docRef = doc(db, 'cms_content', 'main');
         let updatePayload: Record<string, any> = {
             updatedAt: new Date().toISOString()
         };
 
         if (section) {
-            updatePayload[section] = data;
+            updatePayload = { section, data };
         } else if (typeof data === 'object') {
             updatePayload = {
-                ...data,
+                data: { ...data },
                 updatedAt: new Date().toISOString()
             };
         }
 
-        await setDoc(docRef, updatePayload, { merge: true });
+        await fetch('/api/cms', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatePayload)
+        });
     } catch (e) {
         console.error("Could not sync CMS data to cloud backend:", e);
-        alert("Database sync failed. The changes were only saved locally. Please check your connection and Firebase configuration.");
+        alert("Database sync failed. The changes were only saved locally.");
     }
 }
 
 export async function syncCMSWithBackend(): Promise<CompleteCMSData> {
     if (typeof window === "undefined") return INITIAL_CMS_DATA;
     try {
-        if (!auth.currentUser) {
-            try {
-                await signInAnonymously(auth);
-            } catch (authErr) {
-                console.warn("Anonymous auth failed (maybe disabled in Firebase console):", authErr);
-            }
-        }
-        
-        const docRef = doc(db, 'cms_content', 'main');
-        const docSnap = await getDoc(docRef);
-        
-        if (docSnap.exists()) {
-            const cloudData = docSnap.data();
+        const response = await fetch('/api/cms');
+        if (response.ok) {
+            const cloudData = await response.json();
             const local = getCMSData();
-            // Use 'in' check so cloud wins even if the value is an empty array []
             const merged: CompleteCMSData = {
                     hero: 'hero' in cloudData ? cloudData.hero : local.hero,
                     courses: 'courses' in cloudData ? cloudData.courses : local.courses,
@@ -687,14 +675,15 @@ export function useCMSData() {
     const [isSyncing, setIsSyncing] = useState<boolean>(true);
 
     useEffect(() => {
-        // Always fetch from Firebase first — it is the single source of truth
+        // Immediately load from localStorage so it displays instantly on mount
+        setData(getCMSData());
+
+        // Always fetch from Firebase to get the latest data
         setIsSyncing(true);
         syncCMSWithBackend().then((latest) => {
             setData(latest);
             setIsSyncing(false);
         }).catch(() => {
-            // Only fall back to localStorage if Firebase completely fails
-            setData(getCMSData());
             setIsSyncing(false);
         });
 

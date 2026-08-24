@@ -1,7 +1,3 @@
-import { doc, getDoc, setDoc, updateDoc, collection, getDocs, query, where } from "firebase/firestore";
-import { auth, db } from "../firebase/firebase";
-import { signInAnonymously } from "firebase/auth";
-
 export interface KidProduct {
     id: string;
     title: string;
@@ -89,21 +85,17 @@ const INITIAL_SEED_STORES: KidStore[] = [
 
 export async function getKidStores(): Promise<KidStore[]> {
     try {
-        if (!auth.currentUser) {
-            try {
-                await signInAnonymously(auth);
-            } catch (authErr) {
-                console.warn("Anonymous auth failed in getKidStores:", authErr);
-            }
+        if (typeof window === "undefined") {
+            return INITIAL_SEED_STORES;
         }
-        const q = query(collection(db, "kidStores"));
-        const querySnapshot = await getDocs(q);
-        const stores = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as KidStore));
-        
-        // Include initial seeds for demo purposes if desired, or return just db stores
-        return [...INITIAL_SEED_STORES, ...stores];
+        const res = await fetch('/api/bazar');
+        if (res.ok) {
+            const stores = await res.json();
+            return [...INITIAL_SEED_STORES, ...stores];
+        }
+        return INITIAL_SEED_STORES;
     } catch (e) {
-        console.error("Error reading kid stores from Firestore", e);
+        console.error("Error reading kid stores from API", e);
         return INITIAL_SEED_STORES;
     }
 }
@@ -114,18 +106,13 @@ export async function getStoreById(id: string): Promise<KidStore | undefined> {
         const seed = INITIAL_SEED_STORES.find(s => s.id === id);
         if (seed) return seed;
 
-        if (!auth.currentUser) {
-            try {
-                await signInAnonymously(auth);
-            } catch (authErr) {
-                console.warn("Anonymous auth failed in getStoreById:", authErr);
-            }
+        if (typeof window === "undefined") {
+            return undefined;
         }
 
-        const docRef = doc(db, "kidStores", id);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-            return { id: docSnap.id, ...docSnap.data() } as KidStore;
+        const res = await fetch(`/api/bazar/${id}`);
+        if (res.ok) {
+            return await res.json();
         }
     } catch (e) {
         console.error("Error fetching store", e);
@@ -136,11 +123,15 @@ export async function getStoreById(id: string): Promise<KidStore | undefined> {
 export async function getChildPersonalStore(userId?: string): Promise<KidStore | null> {
     if (!userId) return null;
     try {
-        const q = query(collection(db, "kidStores"), where("userId", "==", userId));
-        const querySnapshot = await getDocs(q);
-        if (!querySnapshot.empty) {
-            const doc = querySnapshot.docs[0];
-            return { id: doc.id, ...doc.data(), isOwnStore: true } as KidStore;
+        if (typeof window === "undefined") {
+            return null;
+        }
+        const res = await fetch(`/api/bazar?userId=${userId}`);
+        if (res.ok) {
+            const stores = await res.json();
+            if (stores.length > 0) {
+                return { ...stores[0], isOwnStore: true };
+            }
         }
         return null;
     } catch (e) {
@@ -181,8 +172,19 @@ export async function createKidStore(userId: string, data: {
             createdAt: existingStore ? existingStore.createdAt : new Date().toISOString().split("T")[0]
         };
 
-        const docRef = doc(db, "kidStores", storeId);
-        await setDoc(docRef, newStore, { merge: true });
+        if (existingStore) {
+            await fetch(`/api/bazar/${storeId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(newStore)
+            });
+        } else {
+            await fetch(`/api/bazar`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(newStore)
+            });
+        }
 
         if (typeof window !== "undefined") {
             window.dispatchEvent(new CustomEvent("magica-stores-updated"));
@@ -203,11 +205,9 @@ export async function addProductToStore(storeId: string, productData: {
     category?: string;
 }): Promise<KidProduct | null> {
     try {
-        const docRef = doc(db, "kidStores", storeId);
-        const docSnap = await getDoc(docRef);
-        if (!docSnap.exists()) return null;
+        const store = await getStoreById(storeId);
+        if (!store) return null;
 
-        const storeData = docSnap.data() as KidStore;
         const profit = Number(productData.sellingPrice) - Number(productData.costPrice);
         
         const newProduct: KidProduct = {
@@ -220,8 +220,12 @@ export async function addProductToStore(storeId: string, productData: {
             category: productData.category || "Magica Item"
         };
 
-        const updatedProducts = [newProduct, ...(storeData.products || [])];
-        await updateDoc(docRef, { products: updatedProducts });
+        const updatedProducts = [newProduct, ...(store.products || [])];
+        await fetch(`/api/bazar/${storeId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ products: updatedProducts })
+        });
 
         if (typeof window !== "undefined") {
             window.dispatchEvent(new CustomEvent("magica-stores-updated"));
@@ -236,14 +240,16 @@ export async function addProductToStore(storeId: string, productData: {
 
 export async function removeProductFromStore(storeId: string, productId: string): Promise<boolean> {
     try {
-        const docRef = doc(db, "kidStores", storeId);
-        const docSnap = await getDoc(docRef);
-        if (!docSnap.exists()) return false;
+        const store = await getStoreById(storeId);
+        if (!store) return false;
 
-        const storeData = docSnap.data() as KidStore;
-        const updatedProducts = (storeData.products || []).filter(p => p.id !== productId);
+        const updatedProducts = (store.products || []).filter(p => p.id !== productId);
         
-        await updateDoc(docRef, { products: updatedProducts });
+        await fetch(`/api/bazar/${storeId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ products: updatedProducts })
+        });
 
         if (typeof window !== "undefined") {
             window.dispatchEvent(new CustomEvent("magica-stores-updated"));
@@ -258,8 +264,11 @@ export async function removeProductFromStore(storeId: string, productId: string)
 
 export async function updateKidStore(storeId: string, data: Partial<KidStore>): Promise<boolean> {
     try {
-        const docRef = doc(db, "kidStores", storeId);
-        await updateDoc(docRef, data);
+        await fetch(`/api/bazar/${storeId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
         if (typeof window !== "undefined") {
             window.dispatchEvent(new CustomEvent("magica-stores-updated"));
         }
@@ -270,12 +279,11 @@ export async function updateKidStore(storeId: string, data: Partial<KidStore>): 
     }
 }
 
-import { deleteDoc } from "firebase/firestore";
-
 export async function deleteKidStore(storeId: string): Promise<boolean> {
     try {
-        const docRef = doc(db, "kidStores", storeId);
-        await deleteDoc(docRef);
+        await fetch(`/api/bazar/${storeId}`, {
+            method: "DELETE"
+        });
         if (typeof window !== "undefined") {
             window.dispatchEvent(new CustomEvent("magica-stores-updated"));
         }

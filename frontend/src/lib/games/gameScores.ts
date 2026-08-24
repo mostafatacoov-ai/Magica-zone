@@ -1,6 +1,3 @@
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "../firebase/firebase";
-
 export interface GameInfo {
     id: string;
     titleEn: string;
@@ -97,17 +94,16 @@ const INITIAL_SCORES: Record<string, GameScore> = {
 export async function getKidGameScores(userId?: string): Promise<Record<string, GameScore>> {
     if (!userId) return INITIAL_SCORES;
     try {
-        const docRef = doc(db, "users", userId);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-            const data = docSnap.data();
+        const res = await fetch(`/api/users/${userId}`);
+        if (res.ok) {
+            const data = await res.json();
             if (data.gameScores) {
                 return data.gameScores;
             }
         }
         return INITIAL_SCORES;
     } catch (e) {
-        console.error("Failed to read game scores from Firestore", e);
+        console.error("Failed to read game scores from MongoDB", e);
         return INITIAL_SCORES;
     }
 }
@@ -115,14 +111,12 @@ export async function getKidGameScores(userId?: string): Promise<Record<string, 
 export async function saveGameScore(userId: string, gameId: string, newScore: number, earnedStars: number, pointsAdded: number = 50): Promise<void> {
     if (!userId) return;
     try {
-        const docRef = doc(db, "users", userId);
-        const docSnap = await getDoc(docRef);
-        
+        const res = await fetch(`/api/users/${userId}`);
         let currentScores = { ...INITIAL_SCORES };
         let currentPoints = 350;
 
-        if (docSnap.exists()) {
-            const data = docSnap.data();
+        if (res.ok) {
+            const data = await res.json();
             if (data.gameScores) currentScores = data.gameScores;
             if (data.points !== undefined) currentPoints = data.points;
         }
@@ -140,27 +134,26 @@ export async function saveGameScore(userId: string, gameId: string, newScore: nu
         currentScores[gameId] = updatedScore;
         const newPoints = currentPoints + pointsAdded;
 
-        await setDoc(docRef, {
-            gameScores: currentScores,
-            points: newPoints
-        }, { merge: true });
+        await fetch(`/api/users/${userId}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ gameScores: currentScores, points: newPoints })
+        });
 
-        // Dispatch customized event for real-time dashboard UI reactivity
         if (typeof window !== "undefined") {
             window.dispatchEvent(new Event("magica-scores-updated"));
         }
     } catch (e) {
-        console.error("Failed to save game score to Firestore", e);
+        console.error("Failed to save game score to MongoDB", e);
     }
 }
 
 export async function getTotalMagicPoints(userId?: string): Promise<number> {
     if (!userId) return 350;
     try {
-        const docRef = doc(db, "users", userId);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-            const data = docSnap.data();
+        const res = await fetch(`/api/users/${userId}`);
+        if (res.ok) {
+            const data = await res.json();
             if (data.points !== undefined) {
                 return data.points;
             }
@@ -174,11 +167,11 @@ export async function getTotalMagicPoints(userId?: string): Promise<number> {
 export async function resetGameScores(userId: string): Promise<void> {
     if (!userId) return;
     try {
-        const docRef = doc(db, "users", userId);
-        await setDoc(docRef, {
-            gameScores: INITIAL_SCORES,
-            points: 350
-        }, { merge: true });
+        await fetch(`/api/users/${userId}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ gameScores: INITIAL_SCORES, points: 350 })
+        });
         
         if (typeof window !== "undefined") {
             window.dispatchEvent(new Event("magica-scores-updated"));

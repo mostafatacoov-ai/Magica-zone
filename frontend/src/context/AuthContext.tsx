@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { User, onAuthStateChanged, IdTokenResult } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+
 import { auth, db } from "../lib/firebase/firebase";
 
 interface AuthContextType {
@@ -49,12 +49,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     // First, check Custom Claims (from token)
                     const tokenResult: IdTokenResult = await currentUser.getIdTokenResult();
                     
-                    // Then fetch the Firestore document to get immediate UI status updates
-                    const userDocRef = doc(db, "users", currentUser.uid);
-                    const userDocSnap = await getDoc(userDocRef);
-
-                    if (userDocSnap.exists()) {
-                        const data = userDocSnap.data();
+                    // Then fetch the API to get immediate UI status updates
+                    const res = await fetch(`/api/users/${currentUser.uid}`);
+                    if (res.ok) {
+                        const data = await res.json();
                         setRole(data.role || tokenResult.claims.role || null);
                         setStatus(data.status || null);
                     } else {
