@@ -653,8 +653,9 @@ export function getCMSData(): CompleteCMSData {
     }
 }
 
-import { db } from "../firebase/firebase";
+import { auth, db } from "../firebase/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import { signInAnonymously } from "firebase/auth";
 
 // Background asynchronous synchronization to cloud Firestore backend
 async function syncToCloudBackend(section?: string, data?: any): Promise<void> {
@@ -684,6 +685,14 @@ async function syncToCloudBackend(section?: string, data?: any): Promise<void> {
 export async function syncCMSWithBackend(): Promise<CompleteCMSData> {
     if (typeof window === "undefined") return INITIAL_CMS_DATA;
     try {
+        if (!auth.currentUser) {
+            try {
+                await signInAnonymously(auth);
+            } catch (authErr) {
+                console.warn("Anonymous auth failed (maybe disabled in Firebase console):", authErr);
+            }
+        }
+        
         const docRef = doc(db, 'cms_content', 'main');
         const docSnap = await getDoc(docRef);
         

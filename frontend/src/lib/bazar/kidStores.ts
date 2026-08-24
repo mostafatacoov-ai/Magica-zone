@@ -1,5 +1,6 @@
 import { doc, getDoc, setDoc, updateDoc, collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../firebase/firebase";
+import { auth, db } from "../firebase/firebase";
+import { signInAnonymously } from "firebase/auth";
 
 export interface KidProduct {
     id: string;
@@ -88,6 +89,13 @@ const INITIAL_SEED_STORES: KidStore[] = [
 
 export async function getKidStores(): Promise<KidStore[]> {
     try {
+        if (!auth.currentUser) {
+            try {
+                await signInAnonymously(auth);
+            } catch (authErr) {
+                console.warn("Anonymous auth failed in getKidStores:", authErr);
+            }
+        }
         const q = query(collection(db, "kidStores"));
         const querySnapshot = await getDocs(q);
         const stores = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as KidStore));
@@ -105,6 +113,14 @@ export async function getStoreById(id: string): Promise<KidStore | undefined> {
         // Check seeds first
         const seed = INITIAL_SEED_STORES.find(s => s.id === id);
         if (seed) return seed;
+
+        if (!auth.currentUser) {
+            try {
+                await signInAnonymously(auth);
+            } catch (authErr) {
+                console.warn("Anonymous auth failed in getStoreById:", authErr);
+            }
+        }
 
         const docRef = doc(db, "kidStores", id);
         const docSnap = await getDoc(docRef);
