@@ -18,6 +18,104 @@ const CATEGORIES = [
     { id: "Stationery & Tools", en: "Stationery & Tools", ar: "الأدوات والقرطاسية الذكية", icon: "✏️" },
 ];
 
+function BundleBuilder({ isArabic }: { isArabic: boolean }) {
+    const [selected, setSelected] = useState<Record<string, boolean>>({
+        backpack: true,
+        polo: false,
+        cap: false,
+    });
+
+    const items = [
+        { id: "backpack", emoji: "🎒", labelEn: "CEO Backpack (900D Waterproof)", labelAr: "\u062d\u0642\u064a\u0628\u0629 \u0627\u0644\u0631\u0627\u0626\u062f \u0627\u0644\u0635\u063a\u064a\u0631", price: 850 },
+        { id: "polo", emoji: "👕", labelEn: "Explorer Polo (Official Uniform)", labelAr: "\u0628\u0648\u0644\u0648 \u0627\u0644\u0645\u0633\u062a\u0643\u0634\u0641", price: 320 },
+        { id: "cap", emoji: "🧢", labelEn: "Magica Cap (Limited Edition)", labelAr: "\u0643\u0627\u0628 \u0645\u0627\u062c\u064a\u0643\u0627 \u0627\u0644\u0645\u062d\u062f\u0648\u062f\u0629", price: 180 },
+    ];
+
+    const selectedCount = Object.values(selected).filter(Boolean).length;
+    const totalPrice = items.filter(i => selected[i.id]).reduce((s, i) => s + i.price, 0);
+    const fullPrice = items.reduce((s, i) => s + i.price, 0);
+    const savings = fullPrice - totalPrice;
+    const bundleDiscount = selectedCount === 3 ? 200 : selectedCount === 2 ? 80 : 0;
+    const finalPrice = Math.max(0, totalPrice - bundleDiscount);
+
+    const handleWhatsApp = () => {
+        const chosen = items.filter(i => selected[i.id]).map(i => isArabic ? i.labelAr : i.labelEn).join(", ");
+        const msg = isArabic
+            ? `\u0645\u0631\u062d\u0628\u0627\u064b! \u0623\u0631\u064a\u062f \u0637\u0644\u0628 \u062d\u0632\u0645\u0629 \u0645\u0627\u062c\u064a\u0643\u0627: ${chosen}. \u0627\u0644\u0633\u0639\u0631 \u0627\u0644\u0625\u062c\u0645\u0627\u0644\u064a: ${finalPrice} \u062c.\u0645`
+            : `Hi! I'd like to order a Magica bundle: ${chosen}. Total: ${finalPrice} EGP`;
+        window.open(`https://wa.me/201037377505?text=${encodeURIComponent(msg)}`, "_blank");
+    };
+
+    return (
+        <div className="bg-white rounded-3xl border border-rose-100 shadow-xl p-8">
+            <div className="flex items-center gap-2 mb-6">
+                <span className="text-2xl">📦</span>
+                <div>
+                    <h3 className="font-black text-gray-900 text-lg">{isArabic ? "\u0628\u0627\u0646\u064a \u062d\u0632\u0645\u062a\u0643" : "Build Your Bundle"}</h3>
+                    <p className="text-xs text-gray-500">{isArabic ? "\u0627\u062e\u062a\u0631 \u0648\u0648\u0641\u0651\u0631 \u0623\u0643\u062b\u0631" : "Select items and save more"}</p>
+                </div>
+            </div>
+
+            <div className="space-y-3 mb-6">
+                {items.map((item) => (
+                    <button
+                        key={item.id}
+                        onClick={() => setSelected(prev => ({ ...prev, [item.id]: !prev[item.id] }))}
+                        className={`w-full flex items-center gap-3 p-4 rounded-2xl border-2 transition-all text-left ${
+                            selected[item.id]
+                                ? "border-rose-500 bg-rose-50/80"
+                                : "border-gray-100 bg-gray-50 hover:border-rose-200"
+                        }`}
+                    >
+                        <div className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 border-2 transition-all ${
+                            selected[item.id] ? "bg-rose-500 border-rose-500" : "border-gray-300"
+                        }`}>
+                            {selected[item.id] && <span className="text-white text-xs font-black">✓</span>}
+                        </div>
+                        <span className="text-xl">{item.emoji}</span>
+                        <div className="flex-1">
+                            <p className="font-bold text-gray-900 text-sm">{isArabic ? item.labelAr : item.labelEn}</p>
+                        </div>
+                        <span className="font-black text-rose-600 text-sm shrink-0">{item.price} {isArabic ? "\u062c.\u0645" : "EGP"}</span>
+                    </button>
+                ))}
+            </div>
+
+            {/* Price Summary */}
+            <div className="bg-gray-50 rounded-2xl p-4 mb-5 space-y-2 text-sm">
+                <div className="flex justify-between text-gray-600">
+                    <span>{isArabic ? "\u0627\u0644\u0625\u062c\u0645\u0627\u0644\u064a" : "Subtotal"}</span>
+                    <span className="font-bold">{totalPrice} {isArabic ? "\u062c.\u0645" : "EGP"}</span>
+                </div>
+                {bundleDiscount > 0 && (
+                    <div className="flex justify-between text-emerald-600 font-bold">
+                        <span>{isArabic ? "\u062e\u0635\u0645 \u0627\u0644\u062d\u0632\u0645\u0629" : "Bundle Discount"}</span>
+                        <span>- {bundleDiscount} {isArabic ? "\u062c.\u0645" : "EGP"}</span>
+                    </div>
+                )}
+                <div className="flex justify-between text-gray-900 font-black text-base border-t border-gray-200 pt-2">
+                    <span>{isArabic ? "\u0627\u0644\u0625\u062c\u0645\u0627\u0644\u064a \u0627\u0644\u0646\u0647\u0627\u0626\u064a" : "Final Total"}</span>
+                    <span className="text-rose-600">{finalPrice} {isArabic ? "\u062c.\u0645" : "EGP"}</span>
+                </div>
+            </div>
+
+            <button
+                onClick={handleWhatsApp}
+                disabled={selectedCount === 0}
+                className="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-black rounded-2xl shadow-lg hover:brightness-110 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+                <span>💬</span>
+                <span>{isArabic ? "\u0627\u0637\u0644\u0628 \u0639\u0628\u0631 \u0648\u0627\u062a\u0633\u0622\u0628" : "Order via WhatsApp"}</span>
+            </button>
+            {selectedCount === 3 && (
+                <p className="text-center text-xs text-emerald-600 font-bold mt-2">
+                    🎉 {isArabic ? "\u0648\u0641\u0651\u0631\u062a 200 \u062c.\u0645 \u0628\u0637\u0644\u0628 \u0627\u0644\u062d\u0632\u0645\u0629 \u0627\u0644\u0643\u0627\u0645\u0644\u0629!" : "You saved 200 EGP with the full bundle!"}
+                </p>
+            )}
+        </div>
+    );
+}
+
 export default function MagicSuppliesPage({ params: { lang } }: { params: { lang: string } }) {
     const isArabic = lang === 'ar';
     const { data } = useCMSData();
@@ -214,6 +312,50 @@ export default function MagicSuppliesPage({ params: { lang } }: { params: { lang
                             <span>{isArabic ? "تصفح قسم الحقائب والمنتجات" : "Shop Bags & Products Now"}</span>
                         </a>
                     </motion.div>
+                </div>
+            </section>
+
+            {/* ── Featured Product: CEO Backpack Showcase ── */}
+            <section className="relative z-10 py-20 px-6 bg-gradient-to-br from-rose-50 to-pink-50/40">
+                <div className="max-w-6xl mx-auto">
+                    <div className="text-center mb-12">
+                        <span className="bg-rose-600 text-white text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-wider inline-block mb-3">
+                            {isArabic ? "المنتج المميز" : "Featured Product"}
+                        </span>
+                        <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-3">
+                            {isArabic ? "حقيبة الرائد الصغير (CEO Backpack)" : "The Junior CEO Backpack"}
+                        </h2>
+                        <p className="text-gray-500 max-w-xl mx-auto text-sm">
+                            {isArabic
+                                ? "مصممة هندسيًا لحمل كل تفاصيل طموح طفلك."
+                                : "Engineered to carry every detail of your child's ambition."}
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-10 items-center">
+                        {/* Spec Hotspot Grid */}
+                        <div className="grid grid-cols-2 gap-4">
+                            {[
+                                { emoji: "🛡️", titleEn: "900D Waterproof Ballistic", titleAr: "قماش مقاوم للماء 900D", descEn: "Military-grade tear & weather-resistant nylon.", descAr: "نايلون عسكري مقاوم للتمزق والطقس." },
+                                { emoji: "🦴", titleEn: "Ergonomic Spine Support", titleAr: "دعامة العمود الفقري", descEn: "Contoured back panel protects growing spines.", descAr: "لوح خلفي يحمي العمود الفقري النامي." },
+                                { emoji: "💻", titleEn: "Padded 14\" Laptop Slot", titleAr: "حجرة لابتوب 14 بوصة", descEn: "Dedicated velcro-sealed tech compartment.", descAr: "حجرة تقنية مبطنة ومعزولة." },
+                                { emoji: "✅", titleEn: "1-Year Warranty", titleAr: "ضمان سنة كاملة", descEn: "Free replacement within 12 months of purchase.", descAr: "استبدال مجاني خلال 12 شهرًا." },
+                            ].map((spec) => (
+                                <motion.div
+                                    key={spec.titleEn}
+                                    whileHover={{ scale: 1.03, y: -4 }}
+                                    className="bg-white rounded-3xl p-5 border border-rose-100 shadow-sm hover:shadow-md transition-all"
+                                >
+                                    <div className="text-3xl mb-2">{spec.emoji}</div>
+                                    <h4 className="font-black text-gray-900 text-sm mb-1">{isArabic ? spec.titleAr : spec.titleEn}</h4>
+                                    <p className="text-gray-500 text-xs leading-snug">{isArabic ? spec.descAr : spec.descEn}</p>
+                                </motion.div>
+                            ))}
+                        </div>
+
+                        {/* Bundle Builder */}
+                        <BundleBuilder isArabic={isArabic} />
+                    </div>
                 </div>
             </section>
 

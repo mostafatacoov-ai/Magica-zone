@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import MagicalBackground from "@/components/ui/MagicalBackground";
-import { GraduationCap, Sparkles, Star, Users, Calendar, Clock, BookOpen, CheckCircle2, ArrowRight, ShieldCheck, Laptop, Flame, Award, Filter, X } from "lucide-react";
+import { GraduationCap, Sparkles, Star, Users, Calendar, CheckCircle2, ArrowRight, ShieldCheck, Laptop, Award, X, Download, FileText } from "lucide-react";
 import Link from "next/link";
 import { useCMSData, CourseItem } from "@/lib/cms/contentStore";
 
@@ -12,6 +12,13 @@ const filterCategories = [
     { id: "STEM", labelEn: "Science & Robotics", labelAr: "العلوم والروبوتات" },
     { id: "ART", labelEn: "Arts & Creativity", labelAr: "الفنون والإبداع" },
     { id: "TECH", labelEn: "Programming & AI", labelAr: "البرمجة والذكاء الاصطناعي" },
+    { id: "LEADERSHIP", labelEn: "Leadership & Bazar", labelAr: "القيادة والبازار" },
+];
+
+const ageTiers = [
+    { id: "ALL_AGES", labelEn: "All Ages", labelAr: "جميع الفئات" },
+    { id: "JUNIORS", labelEn: "Juniors (6–9)", labelAr: "صغار (٦–٩ سنوات)" },
+    { id: "TEENS", labelEn: "Teens (10–15)", labelAr: "كبار (١٠–١٥ سنة)" },
 ];
 
 export default function MagicCoursesPage({ params: { lang } }: { params: { lang: string } }) {
@@ -19,22 +26,32 @@ export default function MagicCoursesPage({ params: { lang } }: { params: { lang:
     const { data } = useCMSData();
     const courses = (data.courses || []).filter(course => course.published !== false);
     const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
+    const [selectedAgeTier, setSelectedAgeTier] = useState<string>("ALL_AGES");
     const [selectedCourseForModal, setSelectedCourseForModal] = useState<CourseItem | null>(null);
     const [enrollSuccess, setEnrollSuccess] = useState<boolean>(false);
 
     const filteredCourses = courses.filter(course => {
-        if (selectedCategory === "ALL") return true;
-        
-        if (course.categoryId) {
-            return course.categoryId === selectedCategory;
+        // Category filter
+        let passesCategory = true;
+        if (selectedCategory !== "ALL") {
+            if (course.categoryId) {
+                passesCategory = course.categoryId === selectedCategory;
+            } else {
+                const text = `${course.titleEn} ${course.titleAr} ${course.descEn} ${course.descAr} ${course.badgeEn || ""}`.toLowerCase();
+                if (selectedCategory === "STEM") passesCategory = text.includes("robot") || text.includes("science") || text.includes("روبوت") || text.includes("math");
+                else if (selectedCategory === "ART") passesCategory = text.includes("art") || text.includes("design") || text.includes("فن") || text.includes("speak");
+                else if (selectedCategory === "TECH") passesCategory = text.includes("code") || text.includes("ai") || text.includes("program") || text.includes("برمج") || text.includes("ذك");
+                else if (selectedCategory === "LEADERSHIP") passesCategory = text.includes("leader") || text.includes("bazar") || text.includes("قياد") || text.includes("بازار") || text.includes("ceo");
+            }
         }
-
-        // Fallback for older courses without a categoryId
-        const text = `${course.titleEn} ${course.titleAr} ${course.descEn} ${course.descAr} ${course.badgeEn || ""}`.toLowerCase();
-        if (selectedCategory === "STEM") return text.includes("robot") || text.includes("science") || text.includes("روبوت") || text.includes("عل") || text.includes("math");
-        if (selectedCategory === "ART") return text.includes("art") || text.includes("design") || text.includes("فن") || text.includes("تصم") || text.includes("speak");
-        if (selectedCategory === "TECH") return text.includes("code") || text.includes("ai") || text.includes("program") || text.includes("برمج") || text.includes("ذك") || text.includes("bazar");
-        return true;
+        // Age tier filter
+        let passesAge = true;
+        if (selectedAgeTier !== "ALL_AGES") {
+            const ageText = `${course.ageEn || ""} ${course.ageAr || ""}`.toLowerCase();
+            if (selectedAgeTier === "JUNIORS") passesAge = ageText.includes("6") || ageText.includes("7") || ageText.includes("8") || ageText.includes("9") || ageText.includes("junior") || ageText.includes("صغ");
+            else if (selectedAgeTier === "TEENS") passesAge = ageText.includes("10") || ageText.includes("11") || ageText.includes("12") || ageText.includes("13") || ageText.includes("14") || ageText.includes("15") || ageText.includes("teen") || ageText.includes("كب");
+        }
+        return passesCategory && passesAge;
     });
 
     const handleReservationSubmit = (e: React.FormEvent) => {
@@ -57,10 +74,10 @@ export default function MagicCoursesPage({ params: { lang } }: { params: { lang:
                         initial={{ scale: 0.8, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ type: "spring", bounce: 0.5 }}
-                        className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-gradient-to-r from-orange-500/15 via-amber-500/15 to-purple-500/15 border border-orange-500/30 text-orange-600 font-extrabold mb-6 shadow-sm backdrop-blur-md"
+                        className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-gradient-courses border border-blue-500/30 text-white font-extrabold mb-6 shadow-glow-courses backdrop-blur-md"
                     >
-                        <GraduationCap className="w-6 h-6 animate-bounce text-orange-500" />
-                        <span>{isArabic ? "أكاديمية ماجيكا لبناء مهارات القادة المبدعين" : "Magica Academy for Future Pioneers"}</span>
+                        <GraduationCap className="w-6 h-6 animate-bounce" />
+                        <span>{isArabic ? "أكاديمية ماجيكا لبناء مهارات القادة المبدعين" : "Magica Academy · Certified Future Pioneers"}</span>
                     </motion.div>
 
                     <motion.h1
@@ -117,19 +134,20 @@ export default function MagicCoursesPage({ params: { lang } }: { params: { lang:
                 </div>
             </section>
 
-            {/* Category Filter Pills */}
-            <section className="max-w-7xl mx-auto px-6 mb-12">
-                <div className="flex items-center justify-center gap-2 overflow-x-auto py-2 scrollbar-none flex-wrap">
+            {/* Filters: Category + Age Tier */}
+            <section className="max-w-7xl mx-auto px-6 mb-12 space-y-4">
+                {/* Category Pills */}
+                <div className="flex items-center justify-center gap-2 overflow-x-auto py-1 scrollbar-none flex-wrap">
                     {filterCategories.map((cat) => {
                         const active = selectedCategory === cat.id;
                         return (
                             <button
                                 key={cat.id}
                                 onClick={() => setSelectedCategory(cat.id)}
-                                className={`px-6 py-3 rounded-full font-black text-sm md:text-base transition-all whitespace-nowrap shadow-sm flex items-center gap-2 ${
+                                className={`px-5 py-2.5 rounded-full font-black text-sm transition-all whitespace-nowrap shadow-sm ${
                                     active
-                                        ? "bg-gray-900 text-white scale-105 shadow-lg ring-2 ring-orange-500"
-                                        : "bg-white text-gray-600 hover:text-orange-500 border border-gray-200/80 hover:border-orange-300"
+                                        ? "bg-magica-courses text-white scale-105 shadow-lg ring-2 ring-magica-courses/50"
+                                        : "bg-white text-gray-600 hover:text-magica-courses border border-gray-200/80 hover:border-blue-300"
                                 }`}
                             >
                                 {isArabic ? cat.labelAr : cat.labelEn}
@@ -137,6 +155,36 @@ export default function MagicCoursesPage({ params: { lang } }: { params: { lang:
                         );
                     })}
                 </div>
+                {/* Age Tier Pills */}
+                <div className="flex items-center justify-center gap-2 flex-wrap">
+                    <span className="text-xs font-extrabold text-gray-400 uppercase tracking-wider mr-2">
+                        {isArabic ? "الفئة:" : "Age:"}
+                    </span>
+                    {ageTiers.map((tier) => {
+                        const active = selectedAgeTier === tier.id;
+                        return (
+                            <button
+                                key={tier.id}
+                                onClick={() => setSelectedAgeTier(tier.id)}
+                                className={`px-4 py-1.5 rounded-full font-bold text-xs transition-all whitespace-nowrap border ${
+                                    active
+                                        ? "bg-purple-600 text-white border-purple-600 shadow-md"
+                                        : "bg-white text-gray-500 border-gray-200 hover:border-purple-300 hover:text-purple-600"
+                                }`}
+                            >
+                                {isArabic ? tier.labelAr : tier.labelEn}
+                            </button>
+                        );
+                    })}
+                </div>
+                {/* Active filter summary */}
+                {(selectedCategory !== "ALL" || selectedAgeTier !== "ALL_AGES") && (
+                    <p className="text-center text-xs text-gray-500 font-semibold">
+                        {isArabic
+                            ? `عرض ${filteredCourses.length} كورس`
+                            : `Showing ${filteredCourses.length} course${filteredCourses.length !== 1 ? 's' : ''}`}
+                    </p>
+                )}
             </section>
 
             {/* Courses Catalog Grid */}
@@ -253,18 +301,27 @@ export default function MagicCoursesPage({ params: { lang } }: { params: { lang:
                                         </div>
                                     </div>
 
-                                    {/* Action Button */}
-                                    <div className="pt-4">
+                                    {/* Dual Action Buttons */}
+                                    <div className="pt-4 flex flex-col gap-2">
                                         <motion.button
                                             whileHover={{ scale: 1.02 }}
                                             whileTap={{ scale: 0.98 }}
                                             onClick={() => setSelectedCourseForModal(course)}
-                                            className={`w-full py-4 rounded-2xl font-black text-white shadow-lg bg-gradient-to-r ${course.color || "from-orange-500 to-amber-600"} hover:brightness-110 transition-all flex items-center justify-center gap-2 text-lg`}
+                                            className={`w-full py-3.5 rounded-2xl font-black text-white shadow-lg bg-gradient-to-r ${course.color || "from-blue-600 to-violet-600"} hover:brightness-110 transition-all flex items-center justify-center gap-2`}
                                         >
                                             <CheckCircle2 className="w-5 h-5" />
-                                            <span>{isArabic ? "تسجيل وحجز مقعد (" + course.price + " ج.م)" : "Enroll (" + course.price + " EGP)"}</span>
-                                            <ArrowRight className={`w-5 h-5 ${isArabic ? "rotate-180" : ""}`} />
+                                            <span>{isArabic ? `تسجيل (${course.price} ج.م)` : `Enroll Now — ${course.price} EGP`}</span>
+                                            <ArrowRight className={`w-4 h-4 ${isArabic ? "rotate-180" : ""}`} />
                                         </motion.button>
+                                        <a
+                                            href="https://wa.me/201037377505"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="w-full py-3 rounded-2xl font-bold text-gray-600 bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-all flex items-center justify-center gap-2 text-sm"
+                                        >
+                                            <FileText className="w-4 h-4" />
+                                            <span>{isArabic ? "طلب خطة الدراسة (PDF)" : "Download Syllabus (PDF)"}</span>
+                                        </a>
                                     </div>
                                 </div>
                             </motion.div>

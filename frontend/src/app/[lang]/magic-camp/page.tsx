@@ -1,10 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import campLogo from "../../../../public/magica-camp-print.png";
-import { Sparkles, Star, Users, Lightbulb, Handshake, Brain, ArrowRight } from "lucide-react";
+import { Sparkles, Star, Users, Lightbulb, Handshake, Brain, ArrowRight, Shield, Heart, Camera, ChefHat } from "lucide-react";
 import MagicalBackground from "@/components/ui/MagicalBackground";
 import Gallery from "@/components/ui/Gallery";
 import heroImg from "../../../../public/DSC09956_edited.jpg";
@@ -14,6 +15,59 @@ export default function MagicCampPage({ params: { lang } }: { params: { lang: st
     const isArabic = lang === 'ar';
     const { data } = useCMSData();
     const camps = data.camps;
+    const [activeDay, setActiveDay] = useState(0);
+
+    const journeyDays = [
+        {
+            dayEn: "Day 1", dayAr: "اليوم 1",
+            titleEn: "Arrival & Ice-Breakers", titleAr: "الوصول وكسر الجليد",
+            morning: { en: "Welcome ceremony & team sorting", ar: "حفل الاستقبال وتكوين الفرق" },
+            afternoon: { en: "Icebreaker games & trust challenges", ar: "ألعاب الثقة والتعارف" },
+            evening: { en: "Campfire storytelling & vision board", ar: "حكايات النار ولوحة الطموح" },
+        },
+        {
+            dayEn: "Day 2", dayAr: "اليوم 2",
+            titleEn: "Leadership Lab", titleAr: "مختبر القيادة",
+            morning: { en: "Leadership challenges & decision-making drills", ar: "تحديات القيادة واتخاذ القرار" },
+            afternoon: { en: "Mini-camp Olympic games", ar: "ألعاب أولمبية مصغرة" },
+            evening: { en: "Leader spotlight & team celebration", ar: "تكريم قادة اليوم" },
+        },
+        {
+            dayEn: "Day 3", dayAr: "اليوم 3",
+            titleEn: "Robotics & AI Day", titleAr: "يوم الروبوت والذكاء",
+            morning: { en: "Build & code your first robot", ar: "بناء وبرمجة أول روبوت" },
+            afternoon: { en: "AI puzzle challenge & prompt battle", ar: "تحدي الذكاء الاصطناعي" },
+            evening: { en: "Tech showcase & inventor certificates", ar: "عرض المخترعين" },
+        },
+        {
+            dayEn: "Day 4", dayAr: "اليوم 4",
+            titleEn: "Magica Bazar Market Day", titleAr: "يوم بازار ماجيكا",
+            morning: { en: "Design your product & pricing strategy", ar: "تصميم المنتج وتحديد السعر" },
+            afternoon: { en: "Live marketplace — sell & negotiate!", ar: "بازار حي — بع وتفاوض!" },
+            evening: { en: "Count profits & business debrief", ar: "حساب الأرباح ودرس ريادة الأعمال" },
+        },
+        {
+            dayEn: "Day 5", dayAr: "اليوم 5",
+            titleEn: "Arts & Public Speaking", titleAr: "الفنون والخطابة",
+            morning: { en: "Podcast studio & voice coaching", ar: "استوديو البودكاست" },
+            afternoon: { en: "Mural painting & creative arts", ar: "رسم جداري وفنون إبداعية" },
+            evening: { en: "Mini talent show & open mic", ar: "عرض المواهب ومايك مفتوح" },
+        },
+        {
+            dayEn: "Day 6", dayAr: "اليوم 6",
+            titleEn: "Adventure & Team Survival", titleAr: "المغامرة والبقاء",
+            morning: { en: "Outdoor obstacle & team relay", ar: "سباق العقبات الجماعي" },
+            afternoon: { en: "Survival skills & wilderness first aid", ar: "مهارات البقاء وإسعافاته" },
+            evening: { en: "Campfire awards & team video", ar: "تكريمات نار المخيم" },
+        },
+        {
+            dayEn: "Day 7", dayAr: "اليوم 7",
+            titleEn: "Graduation & Grand Showcase", titleAr: "حفل الختام والتخرج",
+            morning: { en: "Final project presentations", ar: "عروض المشاريع النهائية" },
+            afternoon: { en: "Parent showcase & proud moments", ar: "عرض أمام الأهل ولحظات الفخر" },
+            evening: { en: "Certificate ceremony & farewell", ar: "حفل شهادات التخرج" },
+        },
+    ];
 
     const skills = [
         {
@@ -94,10 +148,20 @@ export default function MagicCampPage({ params: { lang } }: { params: { lang: st
                             initial={{ scale: 0.8, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             transition={{ type: "spring", bounce: 0.5, duration: 1 }}
-                            className="mb-8"
+                            className="mb-6"
                         >
-                            <Image src={campLogo} alt="Magica Camp" className="h-32 w-auto object-contain drop-shadow-md" />
+                            <Image src={campLogo} alt="Magica Camp" className="h-28 w-auto object-contain drop-shadow-md" />
                         </motion.div>
+
+                        {/* Cohort date + spots badges */}
+                        <div className="flex flex-wrap gap-2 mb-6">
+                            <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-emerald-600 text-white text-xs font-black shadow-md">
+                                📅 {isArabic ? "دورة صيف 2026" : "Summer 2026 Cohort"}
+                            </span>
+                            <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-amber-500 text-white text-xs font-black shadow-md animate-pulse">
+                                🔥 {isArabic ? "مقاعد محدودة" : "Limited Spots Left!"}
+                            </span>
+                        </div>
 
                         <motion.h1
                             initial={{ y: 20, opacity: 0 }}
@@ -182,6 +246,70 @@ export default function MagicCampPage({ params: { lang } }: { params: { lang: st
                                 <p className="font-bold text-gray-800">{isArabic ? "مرح + تعلم + نمو" : "Fun + Learn + Grow"}</p>
                                 <p className="text-sm text-gray-500">{isArabic ? "+500 طفل سعيد" : "500+ Happy Kids"}</p>
                             </div>
+                        </div>
+                    </motion.div>
+                </div>
+            </div>
+
+            {/* 7-Day Journey Roadmap */}
+            <div className="py-24 bg-gradient-camp relative z-10">
+                <div className="max-w-5xl mx-auto px-6">
+                    <div className="text-center mb-12">
+                        <span className="bg-white/20 text-white font-black text-xs px-4 py-1.5 rounded-full uppercase tracking-wider inline-block mb-3">
+                            {isArabic ? "البرنامج اليومي" : "Daily Programme"}
+                        </span>
+                        <h2 className="text-4xl font-black text-white mb-3">
+                            {isArabic ? "رحلة 7 أيام مليئة بالتحديات" : "7-Day Adventure Roadmap"}
+                        </h2>
+                        <p className="text-emerald-100 text-base">
+                            {isArabic ? "كل يوم فهدف وكل نشاط برسالة" : "Every day has a theme, every activity has a purpose"}
+                        </p>
+                    </div>
+
+                    {/* Day Tabs */}
+                    <div className="flex overflow-x-auto gap-2 pb-3 mb-6 no-scrollbar">
+                        {journeyDays.map((d, i) => (
+                            <button
+                                key={i}
+                                onClick={() => setActiveDay(i)}
+                                className={`shrink-0 px-4 py-2 rounded-xl text-xs font-black transition-all ${
+                                    activeDay === i
+                                        ? "bg-white text-emerald-700 shadow-lg"
+                                        : "bg-white/20 text-white hover:bg-white/30"
+                                }`}
+                            >
+                                {isArabic ? d.dayAr : d.dayEn}
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* Active Day Detail */}
+                    <motion.div
+                        key={activeDay}
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20"
+                    >
+                        <h3 className="text-2xl font-black text-white mb-6">
+                            {isArabic ? journeyDays[activeDay].titleAr : journeyDays[activeDay].titleEn}
+                        </h3>
+                        <div className="grid md:grid-cols-3 gap-4">
+                            {[
+                                { labelEn: "Morning", labelAr: "صباحًا", emoji: "🌅", content: journeyDays[activeDay].morning },
+                                { labelEn: "Afternoon", labelAr: "ظهرًا", emoji: "⚡", content: journeyDays[activeDay].afternoon },
+                                { labelEn: "Evening", labelAr: "مساءً", emoji: "🌙", content: journeyDays[activeDay].evening },
+                            ].map((slot) => (
+                                <div key={slot.labelEn} className="bg-white/10 rounded-2xl p-5 border border-white/15">
+                                    <div className="text-2xl mb-2">{slot.emoji}</div>
+                                    <div className="text-xs font-black text-emerald-200 uppercase tracking-wider mb-1">
+                                        {isArabic ? slot.labelAr : slot.labelEn}
+                                    </div>
+                                    <p className="text-white font-semibold text-sm leading-snug">
+                                        {isArabic ? slot.content.ar : slot.content.en}
+                                    </p>
+                                </div>
+                            ))}
                         </div>
                     </motion.div>
                 </div>
@@ -334,6 +462,36 @@ export default function MagicCampPage({ params: { lang } }: { params: { lang: st
                                 <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-magica-teal-400 transition-colors shrink-0" />
                                 <span className="font-semibold text-gray-700 text-sm">{item.activity}</span>
                             </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* Safety & Parent Assurance Grid */}
+            <div className="py-20 bg-white relative z-10">
+                <div className="max-w-6xl mx-auto px-6">
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl font-black text-gray-900 mb-3">
+                            {isArabic ? "أمان طفلك أولويتنا" : "Your Child's Safety Is Our Priority"}
+                        </h2>
+                        <p className="text-gray-500 text-base max-w-xl mx-auto">
+                            {isArabic ? "كل مخيم ماجيكا يلتزم بأعلى معايير السلامة والرعاية." : "Every Magica camp upholds the highest standards of safety and care."}
+                        </p>
+                    </div>
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {[
+                            { icon: Shield, colorClass: "text-blue-600 bg-blue-50", titleEn: "1:5 Staff Ratio", titleAr: "نسبة 1:5 مشرف لكل 5 أطفال", descEn: "Every 5 campers have a dedicated certified supervisor.", descAr: "مشرف معتمد لكل 5 أطفال." },
+                            { icon: Heart, colorClass: "text-rose-600 bg-rose-50", titleEn: "24/7 Medical Staff", titleAr: "طاقم طبي على مدار الساعة", descEn: "On-site nurse & first-aid team around the clock.", descAr: "ممرضة وفريق إسعاف على مدار الساعة." },
+                            { icon: ChefHat, colorClass: "text-emerald-600 bg-emerald-50", titleEn: "Nutritionist Meals", titleAr: "وجبات متخصص تغذية", descEn: "Brain-boosting bento meals designed by a nutritionist.", descAr: "وجبات بينتو متخصصة لتعزيز التركيز." },
+                            { icon: Camera, colorClass: "text-amber-600 bg-amber-50", titleEn: "Daily Photo Updates", titleAr: "تحديثات صور يومية", descEn: "Parents receive daily activity photos via WhatsApp.", descAr: "صور أنشطة يومية لأولياء الأمور." },
+                        ].map((item) => (
+                            <div key={item.titleEn} className="bg-gray-50 rounded-3xl p-6 border border-gray-100 text-center">
+                                <div className={`w-12 h-12 rounded-2xl ${item.colorClass} flex items-center justify-center mx-auto mb-4`}>
+                                    <item.icon className="w-6 h-6" />
+                                </div>
+                                <h4 className="font-black text-gray-900 text-base mb-1">{isArabic ? item.titleAr : item.titleEn}</h4>
+                                <p className="text-gray-500 text-xs leading-snug">{isArabic ? item.descAr : item.descEn}</p>
+                            </div>
                         ))}
                     </div>
                 </div>
