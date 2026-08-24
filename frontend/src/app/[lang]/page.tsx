@@ -19,7 +19,7 @@ export default function HomePage({ params: { lang } }: { params: { lang: string 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    audioRef.current = new Audio("/audio/magica-anthem-preview.mp3");
+    audioRef.current = new Audio("/Magica.mp3");
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
@@ -142,7 +142,7 @@ export default function HomePage({ params: { lang } }: { params: { lang: string 
   ];
 
   return (
-    <div className={`min-h-screen bg-white overflow-hidden ${isArabic ? "font-cairo text-right" : "font-sans text-left"}`} dir={isArabic ? "rtl" : "ltr"}>
+    <div className={`min-h-screen overflow-hidden ${isArabic ? "font-cairo text-right" : "font-sans text-left"}`} dir={isArabic ? "rtl" : "ltr"}>
       <MagicalBackground />
       
       {/* 1. IMMERSIVE HERO SECTION */}
@@ -151,9 +151,9 @@ export default function HomePage({ params: { lang } }: { params: { lang: string 
           <motion.div 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-100 text-blue-700 font-bold text-sm mb-8 shadow-sm"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold text-sm mb-8 shadow-sm"
           >
-            <Sparkles className="w-4 h-4 text-blue-500" />
+            <Sparkles className="w-4 h-4 text-blue-300" />
             <span>{isArabic ? "حيث تبدأ الريادة والتميز الإنساني" : "Where Human Excellence & Leadership Begin"}</span>
           </motion.div>
           
@@ -161,12 +161,12 @@ export default function HomePage({ params: { lang } }: { params: { lang: string 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-5xl md:text-7xl lg:text-8xl font-black text-gray-900 mb-6 leading-tight tracking-tight"
+            className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 leading-tight tracking-tight drop-shadow-xl"
           >
             {isArabic ? (
-              <>حيث نصنع من الأطفال <br className="hidden md:block"/><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 drop-shadow-sm">قادة ورواد أعمال</span></>
+              <>حيث نصنع من الأطفال <br className="hidden md:block"/><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300 drop-shadow-sm">قادة ورواد أعمال</span></>
             ) : (
-              <>Where Children Become <br className="hidden md:block"/><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 drop-shadow-sm">Leaders & Founders</span></>
+              <>Where Children Become <br className="hidden md:block"/><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300 drop-shadow-sm">Leaders & Founders</span></>
             )}
           </motion.h1>
           
@@ -174,7 +174,7 @@ export default function HomePage({ params: { lang } }: { params: { lang: string 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-lg md:text-2xl text-gray-600 max-w-3xl mx-auto font-medium mb-12 leading-relaxed"
+            className="text-lg md:text-2xl text-gray-200 max-w-3xl mx-auto font-medium mb-12 leading-relaxed drop-shadow-md"
           >
             {isArabic 
               ? "نظام بيئي متكامل يجمع بين الثقافة المالية، التكنولوجيا، بناء الشخصية، والتهيئة الحقيقية لحياة مليئة بالنجاح والريادة."
@@ -194,10 +194,10 @@ export default function HomePage({ params: { lang } }: { params: { lang: string 
               { icon: ShieldCheck, val: "100%", label: isArabic ? "بيئة آمنة جاهزة" : "Future-Ready Safe Space" },
               { icon: Star, val: "4.9/5", label: isArabic ? "رضا أولياء الأمور" : "Parent Satisfaction" }
             ].map((stat, i) => (
-              <div key={i} className="bg-white/70 backdrop-blur-md border border-gray-100 rounded-3xl p-6 shadow-xl shadow-blue-900/5 hover:shadow-2xl hover:shadow-blue-900/10 hover:-translate-y-1 transition-all">
-                <stat.icon className="w-8 h-8 text-indigo-500 mx-auto mb-3" />
-                <div className="text-3xl font-black text-gray-900 mb-1">{stat.val}</div>
-                <div className="text-sm font-bold text-gray-500">{stat.label}</div>
+              <div key={i} className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 shadow-xl hover:bg-white/20 hover:-translate-y-1 transition-all">
+                <stat.icon className="w-8 h-8 text-blue-300 mx-auto mb-3" />
+                <div className="text-3xl font-black text-white mb-1 drop-shadow-md">{stat.val}</div>
+                <div className="text-sm font-bold text-gray-200 drop-shadow-md">{stat.label}</div>
               </div>
             ))}
           </motion.div>
@@ -404,29 +404,6 @@ export default function HomePage({ params: { lang } }: { params: { lang: string 
           </div>
         </div>
       </section>
-
-      {/* 5. PERSISTENT ANTHEM BAR */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-2xl border-t border-gray-200 p-4 z-50 transform transition-transform shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={togglePlay}
-              className="w-14 h-14 rounded-full bg-gradient-to-br from-fuchsia-600 to-purple-600 text-white flex items-center justify-center shadow-xl hover:scale-105 transition-transform shrink-0"
-            >
-              {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-1" />}
-            </button>
-            <div>
-              <div className="font-black text-gray-900 text-sm md:text-base">{isArabic ? "استمع لروح ماجيكا" : "Listen to Magica Spirit"}</div>
-              <div className="text-xs md:text-sm text-gray-500 font-bold">{isArabic ? "أنشودة البداية (نسخة مختصرة)" : "Opening Anthem (Preview)"}</div>
-            </div>
-          </div>
-          
-          <Link href={`/${lang}/magic-songs`} className="flex items-center gap-2 px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-full font-bold text-sm transition-colors shrink-0 shadow-lg">
-            <Download className="w-4 h-4" />
-            <span className="hidden sm:inline">{isArabic ? "المكتبة الصوتية" : "Full Library"}</span>
-          </Link>
-        </div>
-      </div>
 
     </div>
   );

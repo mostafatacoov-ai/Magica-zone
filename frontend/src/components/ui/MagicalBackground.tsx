@@ -16,6 +16,20 @@ export default function MagicalBackground() {
 
     return (
         <div className="fixed inset-0 bg-[#fffaf0] -z-50 overflow-hidden">
+            {/* Background Video */}
+            <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="absolute inset-0 w-full h-full object-cover"
+            >
+                <source src="/Hero_Video.mp4" type="video/mp4" />
+            </video>
+
+            {/* Dark Overlay for White Text Readability */}
+            <div className="absolute inset-0 bg-black/50" />
+
             {/* Ambient gradients */}
             <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-[#fd8a4c] opacity-10 blur-[150px] rounded-full animate-pulse" />
             <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-[#76c05a] opacity-10 blur-[150px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
