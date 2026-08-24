@@ -4,9 +4,11 @@ import { useState, useEffect, useRef } from "react";
 import {
     LayoutDashboard, Globe, BookOpen, Tent, Store,
     Mic, Utensils, Shirt, Wrench, Gamepad2, Shield,
-    Sparkles, Menu, X, ChevronRight, Calendar,
+    Sparkles, Menu, X, ChevronRight, Calendar, LogOut,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { logoutUser } from "@/lib/firebase/auth";
+import { useRouter } from "next/navigation";
 
 import OverviewSection from "@/components/admin/sections/OverviewSection";
 import HeroEditorSection from "@/components/admin/sections/HeroEditorSection";
@@ -62,7 +64,7 @@ const navGroups = [
 
 const allTabs = navGroups.flatMap(g => g.items);
 
-function SidebarContent({ activeTab, isArabic, onSelect }: { activeTab: TabId; isArabic: boolean; onSelect: (id: TabId) => void }) {
+function SidebarContent({ activeTab, isArabic, onSelect, onLogout }: { activeTab: TabId; isArabic: boolean; onSelect: (id: TabId) => void; onLogout: () => void }) {
     return (
         <nav className="flex flex-col gap-1 p-4 h-full">
             <div className={`flex items-center gap-3 px-3 py-4 mb-3 border-b border-white/10 ${isArabic ? "flex-row-reverse" : ""}`}>
@@ -112,6 +114,16 @@ function SidebarContent({ activeTab, isArabic, onSelect }: { activeTab: TabId; i
                     })}
                 </div>
             ))}
+
+            <div className="mt-auto pt-4 mb-4 px-3 border-t border-white/10">
+                <button
+                    onClick={onLogout}
+                    className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-black text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all"
+                >
+                    <LogOut className="w-4 h-4 shrink-0" />
+                    <span>{isArabic ? "تسجيل خروج" : "Log Out"}</span>
+                </button>
+            </div>
         </nav>
     );
 }
@@ -121,6 +133,12 @@ export default function AdminDashboard({ lang = "en" }: { lang?: string }) {
     const [activeTab, setActiveTab] = useState<TabId>("overview");
     const [drawerOpen, setDrawerOpen] = useState(false);
     const drawerRef = useRef<HTMLDivElement>(null);
+    const router = useRouter();
+
+    const handleLogout = async () => {
+        await logoutUser();
+        router.push(`/${lang}/login`);
+    };
 
     const activeItem = allTabs.find(t => t.id === activeTab)!;
 
@@ -149,7 +167,7 @@ export default function AdminDashboard({ lang = "en" }: { lang?: string }) {
 
             {/* Desktop Sidebar */}
             <aside className="hidden lg:flex flex-col w-64 shrink-0 bg-[#0f1117] border-r border-white/[0.06] sticky top-0 self-start max-h-screen overflow-y-auto">
-                <SidebarContent activeTab={activeTab} isArabic={isArabic} onSelect={handleTabSelect} />
+                <SidebarContent activeTab={activeTab} isArabic={isArabic} onSelect={handleTabSelect} onLogout={handleLogout} />
             </aside>
 
             {/* Mobile Drawer */}
@@ -178,7 +196,7 @@ export default function AdminDashboard({ lang = "en" }: { lang?: string }) {
                             >
                                 <X className="w-5 h-5" />
                             </button>
-                            <SidebarContent activeTab={activeTab} isArabic={isArabic} onSelect={handleTabSelect} />
+                            <SidebarContent activeTab={activeTab} isArabic={isArabic} onSelect={handleTabSelect} onLogout={handleLogout} />
                         </motion.div>
                     </>
                 )}
