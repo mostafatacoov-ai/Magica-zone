@@ -43,6 +43,7 @@ export default function HomePage({ params: { lang } }: { params: { lang: string 
     {
       id: "courses",
       icon: GraduationCap,
+      logoUrl: "/magica-Courses-print.png",
       title: isArabic ? "ماجيكا كورسات" : "Magica Courses",
       subtitle: isArabic ? "أكاديمية القادة الصغار" : "Junior CEO Academy",
       desc: isArabic ? "مسارات قيادية، تقنية وتجارة إلكترونية متطورة تبني قادة المستقبل." : "Leadership, tech, & e-commerce tracks building future innovators.",
@@ -54,6 +55,7 @@ export default function HomePage({ params: { lang } }: { params: { lang: string 
     {
       id: "camp",
       icon: Tent,
+      logoUrl: "/magica-camp-print.png",
       title: isArabic ? "ماجيكا كامب" : "Magica Camp",
       subtitle: isArabic ? "مغامرات الوادي الملكي 2026" : "Royal Valley Adventure 2026",
       desc: isArabic ? "معسكرات صيفية تبني الاستقلالية، القوة البدنية، وروح الفريق." : "Summer camps building independence, grit, and teamwork.",
@@ -65,6 +67,7 @@ export default function HomePage({ params: { lang } }: { params: { lang: string 
     {
       id: "supplies",
       icon: ShoppingBag,
+      logoUrl: "/magica-Supplies-print.png",
       title: isArabic ? "ماجيكا سبلايز" : "Magica Supplies",
       subtitle: isArabic ? "أدوات ذكية للقادة" : "Smart CEO Gear",
       desc: isArabic ? "حقائب مدرسية طبية فائقة التحمل وأدوات ابتكار متطورة." : "Ergonomic CEO backpacks and advanced innovation toolkits.",
@@ -76,6 +79,7 @@ export default function HomePage({ params: { lang } }: { params: { lang: string 
     {
       id: "games",
       icon: Gamepad2,
+      logoUrl: "/magica-games-print.png",
       title: isArabic ? "الألعاب الذهنية" : "Mind Games",
       subtitle: isArabic ? "تحديات المنطق والتداول" : "Logic & Trading Sim",
       desc: isArabic ? "ألعاب ذكاء وتداول تفاعلية لتعزيز سرعة البديهة وحل المشكلات." : "Interactive logic and trading games enhancing quick thinking.",
@@ -87,6 +91,7 @@ export default function HomePage({ params: { lang } }: { params: { lang: string 
     {
       id: "bazar",
       icon: Store,
+      logoUrl: "/magica-bazar-print.png",
       title: isArabic ? "ماجيكا بازار" : "Magica Bazar",
       subtitle: isArabic ? "السوق الحقيقي للأبطال" : "Live Kid-Run Market",
       desc: isArabic ? "متاجر حقيقية يديرها الأطفال لتعلم ريادة الأعمال وحساب الأرباح." : "Real kid-run stores teaching entrepreneurship and profit calculation.",
@@ -98,6 +103,7 @@ export default function HomePage({ params: { lang } }: { params: { lang: string 
     {
       id: "food",
       icon: UtensilsCrossed,
+      logoUrl: "/magica-food-print.png",
       title: isArabic ? "ماجيكا فود" : "Magica Food",
       subtitle: isArabic ? "وجبات الذكاء الخارق" : "Brain Bento Boxes",
       desc: isArabic ? "تغذية مصممة خصيصاً لزيادة التركيز والطاقة الإيجابية للأطفال." : "Nutrition specifically designed to boost focus and positive energy.",
@@ -109,6 +115,7 @@ export default function HomePage({ params: { lang } }: { params: { lang: string 
     {
       id: "podcast",
       icon: Mic,
+      logoUrl: "/magica-Podcast-print.png",
       title: isArabic ? "ماجيكا بودكاست" : "Magica Podcast",
       subtitle: isArabic ? "صوت الأجيال والإرشاد" : "Youth Voice & Mentorship",
       desc: isArabic ? "منصة إعلامية ومحتوى صوتي تربوي للآباء والأبناء." : "Media platform and educational audio content for parents & kids.",
@@ -120,6 +127,7 @@ export default function HomePage({ params: { lang } }: { params: { lang: string 
     {
       id: "uniform",
       icon: Shirt,
+      logoUrl: "/magica-Uniform-print.png",
       title: isArabic ? "ماجيكا يونيفورم" : "Magica Uniform",
       subtitle: isArabic ? "هوية الرواد" : "Founder Apparel",
       desc: isArabic ? "ملابس مصممة للفخامة والراحة، تعزز الانتماء وثقة الطفل بنفسه." : "Apparel designed for prestige and comfort, boosting confidence.",
@@ -131,6 +139,7 @@ export default function HomePage({ params: { lang } }: { params: { lang: string 
     {
       id: "songs",
       icon: Music2,
+      logoUrl: null, // No logo for songs based on uploaded files
       title: isArabic ? "أغاني وأناشيد" : "Songs & Anthems",
       subtitle: isArabic ? "مكتبة الإلهام الصوتي" : "Audio Inspiration Library",
       desc: isArabic ? "موسيقى وأناشيد حصرية لتحفيز الحماس وبناء القيم والأخلاق." : "Exclusive music and anthems to drive enthusiasm and build values.",
@@ -240,8 +249,12 @@ export default function HomePage({ params: { lang } }: { params: { lang: string 
                   <div className={`absolute top-0 ${isArabic ? 'left-0' : 'right-0'} w-40 h-40 bg-gradient-to-br ${sector.gradient} opacity-5 group-hover:opacity-10 ${isArabic ? 'rounded-br-full' : 'rounded-bl-full'} transition-opacity duration-500 pointer-events-none`} />
                   
                   <div className="flex justify-between items-start mb-6 relative z-10">
-                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center bg-gradient-to-br ${sector.gradient} text-white shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-transform`}>
-                      <sector.icon className="w-8 h-8" />
+                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center bg-gradient-to-br ${sector.gradient} text-white shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-transform overflow-hidden`}>
+                      {sector.logoUrl ? (
+                        <img src={sector.logoUrl} alt={sector.title} className="w-full h-full object-contain p-1" />
+                      ) : (
+                        <sector.icon className="w-8 h-8" />
+                      )}
                     </div>
                     <ArrowUpRight className={`w-6 h-6 text-gray-300 group-hover:text-gray-900 transition-colors ${isArabic ? '-scale-x-100' : ''}`} />
                   </div>
