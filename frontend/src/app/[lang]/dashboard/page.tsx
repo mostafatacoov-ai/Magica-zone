@@ -13,11 +13,15 @@ export default function DashboardPage({ params: { lang } }: { params: { lang: st
 
     if (!role) return null;
 
-    // Remove the part after @ to get a clean name or use the name if available
     const displayName = user?.email?.split('@')[0] || "User";
 
+    // Admin gets the full-screen CMS layout with its own sidebar
+    if (role === "admin") {
+        return <AdminDashboard lang={lang} />;
+    }
+
     return (
-        <motion.div 
+        <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="max-w-6xl mx-auto space-y-8 p-4 md:p-8"
@@ -36,10 +40,10 @@ export default function DashboardPage({ params: { lang } }: { params: { lang: st
                 </div>
             </header>
 
-            {role === "admin" && <AdminDashboard lang={lang} />}
             {role === "teacher" && <TeacherDashboard lang={lang} />}
-            {role === "parent" && <ParentDashboard lang={lang} />}
-            {role === "child" && <ChildDashboard lang={lang} />}
+            {role === "parent"  && <ParentDashboard lang={lang} />}
+            {role === "child"   && <ChildDashboard lang={lang} />}
         </motion.div>
     );
 }
+

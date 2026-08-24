@@ -1,3 +1,4 @@
+// tailwind.config.ts
 import type { Config } from "tailwindcss";
 
 const config: Config = {
@@ -9,96 +10,78 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'magica-navy': {
-          50: '#f2f3f7',
-          100: '#e1e3ec',
-          200: '#c5c9d9',
-          300: '#9ea5bf',
-          400: '#717ca1',
-          500: '#525f87',
-          600: '#404a6f',
-          700: '#343c5b',
-          800: '#2d334d',
-          900: '#282d41',
-          950: '#1b1c2b', // Closest to text/eagle
+        magica: {
+          dark: "#0B0F19",
+          surface: "#111827",
+          card: "rgba(17, 24, 39, 0.8)",
+          border: "rgba(255, 255, 255, 0.08)",
+
+          // Sector Color Tokens
+          courses: {
+            DEFAULT: "#2563EB", // Royal Blue
+            light: "#60A5FA",
+            dark: "#1D4ED8",
+            accent: "#7C3AED",  // Violet
+            glow: "rgba(37, 99, 235, 0.25)",
+          },
+          camp: {
+            DEFAULT: "#059669", // Emerald Forest
+            light: "#34D399",
+            dark: "#047857",
+            accent: "#F59E0B",  // Sunburst Amber
+            glow: "rgba(5, 150, 105, 0.25)",
+          },
+          supplies: {
+            DEFAULT: "#E11D48", // Crimson Rose
+            light: "#FB7185",
+            dark: "#BE123C",
+            accent: "#FDA4AF",
+            glow: "rgba(225, 29, 72, 0.25)",
+          },
+          games: {
+            DEFAULT: "#9333EA", // Electric Purple
+            accent: "#10B981",  // Neon Mint
+          },
+          bazar: {
+            DEFAULT: "#EA580C", // Sunset Orange
+            accent: "#FACC15",  // Gold
+          },
+          food: {
+            DEFAULT: "#16A34A", // Apple Green
+            accent: "#EAB308",  // Sunshine Yellow
+          },
+          podcast: {
+            DEFAULT: "#4F46E5", // Deep Indigo
+            accent: "#EC4899",  // Magenta
+          },
+          uniform: {
+            DEFAULT: "#1E3A8A", // Deep Navy
+            accent: "#D97706",  // Ochre Gold
+          },
+          songs: {
+            DEFAULT: "#D946EF", // Fuchsia
+            accent: "#06B6D4",  // Cyan
+          },
         },
-        'magica-orange': {
-          50: '#fff7ed',
-          100: '#ffeadd',
-          200: '#ffcfb4',
-          300: '#ffaa82',
-          400: '#ff7c46',
-          500: '#f26b27', // Base orange
-          600: '#e64f14',
-          700: '#bf3911',
-          800: '#982f16',
-          900: '#7a2915',
-          950: '#411208',
-        },
-        'magica-teal': {
-          50: '#f2f8fa',
-          100: '#e0eff4',
-          200: '#c5e0ea',
-          300: '#9bc9d9',
-          400: '#6aa8c0',
-          500: '#4b8ca8',
-          600: '#3c708a',
-          700: '#345b72',
-          800: '#2d4b5e',
-          900: '#284050',
-          950: '#152936',
-        },
-        'magica-purple': {
-          50: '#f7f3f9',
-          100: '#efe6f3',
-          200: '#e0cde7',
-          300: '#cba8d5',
-          400: '#b17dbf',
-          500: '#9454a7',
-          600: '#7c408e',
-          700: '#643273',
-          800: '#532b5e',
-          900: '#46274e',
-          950: '#2a1231',
-        },
-        'magica-yellow': {
-          50: '#fff9eb',
-          100: '#fff2c6',
-          200: '#ffe188',
-          300: '#ffcb4a',
-          400: '#ffb520',
-          500: '#fbb040',
-          600: '#e28d09',
-          700: '#bc690b',
-          800: '#975112',
-          900: '#7a4213',
-          950: '#462104',
-        },
-      },
-      animation: {
-        'float': 'float 6s ease-in-out infinite',
-        'float-delayed': 'float 6s ease-in-out 3s infinite',
-        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-      },
-      keyframes: {
-        float: {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-20px)' },
-        }
       },
       backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "gradient-courses": "linear-gradient(135deg, #1E40AF 0%, #6D28D9 100%)",
+        "gradient-camp": "linear-gradient(135deg, #065F46 0%, #D97706 100%)",
+        "gradient-supplies": "linear-gradient(135deg, #9F1239 0%, #E11D48 100%)",
+        "gradient-radial-glow": "radial-gradient(circle at center, var(--tw-gradient-stops))",
+      },
+      boxShadow: {
+        "glow-courses": "0 0 25px rgba(37, 99, 235, 0.35)",
+        "glow-camp": "0 0 25px rgba(5, 150, 105, 0.35)",
+        "glow-supplies": "0 0 25px rgba(225, 29, 72, 0.35)",
       },
       fontFamily: {
-        cairo: ['Cairo', 'sans-serif'],
-        inter: ['Inter', 'sans-serif'],
+        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        cairo: ["Cairo", "sans-serif"],
       },
     },
   },
   plugins: [],
 };
-export default config;
 
-// Trigger tailwind rebuild
+export default config;
