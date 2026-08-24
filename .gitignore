@@ -11,6 +11,8 @@ coverage/
 
 # next.js
 .next/
+# Exception: allow the hostinger-build .next folder to be committed so Hostinger can serve it
+!hostinger-build/.next/
 out/
 
 # production
