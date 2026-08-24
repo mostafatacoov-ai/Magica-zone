@@ -1,637 +1,433 @@
 "use client";
 
-import { motion } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Sparkles, TrendingUp, Target, CheckCircle2 } from "lucide-react";
-import Image from "next/image";
-import { useState, useEffect } from "react";
-import { useCMSData } from "@/lib/cms/contentStore";
-import { getKidStores } from "@/lib/bazar/kidStores";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  Sparkles, ArrowRight, ShieldCheck, Users, Award, 
+  GraduationCap, Tent, ShoppingBag, Gamepad2, Store, 
+  UtensilsCrossed, Mic, Shirt, Music2, CheckCircle2, 
+  Play, Star, ArrowUpRight, MessageCircle, Download,
+  Pause, CheckCircle
+} from "lucide-react";
+import MagicalBackground from "@/components/ui/MagicalBackground";
+import SectorBadge from "@/components/ui/SectorBadge";
 
-import campLogo from "../../../public/magica-camp-print.png";
-import bazarLogo from "../../../public/magica-bazar-print.png";
-import foodLogo from "../../../public/magica-food-print.png";
-import podcastLogo from "../../../public/magica-Podcast-print.png";
-import uniformLogo from "../../../public/magica-Uniform-print.png";
-import suppliesLogo from "../../../public/magica-Supplies-print.png";
-import coursesLogo from "../../../public/magica-Courses-print.png";
-import gamesLogo from "../../../public/magica-games-print.png";
+export default function HomePage({ params: { lang } }: { params: { lang: string } }) {
+  const isArabic = lang === "ar";
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
-interface PreviewItem {
-    id: string;
-    title: string;
-    subtitle?: string;
-    badge?: string;
-    imageUrl?: string;
-    icon?: string;
-}
+  useEffect(() => {
+    audioRef.current = new Audio("/audio/magica-anthem-preview.mp3");
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
 
-const STATS = (isArabic: boolean) => [
-    { value: "500+", label: isArabic ? "طفل ورائد صغير" : "Young Founders" },
-    { value: "9", label: isArabic ? "قطاعات ومكتبات متكاملة" : "Core Sectors & Music Library" },
-    { value: "100%", label: isArabic ? "بيئة آمنة وتجهيز للمستقبل" : "Future-Ready Safe Space" },
-];
+  const togglePlay = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play().catch(e => console.warn("Audio play failed", e));
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
 
-export default function MagicaZoneHome({ params: { lang } }: { params: { lang: string } }) {
-    const isArabic = lang === 'ar';
-    const { data: cmsData } = useCMSData();
-    const [kidStores, setKidStores] = useState<any[]>([]);
-    const stats = STATS(isArabic);
+  const SECTORS = [
+    {
+      id: "courses",
+      icon: GraduationCap,
+      title: isArabic ? "ماجيكا كورسات" : "Magica Courses",
+      subtitle: isArabic ? "أكاديمية القادة الصغار" : "Junior CEO Academy",
+      desc: isArabic ? "مسارات قيادية، تقنية وتجارة إلكترونية متطورة تبني قادة المستقبل." : "Leadership, tech, & e-commerce tracks building future innovators.",
+      gradient: "from-blue-600 to-indigo-700",
+      lightBg: "bg-blue-50",
+      textColor: "text-blue-700",
+      href: `/${lang}/magic-courses`
+    },
+    {
+      id: "camp",
+      icon: Tent,
+      title: isArabic ? "ماجيكا كامب" : "Magica Camp",
+      subtitle: isArabic ? "مغامرات الوادي الملكي 2026" : "Royal Valley Adventure 2026",
+      desc: isArabic ? "معسكرات صيفية تبني الاستقلالية، القوة البدنية، وروح الفريق." : "Summer camps building independence, grit, and teamwork.",
+      gradient: "from-emerald-500 to-teal-600",
+      lightBg: "bg-emerald-50",
+      textColor: "text-emerald-700",
+      href: `/${lang}/magic-camp`
+    },
+    {
+      id: "supplies",
+      icon: ShoppingBag,
+      title: isArabic ? "ماجيكا سبلايز" : "Magica Supplies",
+      subtitle: isArabic ? "أدوات ذكية للقادة" : "Smart CEO Gear",
+      desc: isArabic ? "حقائب مدرسية طبية فائقة التحمل وأدوات ابتكار متطورة." : "Ergonomic CEO backpacks and advanced innovation toolkits.",
+      gradient: "from-rose-500 to-red-600",
+      lightBg: "bg-rose-50",
+      textColor: "text-rose-700",
+      href: `/${lang}/magic-supplies`
+    },
+    {
+      id: "games",
+      icon: Gamepad2,
+      title: isArabic ? "الألعاب الذهنية" : "Mind Games",
+      subtitle: isArabic ? "تحديات المنطق والتداول" : "Logic & Trading Sim",
+      desc: isArabic ? "ألعاب ذكاء وتداول تفاعلية لتعزيز سرعة البديهة وحل المشكلات." : "Interactive logic and trading games enhancing quick thinking.",
+      gradient: "from-purple-500 to-violet-600",
+      lightBg: "bg-purple-50",
+      textColor: "text-purple-700",
+      href: `/${lang}/magic-games`
+    },
+    {
+      id: "bazar",
+      icon: Store,
+      title: isArabic ? "ماجيكا بازار" : "Magica Bazar",
+      subtitle: isArabic ? "السوق الحقيقي للأبطال" : "Live Kid-Run Market",
+      desc: isArabic ? "متاجر حقيقية يديرها الأطفال لتعلم ريادة الأعمال وحساب الأرباح." : "Real kid-run stores teaching entrepreneurship and profit calculation.",
+      gradient: "from-orange-500 to-amber-600",
+      lightBg: "bg-orange-50",
+      textColor: "text-orange-700",
+      href: `/${lang}/magic-bazar`
+    },
+    {
+      id: "food",
+      icon: UtensilsCrossed,
+      title: isArabic ? "ماجيكا فود" : "Magica Food",
+      subtitle: isArabic ? "وجبات الذكاء الخارق" : "Brain Bento Boxes",
+      desc: isArabic ? "تغذية مصممة خصيصاً لزيادة التركيز والطاقة الإيجابية للأطفال." : "Nutrition specifically designed to boost focus and positive energy.",
+      gradient: "from-lime-500 to-green-600",
+      lightBg: "bg-lime-50",
+      textColor: "text-lime-700",
+      href: `/${lang}/magic-food`
+    },
+    {
+      id: "podcast",
+      icon: Mic,
+      title: isArabic ? "ماجيكا بودكاست" : "Magica Podcast",
+      subtitle: isArabic ? "صوت الأجيال والإرشاد" : "Youth Voice & Mentorship",
+      desc: isArabic ? "منصة إعلامية ومحتوى صوتي تربوي للآباء والأبناء." : "Media platform and educational audio content for parents & kids.",
+      gradient: "from-indigo-600 to-blue-800",
+      lightBg: "bg-indigo-50",
+      textColor: "text-indigo-700",
+      href: `/${lang}/magic-podcast`
+    },
+    {
+      id: "uniform",
+      icon: Shirt,
+      title: isArabic ? "ماجيكا يونيفورم" : "Magica Uniform",
+      subtitle: isArabic ? "هوية الرواد" : "Founder Apparel",
+      desc: isArabic ? "ملابس مصممة للفخامة والراحة، تعزز الانتماء وثقة الطفل بنفسه." : "Apparel designed for prestige and comfort, boosting confidence.",
+      gradient: "from-slate-700 to-slate-900",
+      lightBg: "bg-slate-100",
+      textColor: "text-slate-800",
+      href: `/${lang}/magic-uniform`
+    },
+    {
+      id: "songs",
+      icon: Music2,
+      title: isArabic ? "أغاني وأناشيد" : "Songs & Anthems",
+      subtitle: isArabic ? "مكتبة الإلهام الصوتي" : "Audio Inspiration Library",
+      desc: isArabic ? "موسيقى وأناشيد حصرية لتحفيز الحماس وبناء القيم والأخلاق." : "Exclusive music and anthems to drive enthusiasm and build values.",
+      gradient: "from-fuchsia-500 to-pink-600",
+      lightBg: "bg-fuchsia-50",
+      textColor: "text-fuchsia-700",
+      href: `/${lang}/magic-songs`
+    }
+  ];
 
-    useEffect(() => {
-        const fetchStores = async () => setKidStores(await getKidStores());
-        fetchStores();
-    }, []);
+  return (
+    <div className={`min-h-screen bg-white overflow-hidden ${isArabic ? "font-cairo text-right" : "font-sans text-left"}`} dir={isArabic ? "rtl" : "ltr"}>
+      <MagicalBackground />
+      
+      {/* 1. IMMERSIVE HERO SECTION */}
+      <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-32 px-4 md:px-8">
+        <div className="max-w-7xl mx-auto relative z-10 text-center">
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-100 text-blue-700 font-bold text-sm mb-8 shadow-sm"
+          >
+            <Sparkles className="w-4 h-4 text-blue-500" />
+            <span>{isArabic ? "حيث تبدأ الريادة والتميز الإنساني" : "Where Human Excellence & Leadership Begin"}</span>
+          </motion.div>
+          
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-5xl md:text-7xl lg:text-8xl font-black text-gray-900 mb-6 leading-tight tracking-tight"
+          >
+            {isArabic ? (
+              <>حيث نصنع من الأطفال <br className="hidden md:block"/><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 drop-shadow-sm">قادة ورواد أعمال</span></>
+            ) : (
+              <>Where Children Become <br className="hidden md:block"/><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 drop-shadow-sm">Leaders & Founders</span></>
+            )}
+          </motion.h1>
+          
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-lg md:text-2xl text-gray-600 max-w-3xl mx-auto font-medium mb-12 leading-relaxed"
+          >
+            {isArabic 
+              ? "نظام بيئي متكامل يجمع بين الثقافة المالية، التكنولوجيا، بناء الشخصية، والتهيئة الحقيقية لحياة مليئة بالنجاح والريادة."
+              : "A complete ecosystem combining financial literacy, STEM, character building, and real-world preparation for a life of success."}
+          </motion.p>
+          
+          {/* Bento Stats */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-12"
+          >
+            {[
+              { icon: Users, val: "500+", label: isArabic ? "رائد صغير تخرج" : "Young Founders Trained" },
+              { icon: Award, val: "9", label: isArabic ? "قطاعات متكاملة" : "Integrated Divisions" },
+              { icon: ShieldCheck, val: "100%", label: isArabic ? "بيئة آمنة جاهزة" : "Future-Ready Safe Space" },
+              { icon: Star, val: "4.9/5", label: isArabic ? "رضا أولياء الأمور" : "Parent Satisfaction" }
+            ].map((stat, i) => (
+              <div key={i} className="bg-white/70 backdrop-blur-md border border-gray-100 rounded-3xl p-6 shadow-xl shadow-blue-900/5 hover:shadow-2xl hover:shadow-blue-900/10 hover:-translate-y-1 transition-all">
+                <stat.icon className="w-8 h-8 text-indigo-500 mx-auto mb-3" />
+                <div className="text-3xl font-black text-gray-900 mb-1">{stat.val}</div>
+                <div className="text-sm font-bold text-gray-500">{stat.label}</div>
+              </div>
+            ))}
+          </motion.div>
+          
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          >
+            <Link href={`/${lang}/register`} className="w-full sm:w-auto px-10 py-5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-full shadow-2xl shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-1 transition-all flex items-center justify-center gap-3 text-lg">
+              <span>{isArabic ? "سجل طفلك الآن" : "Register Your Child Now"}</span>
+              <ArrowRight className={`w-5 h-5 ${isArabic ? 'rotate-180' : ''}`} />
+            </Link>
+            <button onClick={() => document.getElementById('sectors')?.scrollIntoView({ behavior: 'smooth' })} className="w-full sm:w-auto px-10 py-5 bg-white text-gray-800 font-bold rounded-full shadow-lg border border-gray-100 hover:bg-gray-50 hover:-translate-y-1 transition-all text-lg">
+              {isArabic ? "استكشف عالم ماجيكا ↓" : "Explore All 9 Sectors ↓"}
+            </button>
+          </motion.div>
+        </div>
+      </section>
 
-    const SUB_BRANDS = [
-        {
-            id: "courses",
-            emoji: "🎓",
-            logoImg: coursesLogo,
-            title: isArabic ? "ماجيكا كورسات" : "Magica Courses",
-            shortName: isArabic ? "الكورسات التدريبية" : "Courses",
-            tagline: isArabic ? "مهارات الغد، تصنع اليوم" : "Tomorrow's Skills, Today.",
-            desc: isArabic
-                ? "مسارات قيادية، تقنية وتجارة إلكترونية متطورة تبني قادة المستقبل ونخبة المبتكرين في بيئة علمية ممتعة."
-                : "Leadership, technology, and e-commerce tracks that empower tomorrow's innovators in a highly engaging scientific environment.",
-            href: `/${lang}/magic-courses`,
-            from: "from-amber-500",
-            to: "to-orange-600",
-            border: "border-orange-200",
-            bg: "bg-orange-50",
-            text: "text-orange-600",
-            badgeBg: "bg-orange-100/80 text-orange-800 border-orange-200",
-            shadowHover: "hover:shadow-orange-500/20",
-            offerings: isArabic
-                ? ["مسارات القيادة وإدارة المشروعات", "التجارة الإلكترونية والتسويق", "الروبوتات والذكاء الاصطناعي", "برمجة وبناء العقول القيادية"]
-                : ["Leadership & Project Management", "E-Commerce & Digital Marketing", "Robotics & Artificial Intelligence", "Executive Mindset & Coding"],
-            previewHeader: isArabic ? "💡 نبذة من المسارات والدورات التدريبية المتاحة:" : "💡 Preview of Featured Training Tracks:",
-            previewItems: (cmsData.courses || []).filter(c => c.published !== false).slice(0, 3).map(c => ({
-                id: c.id,
-                title: isArabic ? c.titleAr : c.titleEn,
-                subtitle: isArabic ? c.ageAr : c.ageEn,
-                badge: isArabic ? (c.badgeAr || "دورة معتمدة") : (c.badgeEn || "Certified Track"),
-                icon: "🎓"
-            })) as PreviewItem[]
-        },
-        {
-            id: "supplies",
-            emoji: "🎒",
-            logoImg: suppliesLogo,
-            title: isArabic ? "ماجيكا سبلايز" : "Magica Supplies",
-            shortName: isArabic ? "الحقائب والأدوات" : "Supplies & Bags",
-            tagline: isArabic ? "جهّز نفسك. جهّز مستقبلك." : "Equip Yourself. Equip Your Future.",
-            desc: isArabic
-                ? "حقائب مدرسية طبية فائقة التحمل وأدوات ابتكار متطورة مصممة لعقول تريد أن تبني وتبتكر وتقود في المدرسة والمعسكرات."
-                : "Ergonomic, water-resistant school bags and innovation toolkits designed for young leaders who want to organize, experiment, and succeed.",
-            href: `/${lang}/magic-supplies`,
-            from: "from-amber-500",
-            to: "to-rose-600",
-            border: "border-amber-200",
-            bg: "bg-amber-50",
-            text: "text-amber-700",
-            badgeBg: "bg-amber-100/80 text-amber-900 border-amber-200",
-            shadowHover: "hover:shadow-amber-500/20",
-            offerings: isArabic
-                ? ["حقائب ظهر مدرسية تنفيذية", "أقسام مخصصة للتابلت والأدوات", "تصميم طبي مدعم لحماية الظهر", "مقاومة للماء ومجهود المدرسة"]
-                : ["Executive CEO School Backpacks", "Dedicated Tablet & Tech Compartments", "Ergonomic Spine Support", "Water-Resistant Heavy-Duty Fabric"],
-            previewHeader: isArabic ? "🎒 نماذج من حقائبنا وأدواتنا الذكية (السعر عند الطلب):" : "🎒 Preview of Smart Executive Bags (Price Upon Inquiry):",
-            previewItems: (cmsData.supplies || []).slice(0, 3).map(s => ({
-                id: s.id,
-                title: isArabic ? s.titleAr : s.titleEn,
-                subtitle: isArabic ? "حقيبة مدرسية طبية مقاومة للماء" : "Waterproof Ergonomic School Bag",
-                badge: isArabic ? "السعر عند الطلب" : "Price Upon Inquiry",
-                icon: "🎒",
-                imageUrl: s.imageUrl || s.galleryPhotos?.[0]
-            })) as PreviewItem[]
-        },
-        {
-            id: "games",
-            emoji: "🎮",
-            logoImg: gamesLogo,
-            title: isArabic ? "ماجيكا ألعاب" : "Magica Games",
-            shortName: isArabic ? "الألعاب الذهنية" : "Mind Games",
-            tagline: isArabic ? "العب، فكّر، وطوّر ذكاءك" : "Play, Think & Grow Your IQ",
-            desc: isArabic
-                ? "ألعاب وتحديات ذكاء ورياضيات مالية تبني الحنكة والتفكير الاستراتيجي والقدرة الفريدة على حل المعضلات والمشاكل."
-                : "Interactive mind challenges and financial mathematics puzzles that sharpen analytical intuition, quick thinking, and IQ.",
-            href: `/${lang}/magic-games`,
-            from: "from-purple-500",
-            to: "to-indigo-600",
-            border: "border-purple-200",
-            bg: "bg-purple-50",
-            text: "text-purple-600",
-            badgeBg: "bg-purple-100/80 text-purple-900 border-purple-200",
-            shadowHover: "hover:shadow-purple-500/20",
-            offerings: isArabic
-                ? ["تحديات الذكاء الرياضي والمنطق", "محاكي التجارة والمبادلات", "ألغاز الابتكار والتفكير النافذ", "نظام النقاط والمكافآت المستمرة"]
-                : ["Analytical Logic & IQ Challenges", "Live Trading & Exchange Simulator", "Creative Problem-Solving Puzzles", "Dynamic Points & Reward System"],
-            previewHeader: isArabic ? "🎮 لمحة من تحدياتنا وألعابنا الذهنية:" : "🎮 Preview of Interactive Mind Challenges:",
-            previewItems: (cmsData.games || []).slice(0, 3).map(g => ({
-                id: g.id,
-                title: isArabic ? g.titleAr : g.titleEn,
-                subtitle: isArabic ? g.categoryAr : g.categoryEn,
-                badge: isArabic ? (g.difficultyAr || "تحدي ذكاء") : (g.difficultyEn || "Brain Challenge"),
-                icon: "🧩",
-                imageUrl: g.imageUrl
-            })) as PreviewItem[]
-        },
-        {
-            id: "camp",
-            emoji: "🏕️",
-            logoImg: campLogo,
-            title: isArabic ? "ماجيكا كامب" : "Magica Camp",
-            shortName: isArabic ? "معسكرات ماجيكا" : "Summer Camps",
-            tagline: isArabic ? "صيف واحد يغيّر كل شيء" : "One Summer Changes Everything",
-            desc: isArabic
-                ? "أكثر من مجرد معسكر صيفي — تجربة تحول حقيقية تُعيد تشكيل شخصية طفلك، تبني ثقته بنفسه وتغرس الاعتماد على الذات."
-                : "More than just a summer camp — a transformative practical experience that reshapes character, leadership, and independence.",
-            href: `/${lang}/magic-camp`,
-            from: "from-teal-500",
-            to: "to-emerald-700",
-            border: "border-teal-200",
-            bg: "bg-teal-50",
-            text: "text-teal-700",
-            badgeBg: "bg-teal-100/80 text-teal-900 border-teal-200",
-            shadowHover: "hover:shadow-teal-500/20",
-            offerings: isArabic
-                ? ["معسكرات صيفية وميدانية شاملة", "أنشطة المغامرات وبناء روح الفريق", "ورش عمل تطبيقية حية في الطبيعة", "تعزيز الثقة بالذات والاعتماد الكامل"]
-                : ["Comprehensive Summer & Holiday Camps", "Outdoor Adventures & Team Building", "Hands-On Practical Workshops", "Confidence & Independence Cultivation"],
-            previewHeader: isArabic ? "🏕️ أبرز برامج ومعسكرات الموسم:" : "🏕️ Featured Camp Programs & Events:",
-            previewItems: (cmsData.camps || []).slice(0, 3).map(m => ({
-                id: m.id,
-                title: isArabic ? m.titleAr : m.titleEn,
-                subtitle: isArabic ? m.locationAr : m.locationEn,
-                badge: isArabic ? "معسكر ميداني" : "Live Camp",
-                icon: "⛺",
-                imageUrl: m.imageUrl || m.galleryPhotos?.[0]
-            })) as PreviewItem[]
-        },
-        {
-            id: "bazar",
-            emoji: "🛍️",
-            logoImg: bazarLogo,
-            title: isArabic ? "ماجيكا بازار" : "Magica Bazar",
-            shortName: isArabic ? "سوق البازار" : "Bazar Market",
-            tagline: isArabic ? "اشتري. بيع. تعلّم. انجح." : "Buy. Sell. Learn. Succeed.",
-            desc: isArabic
-                ? "أول سوق حقيقي وتجربة محاكاة تجارية يتعلم فيها الطفل كيف ينشئ متجره الخاص، يعرض منتجاته بثقة، يفاوض ويدير أرباحه."
-                : "The premier real marketplace where children build their own brand, pitch products with confidence, negotiate deals, and manage actual profit.",
-            href: `/${lang}/magic-bazar`,
-            from: "from-orange-500",
-            to: "to-amber-600",
-            border: "border-orange-200",
-            bg: "bg-orange-50",
-            text: "text-orange-600",
-            badgeBg: "bg-amber-100/80 text-amber-900 border-amber-200",
-            shadowHover: "hover:shadow-orange-500/20",
-            offerings: isArabic
-                ? ["متاجر حقيقية يديرها الأطفال بأنفسهم", "تعلم فنون التسعير وإتقان التفاوض", "تسوق منتجات الابتكار والحرف اليدوية", "تجارب حية لإدارة المال ورأس المال"]
-                : ["Kid-Run Authentic Online & Live Stores", "Pricing Mastery & Negotiation Skills", "Innovative Tech & Handmade Products", "Real-world Capital & Profit Management"],
-            previewHeader: isArabic ? "🛍️ لمحة من متاجر أبطالنا ومنتجاتهم بالبازار:" : "🛍️ Sneak Peek into Live Kid Stores & Marketplace:",
-            previewItems: (kidStores.length > 0 ? kidStores.slice(0, 3).map(s => ({
-                id: s.id,
-                title: isArabic ? (s.storeNameAr || s.nameAr) : (s.storeNameEn || s.nameEn),
-                subtitle: isArabic ? `المالك: ${s.nameAr || "رائد صغير"}` : `Founder: ${s.nameEn || "Young Founder"}`,
-                badge: isArabic ? (s.categoryAr || "متجر مميز") : (s.categoryEn || "Featured Store"),
-                icon: "🛒",
-                imageUrl: s.logoUrl || s.products?.[0]?.imageUrl
-            })) : [
-                { id: "b1", title: isArabic ? "متجر سارة للابتكارات" : "Sara's Innovation Shop", subtitle: isArabic ? "أدوات ومشروعات إبداعية" : "Creative Tools & Projects", badge: isArabic ? "الأكثر مبيعاً" : "Best Seller", icon: "🎨" },
-                { id: "b2", title: isArabic ? "متجر عمر للروبوتات والتكنولوجيا" : "Omar Robotics & Tech Store", subtitle: isArabic ? "قطع وألعاب برمجية ذكية" : "Smart Coding & AI Kits", badge: isArabic ? "متجر معتمد" : "Verified Store", icon: "🤖" },
-                { id: "b3", title: isArabic ? "ركن الفن والحرف اليدوية" : "Art & Crafts Corner", subtitle: isArabic ? "منتجات بأيدي أبطالنا" : "Handmade by Young Founders", badge: isArabic ? "عرض خاص" : "Special Offer", icon: "✨" }
-            ]) as PreviewItem[]
-        },
-        {
-            id: "food",
-            emoji: "🍱",
-            logoImg: foodLogo,
-            title: isArabic ? "ماجيكا فود" : "Magica Food",
-            shortName: isArabic ? "الوجبات والتغذية" : "Smart Food",
-            tagline: isArabic ? "أكل صح = تفكير صح" : "Eat Right = Think Right",
-            desc: isArabic
-                ? "وجبات وصناديق غداء مدرسية مصممة علميًا من قبل خبراء التغذية لدعم تركيز الأطفال، نشاطهم البدني وطاقتهم الذهنية طوال اليوم."
-                : "Scientifically tailored kid meals and smart Bento box lunch kits engineered by nutritionists to boost daily focus, energy, and overall health.",
-            href: `/${lang}/magic-food`,
-            from: "from-blue-600",
-            to: "to-cyan-600",
-            border: "border-blue-200",
-            bg: "bg-blue-50",
-            text: "text-blue-700",
-            badgeBg: "bg-blue-100/80 text-blue-900 border-blue-200",
-            shadowHover: "hover:shadow-blue-500/20",
-            offerings: isArabic
-                ? ["وجبات ذكاء لتعزيز الطاقة والتركيز", "صناديق غداء Bento Boxes صحية", "مكونات طبيعية طازجة خالية من المواد الحافظة", "خطط غذائية تناسب أيام الدراسة والمعسكرات"]
-                : ["High-Energy Brain & Focus Meals", "Custom Nutritious School Bento Boxes", "100% Natural Preservative-Free Ingredients", "Meal Plans Tailored for School & Camp"],
-            previewHeader: isArabic ? "🍱 لمحة من قائمتنا الغذائية الذكية للأطفال:" : "🍱 Preview of Our Smart Kid Meal Menu:",
-            previewItems: (cmsData.food || []).slice(0, 3).map(f => ({
-                id: f.id,
-                title: isArabic ? f.titleAr : f.titleEn,
-                subtitle: isArabic ? f.categoryAr : f.categoryEn,
-                badge: f.calories ? `${f.calories}` : (isArabic ? "وجبة صحية" : "Healthy Meal"),
-                icon: "🥗",
-                imageUrl: f.imageUrl || f.galleryPhotos?.[0]
-            })) as PreviewItem[]
-        },
-        {
-            id: "podcast",
-            emoji: "🎙️",
-            logoImg: podcastLogo,
-            title: isArabic ? "ماجيكا بودكاست" : "Magica Podcast",
-            shortName: isArabic ? "الإذاعة والبودكاست" : "Podcasts & Radio",
-            tagline: isArabic ? "كلام بيفرق ويصنع وعي" : "Words That Matter",
-            desc: isArabic
-                ? "منصتنا الصوتية الموجهة للأطفال والأهالي — حوارات تربوية، استشارات ونصائح ملهمة تبني القادة وتغذي العقول بالفضول والشغف."
-                : "Our pioneering audio station for kids and parents — empowering talks, practical parenting interviews, and youth stories that broaden perspectives.",
-            href: `/${lang}/magic-podcast`,
-            from: "from-purple-600",
-            to: "to-fuchsia-700",
-            border: "border-purple-200",
-            bg: "bg-purple-50",
-            text: "text-purple-700",
-            badgeBg: "bg-purple-100/80 text-purple-900 border-purple-200",
-            shadowHover: "hover:shadow-purple-500/20",
-            offerings: isArabic
-                ? ["حوارات تربوية ونفسية مع أهم الخبراء", "نصائح تطبيقية للأهالي لبناء شخصية القيادي", "تجارب وقصص نجاح حية يحكيها أطفالنا", "بث صوتي متاح على مدار الساعة والمنصات"]
-                : ["In-depth Educational & Psychology Discussions", "Actionable Advice for Parent & Child Mentorship", "Inspirational Stories Hosted by Kids & Youth", "On-Demand Audio Streaming on All Devices"],
-            previewHeader: isArabic ? "🎙️ مقتطفات من أحدث الحلقات الصوتية والبرامج:" : "🎙️ Snippets of Featured Audio Episodes:",
-            previewItems: (cmsData.podcasts || []).slice(0, 3).map(p => ({
-                id: p.id,
-                title: isArabic ? p.titleAr : p.titleEn,
-                subtitle: isArabic ? (p.hostAr || "حوار تربوي") : (p.hostEn || "Educational Talk"),
-                badge: p.duration ? `${p.duration}` : (isArabic ? "حلقة صوتية" : "Audio Episode"),
-                icon: "🎧",
-                imageUrl: p.imageUrl
-            })) as PreviewItem[]
-        },
-        {
-            id: "uniform",
-            emoji: "👕",
-            logoImg: uniformLogo,
-            title: isArabic ? "ماجيكا يونيفورم" : "Magica Uniform",
-            shortName: isArabic ? "الملابس والأزياء" : "Official Apparel",
-            tagline: isArabic ? "البس هويتك واعتز بفريقك" : "Wear Your Identity",
-            desc: isArabic
-                ? "الزي في ماجيكا ليس مجرد ملابس — بل هوية وانتماء وشعور بالفخر والقيادة، مصنوع بخامات قطنية طبية فائقة الجودة للمدرسة والنشاط."
-                : "In Magica, attire is an identity — fostering teamwork, confidence, and belonging, crafted from breathable premium active fabrics for school and field.",
-            href: `/${lang}/magic-uniform`,
-            from: "from-teal-500",
-            to: "to-cyan-600",
-            border: "border-teal-200",
-            bg: "bg-teal-50",
-            text: "text-teal-700",
-            badgeBg: "bg-teal-100/80 text-teal-900 border-teal-200",
-            shadowHover: "hover:shadow-teal-500/20",
-            offerings: isArabic
-                ? ["تيشرتات وهوديز رسمية بشعار ماجيكا", "أقمشة قطنية طبية ومقاومة للمجهود البدني", "تصميمات شبابية عصرية تشعر الطفل بالفخر", "مقاسات متكاملة تناسب جميع المراحل العمرية"]
-                : ["Official Magica Hoodies, Tees, and Caps", "Breathable Ultra-Comfort Active Cotton", "Modern Designs Fostering Leadership Pride", "Complete Range of Sizes for All Age Groups"],
-            previewHeader: isArabic ? "👕 لمحة من أزياء ماجيكا الرسمية:" : "👕 Preview of Magica Official Apparel:",
-            previewItems: (cmsData.uniforms || []).slice(0, 3).map(u => ({
-                id: u.id,
-                title: isArabic ? u.titleAr : u.titleEn,
-                subtitle: isArabic ? u.descAr.substring(0, 42) + "..." : u.descEn.substring(0, 42) + "...",
-                badge: isArabic ? (u.badgeAr || "خامة فاخرة") : (u.badgeEn || "Premium Wear"),
-                icon: "🎽",
-                imageUrl: u.imageUrl || u.galleryPhotos?.[0]
-            })) as PreviewItem[]
-        },
-        {
-            id: "songs",
-            emoji: "🎵",
-            logoImg: null,
-            title: isArabic ? "أغانٍ ونغمات ماجيكا" : "Magica Songs & Anthems",
-            shortName: isArabic ? "مكتبة الموسيقى والنغمات" : "Songs & Anthems",
-            tagline: isArabic ? "استمع، استلهم، وحمّل موسيقى النجاح" : "Listen, Inspire & Download Success Anthems",
-            desc: isArabic
-                ? "المكتبة الصوتية والموسيقى الخاصة بعالم ماجيكا — تصفح، استمع مباشرة، وحمل مجاناً جميع الأناشيد ونغمات الطاقة لدعم تحفيز وتركيز طفلك."
-                : "The official audio hub and soundtrack of Magica Zone — stream previews live or download all 9 exclusive theme songs, motivation beats, and STEM scores completely free.",
-            href: `/${lang}/magic-songs`,
-            from: "from-rose-500",
-            to: "to-purple-600",
-            border: "border-rose-200",
-            bg: "bg-rose-50",
-            text: "text-rose-600",
-            badgeBg: "bg-rose-100/80 text-rose-900 border-rose-200",
-            shadowHover: "hover:shadow-rose-500/20",
-            spanClass: "lg:col-span-2",
-            offerings: isArabic
-                ? ["استماع ومُعاينة مباشرة لـ 9 أغاني حصرية", "تحميل مجاني وفوري بصيغة MP3 فائقة النقاء", "نغمات مخصصة لتحفيز الصباح وأوقات المذاكرة", "أناشيد رسمية لدعم مشروعات وفيديوهات الأطفال"]
-                : ["Live Online Streaming of 9 Exclusive Soundtracks", "100% Free Instant Studio-Quality MP3 Downloads", "Motivational Alarm Beats & STEM Study Playlists", "Official Anthems for Kid Video & Bazar Pitches"],
-            previewHeader: isArabic ? "🎧 أمثلة من النغمات والموسيقى المتاحة للتحميل المجاني:" : "🎧 Sample Anthems Available for Instant Free Download:",
-            previewItems: [
-                { id: "s1", title: isArabic ? "صنّاع المستقبل المشرق (Making Futures Bright)" : "Magica! Making Futures Bright", subtitle: isArabic ? "النشيد الرسمي للأبطال والمبتكرين" : "Official Anthem for Young Innovators", badge: isArabic ? "تحميل مجاني (MP3)" : "Free MP3 Download", icon: "🎵" },
-                { id: "s3", title: isArabic ? "مستعدون للمستقبل (Ready for the Week)" : "Magica, Ready for the Week", subtitle: isArabic ? "نغمة الطاقة والتحفيز لصباح الدراسة" : "Morning Motivation & School Energy Score", badge: isArabic ? "تحميل مجاني (MP3)" : "Free MP3 Download", icon: "⏰" },
-                { id: "s4", title: isArabic ? "أحلام وتطلعات ماجيكا (Magica Dreams)" : "Magica Dreams", subtitle: isArabic ? "موسيقى التركيز الهادئ والتفكير الإبداعي" : "Inspirational Focus & STEM Study Beats", badge: isArabic ? "تحميل مجاني (MP3)" : "Free MP3 Download", icon: "🎧" }
-            ] as PreviewItem[]
-        },
-    ];
-
-    return (
-        <main className="min-h-screen font-[family-name:var(--font-inter)] text-gray-800 overflow-hidden relative pb-24 bg-gray-50">
-            
-            {/* Professional Video Hero Section */}
-            <section className="relative w-full h-[90vh] min-h-[600px] flex items-center justify-center overflow-hidden">
-                {/* Background Video */}
-                <video 
-                    autoPlay 
-                    loop 
-                    muted 
-                    playsInline 
-                    className="absolute inset-0 w-full h-full object-cover z-0"
-                >
-                    <source src="/Hero_Video.mp4" type="video/mp4" />
-                </video>
-
-                {/* Dark Overlay for readability */}
-                <div className="absolute inset-0 bg-black/60 z-0" />
-                
-                {/* Bottom gradient fade into page content */}
-                <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-gray-50 to-transparent z-0" />
-
-                <motion.div
-                    initial={{ y: 30, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.8 }}
-                    className="relative z-10 flex flex-col items-center justify-center gap-6 max-w-5xl mx-auto px-6 text-center mt-10"
-                >
-                    <div className="inline-flex items-center gap-2.5 px-6 py-2.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg text-white font-semibold text-sm tracking-wide">
-                        <Sparkles className="w-4 h-4 text-orange-400" />
-                        <span>{isArabic ? "حيث يبدأ بناء الإنسان وصناعة القادة" : "Where Human Excellence & Leadership Begin"}</span>
+      {/* 2. THE 9-SECTOR INTERACTIVE BENTO ECOSYSTEM */}
+      <section id="sectors" className="py-24 bg-gray-50 relative px-4 md:px-8 border-y border-gray-100">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">{isArabic ? "نظام ماجيكا البيئي" : "The Magica Ecosystem"}</h2>
+            <p className="text-gray-500 font-medium max-w-2xl mx-auto text-lg">{isArabic ? "تسع قطاعات متخصصة تعمل معاً لبناء شخصية متكاملة وجاهزة للمستقبل." : "Nine specialized divisions working together to build a complete, future-ready personality."}</p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {SECTORS.map((sector, i) => (
+              <motion.div 
+                key={sector.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+              >
+                <Link href={sector.href} className="group block h-full bg-white rounded-[2rem] p-8 shadow-xl shadow-gray-200/50 hover:shadow-2xl hover:shadow-gray-300/60 transition-all border border-gray-100 hover:border-gray-200 overflow-hidden relative">
+                  <div className={`absolute top-0 ${isArabic ? 'left-0' : 'right-0'} w-40 h-40 bg-gradient-to-br ${sector.gradient} opacity-5 group-hover:opacity-10 ${isArabic ? 'rounded-br-full' : 'rounded-bl-full'} transition-opacity duration-500 pointer-events-none`} />
+                  
+                  <div className="flex justify-between items-start mb-6 relative z-10">
+                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center bg-gradient-to-br ${sector.gradient} text-white shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-transform`}>
+                      <sector.icon className="w-8 h-8" />
                     </div>
-
-                    <h1 className="text-5xl sm:text-7xl md:text-8xl font-black text-white tracking-tight drop-shadow-xl leading-[1.1]">
-                        {isArabic ? "ماجيكا زون" : "Magica Zone"}
-                    </h1>
-
-                    <p className="text-2xl md:text-3xl font-bold text-gray-200 tracking-wide drop-shadow-md">
-                        {isArabic ? "هنا يُصنع قادة الغد." : "Where Children Become Leaders."}
-                    </p>
-
-                    <p className="text-base md:text-xl text-gray-300 max-w-2xl text-center leading-relaxed font-medium drop-shadow-md">
-                        {isArabic
-                            ? "مهمتنا ليست التسلية المؤقتة — بل التجهيز الشامل للمستقبل. نزوّد الأطفال بمهارات القيادة، الذكاء المالي، ريادة الأعمال، والأدوات الحية التي يحتاجها الإنسان الناجح."
-                            : "Our mission isn't passive entertainment — it's comprehensive life preparation. We equip youth with financial literacy, entrepreneurship, leadership, and hands-on skills for life."}
-                    </p>
-
-                    <div className="flex flex-col sm:flex-row gap-4 mt-8 w-full sm:w-auto">
-                        <Link
-                            href="#sectors-showcase"
-                            className="inline-flex items-center justify-center gap-3 px-10 py-4 bg-orange-500 text-white rounded-full font-bold text-lg hover:bg-orange-600 transition-all shadow-lg w-full sm:w-auto tracking-wide"
-                        >
-                            <span>{isArabic ? "اكتشف قطاعات ومنتجات ماجيكا" : "Explore Sectors & Offerings"}</span>
-                            <span>{isArabic ? "↓" : "↓"}</span>
-                        </Link>
-                        <Link
-                            href={`/${lang}/login`}
-                            className="inline-flex items-center justify-center gap-3 px-10 py-4 bg-white/10 backdrop-blur-md border border-white/30 text-white rounded-full font-bold text-lg hover:bg-white/20 transition-all shadow-lg w-full sm:w-auto tracking-wide"
-                        >
-                            {isArabic ? "بوابة الأهالي والطلاب" : "Parent & Student Portal"}
-                        </Link>
+                    <ArrowUpRight className={`w-6 h-6 text-gray-300 group-hover:text-gray-900 transition-colors ${isArabic ? '-scale-x-100' : ''}`} />
+                  </div>
+                  
+                  <div className="relative z-10">
+                    <div className={`text-xs font-black px-4 py-1.5 rounded-full ${sector.lightBg} ${sector.textColor} inline-block mb-4 border border-current/10`}>
+                      {sector.subtitle}
                     </div>
-                </motion.div>
-
-                {/* Stats Bar Overlaid */}
-                <div className="absolute bottom-10 left-0 right-0 z-10 w-full max-w-5xl mx-auto px-6 hidden md:flex items-center justify-around gap-8">
-                    {stats.map((stat, i) => (
-                        <div key={i} className="text-center px-6 py-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-xl">
-                            <div className="text-3xl lg:text-4xl font-black text-white drop-shadow-sm">{stat.value}</div>
-                            <div className="text-sm font-semibold text-gray-200 mt-1">{stat.label}</div>
-                        </div>
-                    ))}
-                </div>
-            </section>
-
-            {/* Mobile Stats Bar (shown below hero) */}
-            <div className="md:hidden w-full px-6 py-8 bg-gray-50 flex flex-wrap items-center justify-around gap-6 border-b border-gray-200">
-                {stats.map((stat, i) => (
-                    <div key={i} className="text-center">
-                        <div className="text-3xl font-black text-gray-900">{stat.value}</div>
-                        <div className="text-xs font-bold text-gray-600 mt-1">{stat.label}</div>
-                    </div>
-                ))}
-            </div>
-
-            {/* Global Background Floating Elements */}
-            <div className="absolute top-[100vh] bottom-0 left-0 right-0 overflow-hidden pointer-events-none z-0">
-                <motion.div
-                    animate={{ y: [0, -25, 0], rotate: [0, 15, -15, 0] }}
-                    transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
-                    className="absolute top-[5%] left-[8%] text-orange-400 opacity-20 drop-shadow-xl"
-                >
-                    <Sparkles className="w-12 h-12" />
-                </motion.div>
-                <motion.div
-                    animate={{ y: [0, 35, 0], rotate: [0, -20, 20, 0] }}
-                    transition={{ repeat: Infinity, duration: 7, ease: "easeInOut" }}
-                    className="absolute top-[15%] right-[10%] text-teal-400 opacity-20 drop-shadow-xl"
-                >
-                    <Sparkles className="w-10 h-10" />
-                </motion.div>
-                <motion.div
-                    animate={{ y: [0, -40, 0], x: [0, 20, 0], rotate: [0, 10, -10, 0] }}
-                    transition={{ repeat: Infinity, duration: 9, ease: "easeInOut" }}
-                    className="absolute top-[30%] left-[15%] opacity-15 w-24 h-24"
-                >
-                    <Image src={coursesLogo} alt="Floating Courses Logo" fill className="object-contain" />
-                </motion.div>
-                <motion.div
-                    animate={{ y: [0, 30, 0], x: [0, -15, 0], rotate: [0, -15, 15, 0] }}
-                    transition={{ repeat: Infinity, duration: 11, ease: "easeInOut" }}
-                    className="absolute top-[45%] right-[15%] opacity-10 w-32 h-32"
-                >
-                    <Image src={campLogo} alt="Floating Camp Logo" fill className="object-contain" />
-                </motion.div>
-                <motion.div
-                    animate={{ y: [0, -20, 0], rotate: [0, 10, -5, 0] }}
-                    transition={{ repeat: Infinity, duration: 12, ease: "easeInOut" }}
-                    className="absolute top-[70%] left-[10%] opacity-15 w-20 h-20"
-                >
-                    <Image src={gamesLogo} alt="Floating Games Logo" fill className="object-contain" />
-                </motion.div>
-                <motion.div
-                    animate={{ y: [0, 25, 0], x: [0, 15, 0], rotate: [0, -10, 5, 0] }}
-                    transition={{ repeat: Infinity, duration: 14, ease: "easeInOut" }}
-                    className="absolute top-[85%] right-[20%] opacity-15 w-24 h-24"
-                >
-                    <Image src={bazarLogo} alt="Floating Bazar Logo" fill className="object-contain" />
-                </motion.div>
-            </div>
-
-            {/* Philosophy Section */}
-            <section className="relative z-10 max-w-5xl mx-auto px-6 py-12 text-center">
-                <div className="bg-gradient-to-br from-white/90 via-white/80 to-amber-50/70 backdrop-blur-lg border border-orange-100 rounded-3xl p-8 md:p-14 shadow-xl">
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-50 border border-orange-200 text-orange-600 font-extrabold text-sm mb-6">
-                        <Target className="w-4 h-4" />
-                        <span>{isArabic ? "فلسفتنا ومهمتنا" : "Our Philosophy & Mission"}</span>
-                    </div>
-                    <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-gray-900 mb-6 tracking-tight leading-snug">
-                        {isArabic ? "نؤمن أن كل طفل يحمل داخله طاقات وإمكانات قيادية لا حدود لها." : "We believe every child possesses boundless entrepreneurial & leadership potential."}
-                    </h2>
-                    <p className="text-lg md:text-xl text-gray-700 leading-relaxed max-w-3xl mx-auto font-medium">
-                        {isArabic
-                            ? "في ماجيكا زون، نوفر بيئة متكاملة تضم 8 قطاعات تخصصية — من البازار الحقيقي والكورسات إلى التغذية السليمة والحقائب الابتكارية — لتطوير طفل واثق، قيادي، ومستعد بقوة لفرص المستقبل."
-                            : "At Magica Zone, we provide an integrated ecosystem of 8 dynamic sectors — from real kid marketplaces and STEM tracks to nutrition and executive equipment — shaping youth into confident future leaders."}
-                    </p>
-                </div>
-            </section>
-
-            {/* Sectors & Offerings Showcase Section (2-Column Expanded Layout) */}
-            <section id="sectors-showcase" className="relative z-10 max-w-7xl mx-auto px-6 pt-12 pb-20">
-                <div className="text-center mb-16 max-w-3xl mx-auto">
-                    <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-teal-50 border border-teal-200 text-teal-700 font-extrabold text-sm mb-4">
-                        <TrendingUp className="w-4 h-4" />
-                        <span>{isArabic ? "عالم ماجيكا المتكامل" : "Our Comprehensive World"}</span>
-                    </div>
-                    <h2 className="text-3xl sm:text-5xl font-black text-gray-900 tracking-tight mb-4">
-                        {isArabic ? "تعرّف على قطاعات ماجيكا وما نقدمه لأطفالنا" : "Discover All Magica Sectors & What We Offer"}
-                    </h2>
-                    <p className="text-gray-600 text-base md:text-lg font-medium">
-                        {isArabic 
-                            ? "تصفح الأقسام والمكتبات التسعة أدناه لمعرفة الخدمات والعناصر المتاحة في كل قطاع مع نماذج وأمثلة حية من منتجاتنا وبرامجنا:"
-                            : "Explore our 9 specialized divisions and hubs below to discover core offerings along with live previews of featured items and soundtracks:"}
-                    </p>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10">
-                    {[
-                        ...SUB_BRANDS.filter(b => b.id === "camp"),
-                        ...SUB_BRANDS.filter(b => b.id === "courses"),
-                        ...SUB_BRANDS.filter(b => b.id !== "camp" && b.id !== "courses")
-                    ].map((brand, idx) => (
-                        <div 
-                            key={brand.id || idx} 
-                            className={`flex flex-col h-full p-6 md:p-10 rounded-3xl bg-white border border-gray-100 shadow-xl hover:shadow-2xl ${brand.shadowHover} transition-all duration-300 relative overflow-hidden group ${(brand as any).spanClass || ""}`}
-                        >
-                            {/* Top colored highlight line */}
-                            <div className={`absolute top-0 left-0 right-0 h-2 bg-gradient-to-r ${brand.from} ${brand.to}`} />
-                            
-                            {/* Background ambient glow inside card */}
-                            <div className={`absolute -right-10 -top-10 w-44 h-44 rounded-full bg-gradient-to-br ${brand.from} ${brand.to} opacity-10 pointer-events-none group-hover:scale-125 transition-transform duration-700`} />
-
-                            {/* Sector Header Area */}
-                            <div className="flex items-start gap-4 md:gap-6 mb-6 relative z-10">
-                                <div className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl ${brand.bg} border ${brand.border} flex items-center justify-center text-4xl shrink-0 group-hover:scale-105 transition-transform duration-300 shadow-sm`}>
-                                    {brand.logoImg ? (
-                                        <Image src={brand.logoImg} alt={brand.title} className="w-12 h-12 md:w-14 md:h-14 object-contain drop-shadow-sm" />
-                                    ) : (
-                                        <span>{brand.emoji}</span>
-                                    )}
-                                </div>
-                                <div className="flex-grow min-w-0">
-                                    <span className={`text-xs md:text-sm font-black uppercase tracking-wider ${brand.text} block mb-1`}>
-                                        {brand.tagline}
-                                    </span>
-                                    <h3 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight">
-                                        {brand.title}
-                                    </h3>
-                                </div>
-                            </div>
-
-                            {/* Sector Detailed Description */}
-                            <p className="text-gray-600 text-sm md:text-base leading-relaxed font-medium mb-6 relative z-10">
-                                {brand.desc}
-                            </p>
-
-                            {/* What This Sector Offers (Feature Badges) */}
-                            <div className="mb-6 relative z-10">
-                                <h4 className="text-xs font-black text-gray-500 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-                                    <CheckCircle2 className="w-3.5 h-3.5 text-teal-600" />
-                                    <span>{isArabic ? "ماذا يقدم هذا القسم؟" : "What This Sector Offers:"}</span>
-                                </h4>
-                                <div className="flex flex-wrap gap-2">
-                                    {brand.offerings.map((offering, oIndex) => (
-                                        <span key={oIndex} className={`text-xs md:text-sm font-extrabold px-3 py-1.5 rounded-xl border shadow-xs ${brand.badgeBg}`}>
-                                            ✓ {offering}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Live Product / Item Hints Box */}
-                            <div className="flex-grow flex flex-col justify-end relative z-10">
-                                <div className="bg-gray-50/90 border border-gray-200/80 rounded-2xl p-4 md:p-5 mb-6 shadow-inner">
-                                    <h5 className="text-xs md:text-sm font-black text-gray-800 mb-3.5 flex items-center gap-1.5">
-                                        <span>{brand.previewHeader}</span>
-                                    </h5>
-
-                                    {brand.previewItems && brand.previewItems.length > 0 ? (
-                                        <div className="space-y-2.5">
-                                            {brand.previewItems.map((item, itemIdx) => (
-                                                <div 
-                                                    key={item.id || itemIdx} 
-                                                    className="flex items-center gap-3 p-2.5 bg-white rounded-xl border border-gray-200/70 shadow-xs hover:border-gray-300 transition-colors"
-                                                >
-                                                    <div className="w-11 h-11 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center text-xl shrink-0 overflow-hidden">
-                                                        {item.imageUrl ? (
-                                                            <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
-                                                        ) : (
-                                                            <span>{item.icon || brand.emoji}</span>
-                                                        )}
-                                                    </div>
-                                                    <div className="flex-grow min-w-0 text-start">
-                                                        <div className="font-black text-sm text-gray-900 truncate">{item.title}</div>
-                                                        {item.subtitle && (
-                                                            <div className="text-xs font-semibold text-gray-500 truncate mt-0.5">{item.subtitle}</div>
-                                                        )}
-                                                    </div>
-                                                    {item.badge && (
-                                                        <span className="shrink-0 text-[11px] font-black px-2.5 py-1 rounded-lg bg-gray-100 text-gray-800 border border-gray-200">
-                                                            {item.badge}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <div className="p-4 text-center text-sm text-gray-500 font-bold bg-white rounded-xl border border-dashed border-gray-200">
-                                            {isArabic ? "يتم إضافة وتحديث العناصر والمنتجات حالياً في هذا القسم..." : "Items are actively being updated in this sector..."}
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* Call To Action Action Button */}
-                                <Link href={brand.href} className="block w-full">
-                                    <div className={`w-full py-4 px-6 rounded-2xl bg-gradient-to-r ${brand.from} ${brand.to} text-white font-black text-base shadow-md hover:shadow-xl flex items-center justify-center gap-3 transition-all transform active:scale-[0.99]`}>
-                                        <span>{isArabic ? `تصفح جميع العناصر في ${brand.shortName || brand.title}` : `Explore All in ${brand.shortName || brand.title}`}</span>
-                                        <span className="text-xl font-bold">{isArabic ? "←" : "→"}</span>
-                                    </div>
-                                </Link>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </section>
-
-            {/* Bottom Footer Call to Action Banner */}
-            <section className="relative z-10 max-w-5xl mx-auto px-6 mt-6">
-                <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white rounded-3xl p-8 md:p-12 shadow-2xl text-center border border-gray-700 relative overflow-hidden">
-                    <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-orange-500/20 rounded-full blur-2xl pointer-events-none" />
-                    <div className="absolute -right-10 -top-10 w-40 h-40 bg-purple-500/20 rounded-full blur-2xl pointer-events-none" />
                     
-                    <h3 className="text-2xl sm:text-4xl font-black mb-4">
-                        {isArabic ? "هل تريد إشراك طفلك في هذا العالم الساحر؟" : "Ready to Enroll Your Child in This Transformational World?"}
-                    </h3>
-                    <p className="text-gray-300 text-base md:text-lg max-w-2xl mx-auto mb-8 font-medium">
-                        {isArabic
-                            ? "سجل حسابك الآن وافتح أبواب الريادة والابتكار وتطوير الذات لأطفالك بضغطة زر واحدة."
-                            : "Create an account now and open the doors of leadership, STEM innovation, and financial intelligence for your children."}
-                    </p>
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <Link
-                            href={`/${lang}/register`}
-                            className="w-full sm:w-auto px-10 py-4 rounded-full bg-gradient-to-r from-orange-500 to-purple-600 hover:from-orange-600 hover:to-purple-700 text-white font-black text-lg shadow-xl hover:scale-105 transition-transform"
-                        >
-                            {isArabic ? "سجل طفلك الآن" : "Register Your Child Now"}
-                        </Link>
-                        <Link
-                            href={`/${lang}/about`}
-                            className="w-full sm:w-auto px-8 py-4 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-base border border-white/20 transition-colors"
-                        >
-                            {isArabic ? "تعرف على قصتنا" : "Learn More About Us"}
-                        </Link>
+                    <h3 className="text-2xl font-black text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">{sector.title}</h3>
+                    <p className="text-gray-500 font-medium text-sm leading-relaxed">{sector.desc}</p>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 3. THE MAGICA FORMULA */}
+      <section className="py-32 bg-white relative px-4 md:px-8 overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 items-center">
+            <div className="lg:w-1/2">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 font-bold text-sm mb-2 shadow-sm">
+                <Sparkles className="w-4 h-4 text-indigo-500" />
+                <span>{isArabic ? "المحاور الأربعة" : "The 4 Pillars"}</span>
+              </div>
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 mt-6 mb-8 leading-tight">
+                {isArabic ? "منهجية ماجيكا: كيف نصنع الفارق؟" : "The Magica Formula: How We Make a Difference"}
+              </h2>
+              <p className="text-gray-600 font-medium text-xl mb-12 leading-relaxed">
+                {isArabic 
+                  ? "منهجيتنا ليست مجرد دروس، بل هي أسلوب حياة يدمج بين العقل، الجسد، والتطبيق العملي لضمان تأثير حقيقي يلمسه الآباء."
+                  : "Our methodology isn't just lessons—it's a lifestyle combining mind, body, and practical application to guarantee real impact."}
+              </p>
+              
+              <div className="space-y-8">
+                {[
+                  { title: isArabic ? "العقلية التنفيذية" : "Executive Mindset", desc: isArabic ? "تنمية الثقافة المالية والثقة بالتحدث أمام الجمهور." : "Developing financial literacy and public speaking confidence." },
+                  { title: isArabic ? "التطبيق السوقي الحقيقي" : "Real Marketplace Practice", desc: isArabic ? "التدريب على البيع، التسعير، وإدارة المتاجر." : "Training in sales, pricing, and live store management." },
+                  { title: isArabic ? "القوة البدنية والاستقلالية" : "Physical Grit & Independence", desc: isArabic ? "بناء المرونة، العمل الجماعي، وتحمل المسؤولية." : "Building resilience, teamwork, and taking responsibility." },
+                  { title: isArabic ? "الصحة المعرفية" : "Cognitive Health", desc: isArabic ? "تغذية مخصصة لدعم التركيز وطاقة التعلم." : "Customized nutrition supporting focus and learning energy." },
+                ].map((pillar, i) => (
+                  <motion.div 
+                    key={i} 
+                    initial={{ opacity: 0, x: isArabic ? 20 : -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                    className="flex gap-6 items-start"
+                  >
+                    <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 font-black flex items-center justify-center shrink-0 text-xl border border-indigo-100">{i+1}</div>
+                    <div>
+                      <h4 className="text-2xl font-bold text-gray-900 mb-2">{pillar.title}</h4>
+                      <p className="text-gray-600 font-medium text-base leading-relaxed">{pillar.desc}</p>
                     </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+            
+            <div className="lg:w-1/2 w-full relative">
+              <div className="aspect-square bg-gradient-to-tr from-indigo-500 to-blue-600 rounded-[3rem] p-10 relative shadow-2xl overflow-hidden">
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay" />
+                <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-b from-white/10 to-transparent" />
+                <div className="relative h-full flex flex-col justify-center items-center text-center z-10 gap-8">
+                  <div className="w-24 h-24 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center shadow-inner border border-white/30">
+                    <ShieldCheck className="w-12 h-12 text-white" />
+                  </div>
+                  <h3 className="text-4xl md:text-5xl font-black text-white drop-shadow-md leading-tight">{isArabic ? "شريك الآباء الموثوق" : "The Trusted Parent Partner"}</h3>
+                  <p className="text-blue-100 font-medium text-lg md:text-xl max-w-sm drop-shadow-sm leading-relaxed">{isArabic ? "نحن نشاركك رحلة التربية ونقدم لك تقارير دورية وشفافية كاملة عن تطور طفلك." : "We share your parenting journey, offering regular reports and complete transparency on your child's growth."}</p>
+                  <div className="flex items-center gap-3 mt-4 bg-white/10 backdrop-blur-md px-6 py-4 rounded-2xl border border-white/20 text-white font-bold shadow-lg">
+                    <CheckCircle className="w-6 h-6 text-green-300" />
+                    <span>{isArabic ? "موثق ومدعوم بأحدث الأبحاث التربوية" : "Backed by latest educational research"}</span>
+                  </div>
                 </div>
-            </section>
-        </main>
-    );
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. PARENT TESTIMONIALS */}
+      <section className="py-32 bg-gray-900 text-white relative px-4 md:px-8 border-t border-gray-800">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-32 bg-indigo-500/20 blur-[100px] rounded-full pointer-events-none" />
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6">{isArabic ? "قصص نجاح من الواقع" : "Real Success Stories"}</h2>
+            <p className="text-gray-400 font-medium text-xl max-w-2xl mx-auto">{isArabic ? "استمع لما يقوله الآباء عن التحول المذهل في شخصية أبنائهم." : "Hear what parents say about their children's incredible transformation."}</p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                text: isArabic ? "لقد لاحظت تغيراً جذرياً في ثقة ابني. أصبح قادراً على عرض أفكاره بشجاعة أمام الكبار!" : "I noticed a radical change in my son's confidence. He now presents his ideas bravely to adults!",
+                author: isArabic ? "أم يوسف" : "Youssef's Mother",
+                role: isArabic ? "أم لطفل 10 سنوات" : "Mother of 10-year-old"
+              },
+              {
+                text: isArabic ? "تطبيق ماجيكا بازار جعل ابنتي تفهم قيمة المال وكيفية حساب الأرباح. تجربة لا تقدر بثمن." : "The Magica Bazar app made my daughter understand the value of money and profit. Invaluable.",
+                author: isArabic ? "أبو ليلى" : "Laila's Father",
+                role: isArabic ? "أب لطفلة 12 سنة" : "Father of 12-year-old"
+              },
+              {
+                text: isArabic ? "التقارير الأسبوعية ومستوى الاحترافية في التعامل يشعرني بالأمان التام على مستقبل طفلي." : "The weekly reports and professionalism make me feel completely secure about my child's future.",
+                author: isArabic ? "أم عمر" : "Omar's Mother",
+                role: isArabic ? "أم لطفل 8 سنوات" : "Mother of 8-year-old"
+              }
+            ].map((test, i) => (
+              <motion.div 
+                key={i} 
+                whileHover={{ y: -10 }}
+                className="bg-white/5 backdrop-blur-xl p-8 lg:p-10 rounded-3xl border border-white/10 shadow-2xl"
+              >
+                <div className="flex gap-1 mb-8">
+                  {[...Array(5)].map((_, j) => <Star key={j} className="w-5 h-5 fill-yellow-400 text-yellow-400" />)}
+                </div>
+                <p className="text-lg lg:text-xl font-medium leading-relaxed mb-10 text-gray-200">&quot;{test.text}&quot;</p>
+                <div className="flex items-center gap-4 border-t border-white/10 pt-6">
+                  <div className="w-12 h-12 bg-indigo-500 rounded-full flex items-center justify-center font-bold text-xl text-white">
+                    {test.author.charAt(0)}
+                  </div>
+                  <div>
+                    <div className="font-bold text-lg text-white">{test.author}</div>
+                    <div className="text-indigo-300 text-sm font-medium">{test.role}</div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 6. FINAL LEAD CONVERSION BANNER */}
+      <section className="py-32 px-4 md:px-8 pb-48 bg-white"> 
+        <div className="max-w-5xl mx-auto bg-gradient-to-br from-indigo-900 to-blue-900 rounded-[3rem] p-12 md:p-20 text-center text-white shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/30 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-500/30 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+          
+          <div className="relative z-10">
+            <h2 className="text-5xl md:text-7xl font-black mb-8 leading-tight tracking-tight">
+              {isArabic ? "جاهز لتبدأ رحلة طفلك؟" : "Ready to Start Your Child's Journey?"}
+            </h2>
+            <p className="text-xl md:text-2xl text-blue-100 font-medium mb-12 max-w-3xl mx-auto leading-relaxed">
+              {isArabic 
+                ? "انضم إلى مجتمع النخبة حيث نكتشف مواهبهم وننمي قدراتهم القيادية."
+                : "Join the elite community where we discover their talents and develop their leadership potential."}
+            </p>
+            
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+              <Link href={`/${lang}/register`} className="w-full sm:w-auto px-10 py-5 bg-white text-indigo-900 font-black rounded-full shadow-2xl hover:scale-105 hover:shadow-white/20 transition-all text-xl flex items-center justify-center gap-3">
+                {isArabic ? "ابدأ التسجيل الآن" : "Start Registration Now"}
+              </Link>
+              <a href="https://wa.me/201037377505" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto px-10 py-5 bg-[#25D366] text-white font-black rounded-full shadow-2xl hover:scale-105 hover:shadow-[#25D366]/20 transition-all text-xl flex items-center justify-center gap-3">
+                <MessageCircle className="w-7 h-7" />
+                <span>{isArabic ? "تواصل مع مستشارنا" : "Chat with Advisor"}</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. PERSISTENT ANTHEM BAR */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-2xl border-t border-gray-200 p-4 z-50 transform transition-transform shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={togglePlay}
+              className="w-14 h-14 rounded-full bg-gradient-to-br from-fuchsia-600 to-purple-600 text-white flex items-center justify-center shadow-xl hover:scale-105 transition-transform shrink-0"
+            >
+              {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-1" />}
+            </button>
+            <div>
+              <div className="font-black text-gray-900 text-sm md:text-base">{isArabic ? "استمع لروح ماجيكا" : "Listen to Magica Spirit"}</div>
+              <div className="text-xs md:text-sm text-gray-500 font-bold">{isArabic ? "أنشودة البداية (نسخة مختصرة)" : "Opening Anthem (Preview)"}</div>
+            </div>
+          </div>
+          
+          <Link href={`/${lang}/magic-songs`} className="flex items-center gap-2 px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-full font-bold text-sm transition-colors shrink-0 shadow-lg">
+            <Download className="w-4 h-4" />
+            <span className="hidden sm:inline">{isArabic ? "المكتبة الصوتية" : "Full Library"}</span>
+          </Link>
+        </div>
+      </div>
+
+    </div>
+  );
 }
