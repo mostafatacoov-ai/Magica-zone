@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, RefreshCw, Trophy, Star, CheckCircle2 } from "lucide-react";
 import { saveGameScore } from "@/lib/games/gameScores";
+import { useAuth } from "@/context/AuthContext";
 
 interface Card {
     id: number;
@@ -25,6 +26,7 @@ const EMBLEMS = [
 ];
 
 export default function MemoryMatchGame({ lang }: { lang: string }) {
+    const { user } = useAuth();
     const isArabic = lang === "ar";
     const [cards, setCards] = useState<Card[]>([]);
     const [firstChoice, setFirstChoice] = useState<Card | null>(null);
@@ -130,8 +132,9 @@ export default function MemoryMatchGame({ lang }: { lang: string }) {
             setEarnedStars(stars);
             setEarnedScore(score);
             setIsWon(true);
-            saveGameScore("memory-match", score, stars, 50);
+            saveGameScore(user?.uid || "", "memory-match", score, stars, 50);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [matches, moves]);
 
     return (

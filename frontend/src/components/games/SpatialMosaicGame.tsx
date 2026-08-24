@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Shapes, Trophy, Star, RefreshCw, Sparkles, Check, ArrowRight } from "lucide-react";
 import { saveGameScore } from "@/lib/games/gameScores";
+import { useAuth } from "@/context/AuthContext";
 
 interface MosaicLevel {
     titleEn: string;
@@ -52,6 +53,7 @@ const LEVELS: MosaicLevel[] = [
 ];
 
 export default function SpatialMosaicGame({ lang }: { lang: string }) {
+    const { user } = useAuth();
     const isArabic = lang === "ar";
     const [currentLevelIdx, setCurrentLevelIdx] = useState<number>(0);
     const [score, setScore] = useState<number>(0);
@@ -87,7 +89,7 @@ export default function SpatialMosaicGame({ lang }: { lang: string }) {
         else if (finalScore >= 750) stars = 4;
 
         setEarnedStars(stars);
-        saveGameScore("spatial-mosaic", finalScore, stars, 50);
+        saveGameScore(user?.uid || "", "spatial-mosaic", finalScore, stars, 50);
     };
 
     const restartGame = () => {

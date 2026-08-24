@@ -1,3 +1,6 @@
+import { doc, getDoc, setDoc, updateDoc, collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../firebase/firebase";
+
 export interface KidProduct {
     id: string;
     title: string;
@@ -23,9 +26,8 @@ export interface KidStore {
     isOwnStore?: boolean;
     createdAt: string;
     bannerUrl?: string;
+    userId?: string;
 }
-
-const STORAGE_KEY = "magica_kid_stores_v1";
 
 const INITIAL_SEED_STORES: KidStore[] = [
     {
@@ -84,37 +86,54 @@ const INITIAL_SEED_STORES: KidStore[] = [
     }
 ];
 
-export function getKidStores(): KidStore[] {
-    if (typeof window === "undefined") return INITIAL_SEED_STORES;
+export async function getKidStores(): Promise<KidStore[]> {
     try {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) {
-            const parsed = JSON.parse(stored);
-            if (Array.isArray(parsed) && parsed.length > 0) {
-                return parsed;
-            }
-        }
-        // Save initial seed if empty
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_SEED_STORES));
-        return INITIAL_SEED_STORES;
+        const q = query(collection(db, "kidStores"));
+        const querySnapshot = await getDocs(q);
+        const stores = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as KidStore));
+        
+        // Include initial seeds for demo purposes if desired, or return just db stores
+        return [...INITIAL_SEED_STORES, ...stores];
     } catch (e) {
-        console.error("Error reading kid stores from localStorage", e);
+        console.error("Error reading kid stores from Firestore", e);
         return INITIAL_SEED_STORES;
     }
 }
 
-export function getStoreById(id: string): KidStore | undefined {
-    const stores = getKidStores();
-    return stores.find(s => s.id === id);
+export async function getStoreById(id: string): Promise<KidStore | undefined> {
+    try {
+        // Check seeds first
+        const seed = INITIAL_SEED_STORES.find(s => s.id === id);
+        if (seed) return seed;
+
+        const docRef = doc(db, "kidStores", id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            return { id: docSnap.id, ...docSnap.data() } as KidStore;
+        }
+    } catch (e) {
+        console.error("Error fetching store", e);
+    }
+    return undefined;
 }
 
-export function getChildPersonalStore(): KidStore | null {
-    const stores = getKidStores();
-    // Return the store created by the active child in their browser
-    return stores.find(s => s.isOwnStore === true) || null;
+export async function getChildPersonalStore(userId?: string): Promise<KidStore | null> {
+    if (!userId) return null;
+    try {
+        const q = query(collection(db, "kidStores"), where("userId", "==", userId));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+            const doc = querySnapshot.docs[0];
+            return { id: doc.id, ...doc.data(), isOwnStore: true } as KidStore;
+        }
+        return null;
+    } catch (e) {
+        console.error("Error fetching personal store", e);
+        return null;
+    }
 }
 
-export function createKidStore(data: {
+export async function createKidStore(userId: string, data: {
     childName: string;
     storeNameEn: string;
     storeNameAr: string;
@@ -123,86 +142,130 @@ export function createKidStore(data: {
     descriptionAr: string;
     colorTheme?: string;
     bgGradient?: string;
-}): KidStore {
-    const stores = getKidStores();
-    const id = data.storeNameEn.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || `store-${Date.now()}`;
+}): Promise<KidStore | null> {
+    if (!userId) return null;
+    
+    try {
+        // Check if user already has a store
+        const existingStore = await getChildPersonalStore(userId);
+        const storeId = existingStore ? existingStore.id : `store-${userId}-${Date.now().toString().slice(-4)}`;
 
-    const newStore: KidStore = {
-        id: `${id}-${Date.now().toString().slice(-4)}`,
-        childName: data.childName || "Magica Champion",
-        storeNameEn: data.storeNameEn,
-        storeNameAr: data.storeNameAr,
-        logo: data.logo || "🛍️",
-        descriptionEn: data.descriptionEn,
-        descriptionAr: data.descriptionAr,
-        colorTheme: data.colorTheme || "from-orange-500 to-purple-600",
-        bgGradient: data.bgGradient || "bg-orange-500/10 border-orange-500/20 text-orange-600",
-        products: [],
-        isOwnStore: true,
-        createdAt: new Date().toISOString().split("T")[0]
-    };
+        const newStore: KidStore = {
+            id: storeId,
+            userId,
+            childName: data.childName || "Magica Champion",
+            storeNameEn: data.storeNameEn,
+            storeNameAr: data.storeNameAr,
+            logo: data.logo || "🛍️",
+            descriptionEn: data.descriptionEn,
+            descriptionAr: data.descriptionAr,
+            colorTheme: data.colorTheme || "from-orange-500 to-purple-600",
+            bgGradient: data.bgGradient || "bg-orange-500/10 border-orange-500/20 text-orange-600",
+            products: existingStore ? existingStore.products : [],
+            createdAt: existingStore ? existingStore.createdAt : new Date().toISOString().split("T")[0]
+        };
 
-    // Replace old personal store if one already existed or append
-    const existingIndex = stores.findIndex(s => s.isOwnStore === true);
-    let updatedStores = [...stores];
-    if (existingIndex >= 0) {
-        newStore.products = updatedStores[existingIndex].products; // keep existing products if rebuilding profile
-        updatedStores[existingIndex] = newStore;
-    } else {
-        updatedStores = [newStore, ...stores];
+        const docRef = doc(db, "kidStores", storeId);
+        await setDoc(docRef, newStore, { merge: true });
+
+        if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("magica-stores-updated"));
+        }
+
+        return { ...newStore, isOwnStore: true };
+    } catch (e) {
+        console.error("Failed to create store", e);
+        return null;
     }
-
-    if (typeof window !== "undefined") {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedStores));
-        window.dispatchEvent(new CustomEvent("magica-stores-updated"));
-    }
-
-    return newStore;
 }
 
-export function addProductToStore(storeId: string, productData: {
+export async function addProductToStore(storeId: string, productData: {
     title: string;
     sellingPrice: number;
     costPrice: number;
     icon: string;
     category?: string;
-}): KidProduct | null {
-    const stores = getKidStores();
-    const index = stores.findIndex(s => s.id === storeId);
-    if (index === -1) return null;
+}): Promise<KidProduct | null> {
+    try {
+        const docRef = doc(db, "kidStores", storeId);
+        const docSnap = await getDoc(docRef);
+        if (!docSnap.exists()) return null;
 
-    const profit = Number(productData.sellingPrice) - Number(productData.costPrice);
-    const newProduct: KidProduct = {
-        id: `prod-${Date.now()}-${Math.floor(Math.random()*1000)}`,
-        title: productData.title,
-        sellingPrice: Number(productData.sellingPrice),
-        costPrice: Number(productData.costPrice),
-        profit: isNaN(profit) ? 0 : profit,
-        icon: productData.icon || "🎁",
-        category: productData.category || "Magica Item"
-    };
+        const storeData = docSnap.data() as KidStore;
+        const profit = Number(productData.sellingPrice) - Number(productData.costPrice);
+        
+        const newProduct: KidProduct = {
+            id: `prod-${Date.now()}-${Math.floor(Math.random()*1000)}`,
+            title: productData.title,
+            sellingPrice: Number(productData.sellingPrice),
+            costPrice: Number(productData.costPrice),
+            profit: isNaN(profit) ? 0 : profit,
+            icon: productData.icon || "🎁",
+            category: productData.category || "Magica Item"
+        };
 
-    stores[index].products.unshift(newProduct);
+        const updatedProducts = [newProduct, ...(storeData.products || [])];
+        await updateDoc(docRef, { products: updatedProducts });
 
-    if (typeof window !== "undefined") {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(stores));
-        window.dispatchEvent(new CustomEvent("magica-stores-updated"));
+        if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("magica-stores-updated"));
+        }
+
+        return newProduct;
+    } catch (e) {
+        console.error("Error adding product", e);
+        return null;
     }
-
-    return newProduct;
 }
 
-export function removeProductFromStore(storeId: string, productId: string): boolean {
-    const stores = getKidStores();
-    const index = stores.findIndex(s => s.id === storeId);
-    if (index === -1) return false;
+export async function removeProductFromStore(storeId: string, productId: string): Promise<boolean> {
+    try {
+        const docRef = doc(db, "kidStores", storeId);
+        const docSnap = await getDoc(docRef);
+        if (!docSnap.exists()) return false;
 
-    stores[index].products = stores[index].products.filter(p => p.id !== productId);
+        const storeData = docSnap.data() as KidStore;
+        const updatedProducts = (storeData.products || []).filter(p => p.id !== productId);
+        
+        await updateDoc(docRef, { products: updatedProducts });
 
-    if (typeof window !== "undefined") {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(stores));
-        window.dispatchEvent(new CustomEvent("magica-stores-updated"));
+        if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("magica-stores-updated"));
+        }
+
+        return true;
+    } catch (e) {
+        console.error("Error removing product", e);
+        return false;
     }
+}
 
-    return true;
+export async function updateKidStore(storeId: string, data: Partial<KidStore>): Promise<boolean> {
+    try {
+        const docRef = doc(db, "kidStores", storeId);
+        await updateDoc(docRef, data);
+        if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("magica-stores-updated"));
+        }
+        return true;
+    } catch (e) {
+        console.error("Error updating kid store", e);
+        return false;
+    }
+}
+
+import { deleteDoc } from "firebase/firestore";
+
+export async function deleteKidStore(storeId: string): Promise<boolean> {
+    try {
+        const docRef = doc(db, "kidStores", storeId);
+        await deleteDoc(docRef);
+        if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("magica-stores-updated"));
+        }
+        return true;
+    } catch (e) {
+        console.error("Error deleting kid store", e);
+        return false;
+    }
 }

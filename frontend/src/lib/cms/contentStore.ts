@@ -108,6 +108,7 @@ export interface CourseItem {
     instructorNameAr?: string;
     instructorImageUrl?: string;
     published?: boolean;
+    categoryId?: string; // e.g. 'STEM', 'ART', 'TECH'
     createdAt?: string;
     updatedAt?: string;
 }
@@ -377,7 +378,8 @@ const INITIAL_CMS_DATA: CompleteCMSData = {
             instructorNameEn: "Ahmed Magdy",
             instructorNameAr: "أحمد مجدي",
             instructorImageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=200",
-            published: true
+            published: true,
+            categoryId: "STEM"
         },
         {
             id: "course-public-speaking",
@@ -400,7 +402,8 @@ const INITIAL_CMS_DATA: CompleteCMSData = {
             instructorNameEn: "Sarah Ali",
             instructorNameAr: "سارة علي",
             instructorImageUrl: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200",
-            published: true
+            published: true,
+            categoryId: "ART"
         },
         {
             id: "course-bazar-maker",
@@ -423,7 +426,8 @@ const INITIAL_CMS_DATA: CompleteCMSData = {
             instructorNameEn: "Omar Youssef",
             instructorNameAr: "عمر يوسف",
             instructorImageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200",
-            published: true
+            published: true,
+            categoryId: "TECH"
         }
     ],
     camps: [
@@ -653,13 +657,18 @@ export function getCMSData(): CompleteCMSData {
 async function syncToCloudBackend(section?: string, data?: any): Promise<void> {
     if (typeof window === "undefined") return;
     try {
-        await fetch('/api/cms', {
+        const res = await fetch('/api/cms', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(section ? { section, data } : { data })
         });
+        if (!res.ok) {
+            const errorText = await res.text();
+            throw new Error(`Failed with status ${res.status}: ${errorText}`);
+        }
     } catch (e) {
-        console.warn("Could not sync CMS data to cloud backend (offline mode active):", e);
+        console.error("Could not sync CMS data to cloud backend (offline mode active):", e);
+        alert("Database sync failed. The changes were only saved locally. Please check your connection and Firebase configuration.");
     }
 }
 

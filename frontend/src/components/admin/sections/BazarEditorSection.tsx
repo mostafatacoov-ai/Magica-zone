@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getKidStores, KidStore, KidProduct } from "@/lib/bazar/kidStores";
+import { getKidStores, KidStore, KidProduct, createKidStore, updateKidStore, deleteKidStore } from "@/lib/bazar/kidStores";
 import PhotoUploader from "@/components/admin/PhotoUploader";
 import { Store, Plus, Trash2, Edit3, Save, DollarSign, X, Package, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -12,51 +12,51 @@ export default function BazarEditorSection({ lang }: { lang: string }) {
     const [editingStoreId, setEditingStoreId] = useState<string | null>(null);
     const [savedNotice, setSavedNotice] = useState(false);
 
+    const fetchStores = async () => setStores(await getKidStores());
     useEffect(() => {
-        setStores(getKidStores());
+        fetchStores();
+        const handleUpdate = () => fetchStores();
+        window.addEventListener("magica-stores-updated", handleUpdate);
+        return () => window.removeEventListener("magica-stores-updated", handleUpdate);
     }, []);
 
-    const saveToStorage = (newStores: KidStore[]) => {
-        setStores(newStores);
-        localStorage.setItem("magica_kid_stores_v1", JSON.stringify(newStores));
+    const showSavedNotice = () => {
         setSavedNotice(true);
         setTimeout(() => setSavedNotice(false), 3000);
     };
 
-    const handleAddStore = () => {
-        const newStore: KidStore = {
-            id: `store-${Date.now()}`,
+    const handleAddStore = async () => {
+        const dummyUserId = `admin-${Date.now()}`;
+        const newStore = await createKidStore(dummyUserId, {
             childName: "Junior Creator",
             storeNameEn: "New Innovation & Crafts Store",
             storeNameAr: "متجر الابتكارات والحرف السحرية الجديد",
             logo: "🪄",
-            descriptionEn: "Welcome to my store! Take a look at my handmade goods and calculated profit creations.",
-            descriptionAr: "مرحبًا بكم في متجري! تصفحوا أفكاري ومنتجاتي المحضرة بحسابات أرباح وذكاء تجاري حقيقي.",
+            descriptionEn: "Welcome to my store!",
+            descriptionAr: "مرحبًا بكم في متجري!",
             colorTheme: "from-orange-500 to-amber-600",
-            bgGradient: "bg-orange-500/10 border-orange-500/20 text-orange-600",
-            createdAt: "2026-08-01",
-            bannerUrl: "https://images.unsplash.com/photo-1535223289827-42f1e9919769?auto=format&fit=crop&q=80&w=800",
-            products: [
-                { id: `p-${Date.now()}-1`, title: "Magic Prototype Wand / نموذج العصا المبتكرة", sellingPrice: 35, costPrice: 15, profit: 20, icon: "✨", category: "Crafts", imageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=400" }
-            ]
-        };
-        saveToStorage([newStore, ...stores]);
-        setEditingStoreId(newStore.id);
+            bgGradient: "bg-orange-500/10 border-orange-500/20 text-orange-600"
+        });
+        if (newStore) {
+            setEditingStoreId(newStore.id);
+            showSavedNotice();
+        }
     };
 
-    const handleDeleteStore = (id: string) => {
+    const handleDeleteStore = async (id: string) => {
         if (!confirm(isArabic ? "هل أنت متأكد من حذف هذا المتجر بالكامل؟" : "Delete this entire kid store?")) return;
-        saveToStorage(stores.filter(s => s.id !== id));
+        await deleteKidStore(id);
         if (editingStoreId === id) setEditingStoreId(null);
+        showSavedNotice();
     };
 
-    const handleUpdateStore = (storeId: string, updatedStore: KidStore) => {
+    const handleUpdateStore = async (storeId: string, updatedStore: KidStore) => {
         const copy = stores.map(s => s.id === storeId ? updatedStore : s);
-        setStores(copy);
-        localStorage.setItem("magica_kid_stores_v1", JSON.stringify(copy));
+        setStores(copy); // Optimistic UI update
+        await updateKidStore(storeId, updatedStore);
     };
 
-    const handleAddProduct = (store: KidStore) => {
+    const handleAddProduct = async (store: KidStore) => {
         const newProd: KidProduct = {
             id: `p-${Date.now()}`,
             title: "New Bazar Item / منتج بازار جديد",
@@ -67,20 +67,19 @@ export default function BazarEditorSection({ lang }: { lang: string }) {
             category: "General",
             imageUrl: ""
         };
-        handleUpdateStore(store.id, { ...store, products: [...store.products, newProd] });
+        await handleUpdateStore(store.id, { ...store, products: [...store.products, newProd] });
     };
 
-    const handleUpdateProduct = (store: KidStore, index: number, updatedProd: KidProduct) => {
+    const handleUpdateProduct = async (store: KidStore, index: number, updatedProd: KidProduct) => {
         const pCopy = [...store.products];
-        // Automatic profit math
         updatedProd.profit = updatedProd.sellingPrice - updatedProd.costPrice;
         pCopy[index] = updatedProd;
-        handleUpdateStore(store.id, { ...store, products: pCopy });
+        await handleUpdateStore(store.id, { ...store, products: pCopy });
     };
 
-    const handleDeleteProduct = (store: KidStore, index: number) => {
+    const handleDeleteProduct = async (store: KidStore, index: number) => {
         const pCopy = store.products.filter((_, i) => i !== index);
-        handleUpdateStore(store.id, { ...store, products: pCopy });
+        await handleUpdateStore(store.id, { ...store, products: pCopy });
     };
 
     return (

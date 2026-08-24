@@ -39,7 +39,8 @@ export default function MagicaZoneHome({ params: { lang } }: { params: { lang: s
     const stats = STATS(isArabic);
 
     useEffect(() => {
-        setKidStores(getKidStores());
+        const fetchStores = async () => setKidStores(await getKidStores());
+        fetchStores();
     }, []);
 
     const SUB_BRANDS = [

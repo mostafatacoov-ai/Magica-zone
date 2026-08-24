@@ -16,8 +16,9 @@ export default function MagicBazarPage({ params: { lang } }: { params: { lang: s
     const [stores, setStores] = useState<KidStore[]>([]);
 
     useEffect(() => {
-        setStores(getKidStores());
-        const handleUpdate = () => setStores(getKidStores());
+        const fetchStores = async () => setStores(await getKidStores());
+        fetchStores();
+        const handleUpdate = () => fetchStores();
         window.addEventListener("magica-stores-updated", handleUpdate);
         return () => window.removeEventListener("magica-stores-updated", handleUpdate);
     }, []);

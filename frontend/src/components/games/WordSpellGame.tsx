@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BookOpen, Trophy, Star, RefreshCw, Sparkles, Lightbulb, CheckCircle, HelpCircle } from "lucide-react";
 import { saveGameScore } from "@/lib/games/gameScores";
+import { useAuth } from "@/context/AuthContext";
 
 interface Riddle {
     questionEn: string;
@@ -64,6 +65,7 @@ const RIDDLES: Riddle[] = [
 ];
 
 export default function WordSpellGame({ lang }: { lang: string }) {
+    const { user } = useAuth();
     const isArabic = lang === "ar";
     const [currentStep, setCurrentStep] = useState<number>(0);
     const [score, setScore] = useState<number>(0);
@@ -101,7 +103,7 @@ export default function WordSpellGame({ lang }: { lang: string }) {
         if (finalScore >= 1000) stars = 5;
         else if (finalScore >= 750) stars = 4;
         setEarnedStars(stars);
-        saveGameScore("word-spell", finalScore, stars, 60);
+        saveGameScore(user?.uid || "", "word-spell", finalScore, stars, 60);
     };
 
     const resetGame = () => {

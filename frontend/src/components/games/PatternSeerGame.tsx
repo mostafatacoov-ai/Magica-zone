@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, Trophy, Star, RefreshCw, Volume2, ShieldAlert } from "lucide-react";
 import { saveGameScore } from "@/lib/games/gameScores";
+import { useAuth } from "@/context/AuthContext";
 
 interface Crystal {
     id: number;
@@ -22,6 +23,7 @@ const CRYSTALS: Crystal[] = [
 ];
 
 export default function PatternSeerGame({ lang }: { lang: string }) {
+    const { user } = useAuth();
     const isArabic = lang === "ar";
     const [sequence, setSequence] = useState<number[]>([]);
     const [userStep, setUserStep] = useState<number>(0);
@@ -103,7 +105,7 @@ export default function PatternSeerGame({ lang }: { lang: string }) {
         else if (level >= 4) stars = 4;
 
         setEarnedStars(stars);
-        saveGameScore("pattern-seer", score + level * 50, stars, 50);
+        saveGameScore(user?.uid || "", "pattern-seer", score + level * 50, stars, 50);
     };
 
     return (

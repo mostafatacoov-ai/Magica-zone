@@ -14,14 +14,17 @@ export default function KidMiniStorePage({ params: { lang, id } }: { params: { l
     const [orderPlaced, setOrderPlaced] = useState(false);
 
     useEffect(() => {
-        const found = getStoreById(id);
-        if (found) {
-            setStore(found);
-        } else {
-            // Check if state updated later
-            const all = getKidStores();
-            setStore(all.find(s => s.id === id));
-        }
+        const fetchStoreData = async () => {
+            const found = await getStoreById(id);
+            if (found) {
+                setStore(found);
+            } else {
+                // Check if state updated later
+                const all = await getKidStores();
+                setStore(all.find(s => s.id === id));
+            }
+        };
+        fetchStoreData();
     }, [id]);
 
     const addToCart = (product: KidProduct) => {

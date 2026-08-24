@@ -21,8 +21,8 @@ export default function MagicGamesPage({ params: { lang } }: { params: { lang: s
     const [totalStars, setTotalStars] = useState<number>(0);
     const [totalPoints, setTotalPoints] = useState<number>(0);
 
-    const loadScores = () => {
-        const data = getKidGameScores();
+    const loadScores = async () => {
+        const data = await getKidGameScores();
         setScores(data);
 
         let starsSum = 0;

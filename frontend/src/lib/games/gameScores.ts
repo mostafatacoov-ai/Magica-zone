@@ -1,3 +1,6 @@
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { db } from "../firebase/firebase";
+
 export interface GameInfo {
     id: string;
     titleEn: string;
@@ -82,9 +85,6 @@ export const ALL_GAMES_INFO: GameInfo[] = [
     }
 ];
 
-const SCORES_STORAGE_KEY = "magica_game_scores";
-const POINTS_STORAGE_KEY = "magica_magic_points";
-
 // Initial mock scores to give immediate engaging visual flair on first load
 const INITIAL_SCORES: Record<string, GameScore> = {
     "memory-match": { gameId: "memory-match", bestScore: 850, stars: 4, playsCount: 5, lastPlayed: "Today" },
@@ -94,26 +94,39 @@ const INITIAL_SCORES: Record<string, GameScore> = {
     "spatial-mosaic": { gameId: "spatial-mosaic", bestScore: 780, stars: 4, playsCount: 4, lastPlayed: "Yesterday" }
 };
 
-export function getKidGameScores(): Record<string, GameScore> {
-    if (typeof window === "undefined") return INITIAL_SCORES;
+export async function getKidGameScores(userId?: string): Promise<Record<string, GameScore>> {
+    if (!userId) return INITIAL_SCORES;
     try {
-        const stored = localStorage.getItem(SCORES_STORAGE_KEY);
-        if (stored) {
-            return JSON.parse(stored);
+        const docRef = doc(db, "users", userId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            if (data.gameScores) {
+                return data.gameScores;
+            }
         }
-        // Save initial mock data for seamless demo
-        localStorage.setItem(SCORES_STORAGE_KEY, JSON.stringify(INITIAL_SCORES));
         return INITIAL_SCORES;
     } catch (e) {
-        console.error("Failed to read game scores", e);
+        console.error("Failed to read game scores from Firestore", e);
         return INITIAL_SCORES;
     }
 }
 
-export function saveGameScore(gameId: string, newScore: number, earnedStars: number, pointsAdded: number = 50): void {
-    if (typeof window === "undefined") return;
+export async function saveGameScore(userId: string, gameId: string, newScore: number, earnedStars: number, pointsAdded: number = 50): Promise<void> {
+    if (!userId) return;
     try {
-        const currentScores = getKidGameScores();
+        const docRef = doc(db, "users", userId);
+        const docSnap = await getDoc(docRef);
+        
+        let currentScores = { ...INITIAL_SCORES };
+        let currentPoints = 350;
+
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            if (data.gameScores) currentScores = data.gameScores;
+            if (data.points !== undefined) currentPoints = data.points;
+        }
+
         const existing = currentScores[gameId] || { gameId, bestScore: 0, stars: 0, playsCount: 0 };
 
         const updatedScore: GameScore = {
@@ -125,37 +138,52 @@ export function saveGameScore(gameId: string, newScore: number, earnedStars: num
         };
 
         currentScores[gameId] = updatedScore;
-        localStorage.setItem(SCORES_STORAGE_KEY, JSON.stringify(currentScores));
+        const newPoints = currentPoints + pointsAdded;
 
-        // Add to total magic points
-        const currentPoints = getTotalMagicPoints();
-        localStorage.setItem(POINTS_STORAGE_KEY, (currentPoints + pointsAdded).toString());
+        await setDoc(docRef, {
+            gameScores: currentScores,
+            points: newPoints
+        }, { merge: true });
 
         // Dispatch customized event for real-time dashboard UI reactivity
-        window.dispatchEvent(new Event("magica-scores-updated"));
-    } catch (e) {
-        console.error("Failed to save game score", e);
-    }
-}
-
-export function getTotalMagicPoints(): number {
-    if (typeof window === "undefined") return 350;
-    try {
-        const stored = localStorage.getItem(POINTS_STORAGE_KEY);
-        if (stored && !isNaN(parseInt(stored))) {
-            return parseInt(stored);
+        if (typeof window !== "undefined") {
+            window.dispatchEvent(new Event("magica-scores-updated"));
         }
-        // Calculate initial sum or default 350
-        localStorage.setItem(POINTS_STORAGE_KEY, "350");
+    } catch (e) {
+        console.error("Failed to save game score to Firestore", e);
+    }
+}
+
+export async function getTotalMagicPoints(userId?: string): Promise<number> {
+    if (!userId) return 350;
+    try {
+        const docRef = doc(db, "users", userId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            if (data.points !== undefined) {
+                return data.points;
+            }
+        }
         return 350;
     } catch (e) {
         return 350;
     }
 }
 
-export function resetGameScores(): void {
-    if (typeof window === "undefined") return;
-    localStorage.setItem(SCORES_STORAGE_KEY, JSON.stringify(INITIAL_SCORES));
-    localStorage.setItem(POINTS_STORAGE_KEY, "350");
-    window.dispatchEvent(new Event("magica-scores-updated"));
+export async function resetGameScores(userId: string): Promise<void> {
+    if (!userId) return;
+    try {
+        const docRef = doc(db, "users", userId);
+        await setDoc(docRef, {
+            gameScores: INITIAL_SCORES,
+            points: 350
+        }, { merge: true });
+        
+        if (typeof window !== "undefined") {
+            window.dispatchEvent(new Event("magica-scores-updated"));
+        }
+    } catch(e) {
+        console.error("Error resetting game scores", e);
+    }
 }

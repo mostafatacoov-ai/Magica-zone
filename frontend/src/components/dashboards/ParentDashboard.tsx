@@ -52,8 +52,13 @@ export default function ParentDashboard({ lang }: { lang: string }) {
     const [expandedChildId, setExpandedChildId] = useState<number | null>(1);
 
     useEffect(() => {
-        setGameScores(getKidGameScores());
-        const handleUpdate = () => setGameScores(getKidGameScores());
+        const fetchScores = async () => {
+            // Ideally we pass the specific child's userId here
+            setGameScores(await getKidGameScores());
+        };
+        fetchScores();
+        
+        const handleUpdate = () => fetchScores();
         window.addEventListener("magica-scores-updated", handleUpdate);
         return () => window.removeEventListener("magica-scores-updated", handleUpdate);
     }, []);

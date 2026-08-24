@@ -24,10 +24,16 @@ export default function MagicCoursesPage({ params: { lang } }: { params: { lang:
 
     const filteredCourses = courses.filter(course => {
         if (selectedCategory === "ALL") return true;
+        
+        if (course.categoryId) {
+            return course.categoryId === selectedCategory;
+        }
+
+        // Fallback for older courses without a categoryId
         const text = `${course.titleEn} ${course.titleAr} ${course.descEn} ${course.descAr} ${course.badgeEn || ""}`.toLowerCase();
-        if (selectedCategory === "STEM") return text.includes("robot") || text.includes("science") || text.includes("روبوت") || text.includes("عل");
-        if (selectedCategory === "ART") return text.includes("art") || text.includes("design") || text.includes("فن") || text.includes("تصم");
-        if (selectedCategory === "TECH") return text.includes("code") || text.includes("ai") || text.includes("program") || text.includes("برمج") || text.includes("ذك");
+        if (selectedCategory === "STEM") return text.includes("robot") || text.includes("science") || text.includes("روبوت") || text.includes("عل") || text.includes("math");
+        if (selectedCategory === "ART") return text.includes("art") || text.includes("design") || text.includes("فن") || text.includes("تصم") || text.includes("speak");
+        if (selectedCategory === "TECH") return text.includes("code") || text.includes("ai") || text.includes("program") || text.includes("برمج") || text.includes("ذك") || text.includes("bazar");
         return true;
     });
 

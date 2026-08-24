@@ -6,8 +6,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { getKidGameScores, getTotalMagicPoints, ALL_GAMES_INFO, GameScore } from "@/lib/games/gameScores";
 import { getChildPersonalStore, createKidStore, addProductToStore, removeProductFromStore, KidStore, KidProduct } from "@/lib/bazar/kidStores";
+import { useAuth } from "@/context/AuthContext";
 
 export default function ChildDashboard({ lang }: { lang: string }) {
+    const { user } = useAuth();
     const isArabic = lang === "ar";
     const [points, setPoints] = useState(350);
     const [gameScores, setGameScores] = useState<Record<string, GameScore>>({});
@@ -38,18 +40,24 @@ export default function ChildDashboard({ lang }: { lang: string }) {
         category: "Handcrafted"
     });
 
-    const loadData = () => {
-        setPoints(getTotalMagicPoints());
-        setGameScores(getKidGameScores());
-        setMyStore(getChildPersonalStore());
+    const loadData = async () => {
+        if (!user) return;
+        setPoints(await getTotalMagicPoints(user.uid));
+        setGameScores(await getKidGameScores(user.uid));
+        setMyStore(await getChildPersonalStore(user.uid));
     };
 
     useEffect(() => {
         loadData();
         const handleUpdate = () => loadData();
+        window.addEventListener("magica-stores-updated", handleUpdate);
         window.addEventListener("magica-scores-updated", handleUpdate);
-        return () => window.removeEventListener("magica-scores-updated", handleUpdate);
-    }, []);
+        return () => {
+            window.removeEventListener("magica-stores-updated", handleUpdate);
+            window.removeEventListener("magica-scores-updated", handleUpdate);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user]);
 
     const nextLevelPoints = Math.ceil((points + 1) / 500) * 500 || 500;
     const progress = Math.min((points % 500 / 500) * 100, 100);
@@ -68,9 +76,10 @@ export default function ChildDashboard({ lang }: { lang: string }) {
     const storeLogosList = ["🛍️", "🎨", "🤖", "🧁", "🍪", "🚀", "🪄", "🎪", "💎", "🧸", "📚", "⚙️"];
     const productIconsList = ["🎨", "🪄", "🧸", "🍪", "🧁", "💎", "🧢", "📓", "👕", "🤖", "🎲", "🚀", "👑", "⚽"];
 
-    const handleCreateStoreSubmit = (e: React.FormEvent) => {
+    const handleCreateStoreSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const created = createKidStore({
+        if (!user) return;
+        const created = await createKidStore(user.uid, {
             childName: storeForm.childName,
             storeNameEn: storeForm.storeNameEn || (isArabic ? storeForm.storeNameAr : "My Magica Store"),
             storeNameAr: storeForm.storeNameAr || storeForm.storeNameEn,
@@ -80,14 +89,14 @@ export default function ChildDashboard({ lang }: { lang: string }) {
             colorTheme: storeForm.colorTheme,
             bgGradient: storeForm.bgGradient
         });
-        setMyStore(created);
+        if (created) setMyStore(created);
         setIsStoreModalOpen(false);
     };
 
-    const handleAddProductSubmit = (e: React.FormEvent) => {
+    const handleAddProductSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!myStore) return;
-        addProductToStore(myStore.id, {
+        await addProductToStore(myStore.id, {
             title: prodForm.title,
             sellingPrice: Number(prodForm.sellingPrice),
             costPrice: Number(prodForm.costPrice),

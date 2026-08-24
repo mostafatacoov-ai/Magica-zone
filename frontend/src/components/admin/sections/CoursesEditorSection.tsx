@@ -458,6 +458,22 @@ export default function CoursesEditorSection({ lang }: { lang: string }) {
                                                 />
                                             </div>
 
+                                            <div className="md:col-span-2 p-4 bg-orange-50/50 rounded-2xl border border-orange-100/50">
+                                                <label className="block text-xs font-bold text-gray-900 mb-2">
+                                                    {isArabic ? "تصنيف الكورس (يستخدم في فلترة صفحة الكورسات)" : "Course Category (Used for filtering)"}
+                                                </label>
+                                                <select
+                                                    value={course.categoryId || "ALL"}
+                                                    onChange={e => handleUpdateField(originalIdx, "categoryId", e.target.value === "ALL" ? undefined : e.target.value)}
+                                                    className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-bold focus:border-orange-500 outline-none transition-all cursor-pointer"
+                                                >
+                                                    <option value="ALL">{isArabic ? "عام / غير محدد (All)" : "General / Uncategorized (All)"}</option>
+                                                    <option value="STEM">{isArabic ? "العلوم والروبوتات (STEM)" : "Science & Robotics (STEM)"}</option>
+                                                    <option value="ART">{isArabic ? "الفنون والإبداع (ART)" : "Arts & Creativity (ART)"}</option>
+                                                    <option value="TECH">{isArabic ? "البرمجة والذكاء الاصطناعي (TECH)" : "Programming & AI (TECH)"}</option>
+                                                </select>
+                                            </div>
+
                                             <div>
                                                 <label className="block text-xs font-bold text-gray-700 mb-1">Badge Tag (EN, e.g. Most Popular 🔥)</label>
                                                 <input

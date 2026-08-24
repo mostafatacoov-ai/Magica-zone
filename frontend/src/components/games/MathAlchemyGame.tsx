@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FlaskConical, Trophy, Star, RefreshCw, Sparkles, Flame, Timer } from "lucide-react";
 import { saveGameScore } from "@/lib/games/gameScores";
+import { useAuth } from "@/context/AuthContext";
 
 interface Question {
     equation: string;
@@ -12,6 +13,7 @@ interface Question {
 }
 
 export default function MathAlchemyGame({ lang }: { lang: string }) {
+    const { user } = useAuth();
     const isArabic = lang === "ar";
     const [isPlaying, setIsPlaying] = useState(false);
     const [timeLeft, setTimeLeft] = useState(30);
@@ -84,6 +86,7 @@ export default function MathAlchemyGame({ lang }: { lang: string }) {
         return () => {
             if (timerRef.current) clearInterval(timerRef.current);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isPlaying, isGameOver]);
 
     const handleOptionClick = (val: number) => {
@@ -111,7 +114,7 @@ export default function MathAlchemyGame({ lang }: { lang: string }) {
         else if (correctCount >= 4) stars = 3;
 
         setEarnedStars(stars);
-        saveGameScore("math-alchemy", score, stars, 60);
+        saveGameScore(user?.uid || "", "math-alchemy", score, stars, 60);
     };
 
     return (
