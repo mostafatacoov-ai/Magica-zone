@@ -354,82 +354,8 @@ const INITIAL_CMS_DATA: CompleteCMSData = {
             }
         ]
     },
-    courses: [
-        {
-            id: "course-ceo-bootcamp",
-            titleEn: "Junior CEO & Financial Literacy Bootcamp",
-            titleAr: "معسكر الرائد الصغير والذكاء المالي",
-            badgeEn: "Most Popular 🔥",
-            badgeAr: "الأكثر طلبًا 🔥",
-            price: 150,
-            datesEn: "Starts August 15 (Weekly Saturday Cohort)",
-            datesAr: "يبدأ في 15 أغسطس (أفواج كل أسبوعين)",
-            ageEn: "8 - 14 Years",
-            ageAr: "8 - 14 سنة",
-            hours: 16,
-            sessionsCount: 8,
-            descEn: "Turn pocket money into smart investments! Kids learn pricing, budgeting, profit margins, and negotiation through immersive simulations and practical real-world challenges.",
-            descAr: "حول مصروف الجيب إلى استثمارات ذكية! يتعلم الأطفال تسعير المنتجات، إعداد الميزانية، هوامش الربح، وفن التفاوض من خلال المحاكاة التفاعلية والتحديات الواقعية الممتعة.",
-            skillsEn: ["Financial Fluency", "Profit Calculation", "Smart Budgeting", "Negotiation Techniques"],
-            skillsAr: ["الذكاء المالي", "حساب هوامش الربح", "إدارة الميزانية", "مهارات التفاوض والإقناع"],
-            color: "from-orange-500 to-amber-600",
-            bgGradient: "bg-orange-500/10 border-orange-500/20 text-orange-600",
-            imageUrl: "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&q=80&w=600",
-            instructorNameEn: "Ahmed Magdy",
-            instructorNameAr: "أحمد مجدي",
-            instructorImageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=200",
-            published: true,
-            categoryId: "STEM"
-        },
-        {
-            id: "course-public-speaking",
-            titleEn: "Charismatic Leader & Stage Presence Studio",
-            titleAr: "استوديو القائد الجذاب وفن التحدث أمام الجمهور",
-            price: 130,
-            datesEn: "Starts August 20 (Intensive Weekend Classes)",
-            datesAr: "يبدأ في 20 أغسطس (جلسات عطلة نهاية الأسبوع)",
-            ageEn: "7 - 13 Years",
-            ageAr: "7 - 13 سنة",
-            hours: 12,
-            sessionsCount: 6,
-            descEn: "Overcome stage fright and develop genuine vocal presence! Inspired by Magica Podcast, this course coaches children on confidence, speech structuring, eye contact, and emotional intelligence.",
-            descAr: "اكسر حاجز الخوف وابنِ حضورًا مقنعًا وصوتًا قياديًا مميزًا! مستوحى من تجربة ماجيكا بودكاست لتدريب الأطفال على لغة الجسد، ترتيب الخطاب، والثقة العالية بالنفس.",
-            skillsEn: ["Stage Presence", "Storytelling", "Body Language Mastery", "Emotional Intelligence"],
-            skillsAr: ["الحضور والجاذبية", "فن رواية القصص", "لغة الجسد المؤثرة", "الذكاء العاطفي والاجتماعي"],
-            color: "from-emerald-500 to-teal-600",
-            bgGradient: "bg-emerald-500/10 border-emerald-500/20 text-emerald-600",
-            imageUrl: "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&q=80&w=600",
-            instructorNameEn: "Sarah Ali",
-            instructorNameAr: "سارة علي",
-            instructorImageUrl: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200",
-            published: true,
-            categoryId: "ART"
-        },
-        {
-            id: "course-bazar-maker",
-            titleEn: "Bazar Entrepreneur & Retail Innovator Program",
-            titleAr: "برنامج رواد البازار وصناع المبادرات التجاريين",
-            price: 175,
-            datesEn: "Starts September 1 (Includes Real Bazar Day)",
-            datesAr: "يبدأ في 1 سبتمبر (يتطلب التدريب الميداني في البازار)",
-            ageEn: "9 - 15 Years",
-            ageAr: "9 - 15 سنة",
-            hours: 20,
-            sessionsCount: 10,
-            descEn: "The ultimate practical incubator! Students create their own brand icon, produce handmade or curated goods, build a marketing strategy, and operate a live commercial booth at Magica Bazar.",
-            descAr: "حاضنة الأعمال التطبيقة الشاملة! يصمم الطفل علامته التجارية الخاصة، ويبتكر منتجاته، ويبني استراتيجية التسويق، ويدير متجره الفردي الحيوي في يوم ماجيكا بازار الكبير.",
-            skillsEn: ["Brand Creation", "Customer Service", "Sales Pitching", "Store Management"],
-            skillsAr: ["بناء الهوية والعلامة", "خدمة العملاء", "عروض البيع الساحرة", "إدارة وتجميل المتجر"],
-            color: "from-indigo-500 to-purple-600",
-            bgGradient: "bg-indigo-500/10 border-indigo-500/20 text-indigo-600",
-            imageUrl: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=600",
-            instructorNameEn: "Omar Youssef",
-            instructorNameAr: "عمر يوسف",
-            instructorImageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200",
-            published: true,
-            categoryId: "TECH"
-        }
-    ],
+    // Courses are managed exclusively via the Admin CMS and Firebase — no hardcoded defaults
+    courses: [],
     camps: [
         {
             id: "camp-summer-2026",
@@ -618,7 +544,8 @@ const INITIAL_CMS_DATA: CompleteCMSData = {
     ]
 };
 
-const STORAGE_KEY = "magica_cms_data_v1";
+// Bumped to v3 to force-clear old browser caches that had hardcoded courses
+const STORAGE_KEY = "magica_cms_data_v3";
 const UPDATE_EVENT = "magica_cms_update_event";
 
 // --- Helper Storage Methods ---
@@ -755,19 +682,19 @@ export function resetCMSDataToDefault(): void {
 
 // --- Reactive React Hook ---
 export function useCMSData() {
-    const [data, setData] = useState<CompleteCMSData>(INITIAL_CMS_DATA);
-    const [isSyncing, setIsSyncing] = useState<boolean>(false);
+    // Start with null so we know we're loading, not showing defaults
+    const [data, setData] = useState<CompleteCMSData | null>(null);
+    const [isSyncing, setIsSyncing] = useState<boolean>(true);
 
     useEffect(() => {
-        // 1. Immediately initialize from local storage for fast render
-        setData(getCMSData());
-
-        // 2. Fetch latest data from cloud Firestore in background
+        // Always fetch from Firebase first — it is the single source of truth
         setIsSyncing(true);
         syncCMSWithBackend().then((latest) => {
             setData(latest);
             setIsSyncing(false);
         }).catch(() => {
+            // Only fall back to localStorage if Firebase completely fails
+            setData(getCMSData());
             setIsSyncing(false);
         });
 
@@ -792,8 +719,11 @@ export function useCMSData() {
         return res;
     };
 
+    // Return INITIAL_CMS_DATA with empty courses while loading so pages don't crash
+    const resolvedData = data ?? { ...INITIAL_CMS_DATA, courses: [] };
+
     return {
-        data,
+        data: resolvedData,
         isSyncing,
         syncWithCloud: manualSync,
         saveData: saveCMSData,
