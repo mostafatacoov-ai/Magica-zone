@@ -29,6 +29,28 @@ export const registerParent = async (email: string, password: string) => {
     }
 };
 
+export const registerStudent = async (email: string, password: string, name: string) => {
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // Set user role as child
+        const userDocRef = doc(db, 'users', user.uid);
+        await setDoc(userDocRef, {
+            email: user.email,
+            name: name,
+            role: 'child',
+            createdAt: new Date().toISOString()
+        });
+
+        await user.getIdToken(true);
+        return user;
+    } catch (error) {
+        console.error("Error registering student:", error);
+        throw error;
+    }
+};
+
 export const loginUser = async (email: string, password: string) => {
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);

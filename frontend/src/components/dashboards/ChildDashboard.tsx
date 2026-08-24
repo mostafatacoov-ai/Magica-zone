@@ -1,12 +1,14 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Trophy, Gamepad2, Sparkles, Map, Brain, FlaskConical, BookOpen, Shapes, Play, Award, ChevronRight, ShoppingBag, Plus, DollarSign, TrendingUp, Tag, Trash2, Globe, Store, AlertTriangle, CheckCircle } from "lucide-react";
+import { Star, Trophy, Gamepad2, Sparkles, Map, Brain, FlaskConical, BookOpen, Shapes, Play, Award, ChevronRight, ShoppingBag, Plus, DollarSign, TrendingUp, Tag, Trash2, Globe, Store, AlertTriangle, CheckCircle, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { getKidGameScores, getTotalMagicPoints, ALL_GAMES_INFO, GameScore } from "@/lib/games/gameScores";
 import { getChildPersonalStore, createKidStore, addProductToStore, removeProductFromStore, KidStore, KidProduct } from "@/lib/bazar/kidStores";
 import { useAuth } from "@/context/AuthContext";
+import { getChildEnrollments, getCourseAssignments, getChildSubmissions, submitAssignment, Enrollment, Assignment, Submission } from "@/lib/courses/courseManager";
+import { GraduationCap } from "lucide-react";
 
 export default function ChildDashboard({ lang }: { lang: string }) {
     const { user } = useAuth();
@@ -14,6 +16,17 @@ export default function ChildDashboard({ lang }: { lang: string }) {
     const [points, setPoints] = useState(350);
     const [gameScores, setGameScores] = useState<Record<string, GameScore>>({});
     const [myStore, setMyStore] = useState<KidStore | null>(null);
+
+    // LMS States
+    const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
+    const [assignments, setAssignments] = useState<Assignment[]>([]);
+    const [submissions, setSubmissions] = useState<Submission[]>([]);
+    
+    // Assignment Submission Modal
+    const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
+    const [submissionText, setSubmissionText] = useState("");
+    const [submissionLink, setSubmissionLink] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Modals states
     const [isStoreModalOpen, setIsStoreModalOpen] = useState(false);
@@ -45,6 +58,20 @@ export default function ChildDashboard({ lang }: { lang: string }) {
         setPoints(await getTotalMagicPoints(user.uid));
         setGameScores(await getKidGameScores(user.uid));
         setMyStore(await getChildPersonalStore(user.uid));
+
+        // Fetch LMS Data
+        const myEnrollments = await getChildEnrollments(user.uid);
+        setEnrollments(myEnrollments);
+        
+        const mySubmissions = await getChildSubmissions(user.uid);
+        setSubmissions(mySubmissions);
+        
+        let allAssigns: Assignment[] = [];
+        for (const enr of myEnrollments) {
+            const courseAssigns = await getCourseAssignments(enr.courseId);
+            allAssigns = [...allAssigns, ...courseAssigns];
+        }
+        setAssignments(allAssigns);
     };
 
     useEffect(() => {
@@ -105,6 +132,24 @@ export default function ChildDashboard({ lang }: { lang: string }) {
         });
         setIsProductModalOpen(false);
         setProdForm({ title: "", sellingPrice: 35, costPrice: 15, icon: "🪄", category: "Magica Item" });
+    };
+
+    const handleAssignmentSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!user || !selectedAssignment) return;
+        setIsSubmitting(true);
+        await submitAssignment(
+            selectedAssignment.id,
+            user.uid,
+            selectedAssignment.courseId,
+            submissionText,
+            submissionLink
+        );
+        setIsSubmitting(false);
+        setSelectedAssignment(null);
+        setSubmissionText("");
+        setSubmissionLink("");
+        loadData(); // Refresh submissions
     };
 
     const calculatedProfit = Number(prodForm.sellingPrice) - Number(prodForm.costPrice);
@@ -203,6 +248,105 @@ export default function ChildDashboard({ lang }: { lang: string }) {
                     </motion.div>
                 </div>
             </div>
+
+            {/* ========================================================= */}
+            {/* MY COURSES & ASSIGNMENTS */}
+            {/* ========================================================= */}
+            <section className="bg-white rounded-3xl p-6 md:p-10 shadow-xl shadow-gray-100/80 border border-gray-100 relative overflow-hidden">
+                <div className="relative z-10">
+                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-6 border-b border-gray-100 mb-8">
+                        <div>
+                            <h3 className="text-2xl md:text-3xl font-black text-gray-900 flex items-center gap-2.5">
+                                <BookOpen className="w-8 h-8 text-blue-500" />
+                                <span>{isArabic ? "كورساتي ومهامي" : "My Courses & Assignments"}</span>
+                            </h3>
+                            <p className="text-gray-500 text-sm md:text-base mt-1 font-medium">
+                                {isArabic
+                                    ? "تابع دروسك وارفع مهامك لتحصل على نقاط إضافية وتتألق كقائد مبدع!"
+                                    : "Follow your courses and submit assignments to earn extra points!"}
+                            </p>
+                        </div>
+                    </div>
+
+                    {enrollments.length === 0 ? (
+                        <div className="text-center py-10 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+                            <GraduationCap className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                            <p className="text-gray-500 font-bold mb-4">
+                                {isArabic ? "لست مسجلاً في أي كورسات حالياً" : "You are not enrolled in any courses yet"}
+                            </p>
+                            <Link href={`/${lang}/magic-courses`} className="inline-block px-6 py-3 bg-blue-50 text-blue-600 rounded-full font-bold">
+                                {isArabic ? "تصفح الكورسات المتاحة" : "Browse Available Courses"}
+                            </Link>
+                        </div>
+                    ) : (
+                        <div className="space-y-8">
+                            {enrollments.map(enr => {
+                                const courseAssigns = assignments.filter(a => a.courseId === enr.courseId);
+                                return (
+                                    <div key={enr.id} className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                                        <h4 className="text-xl font-bold text-gray-800 flex items-center gap-2 mb-4">
+                                            <span className="w-3 h-3 rounded-full bg-blue-500"></span>
+                                            {isArabic ? enr.titleAr : enr.titleEn}
+                                        </h4>
+                                        
+                                        {courseAssigns.length === 0 ? (
+                                            <p className="text-sm text-gray-400 font-medium">
+                                                {isArabic ? "لا توجد مهام حالياً." : "No assignments yet."}
+                                            </p>
+                                        ) : (
+                                            <div className="grid md:grid-cols-2 gap-4">
+                                                {courseAssigns.map(assign => {
+                                                    const sub = submissions.find(s => s.assignmentId === assign.id);
+                                                    return (
+                                                        <div key={assign.id} className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col justify-between">
+                                                            <div>
+                                                                <div className="flex justify-between items-start mb-2">
+                                                                    <h5 className="font-bold text-gray-900">{assign.title}</h5>
+                                                                    <span className="text-xs font-black text-orange-500 bg-orange-50 px-2 py-1 rounded-full shrink-0">
+                                                                        {assign.maxScore} {isArabic ? "نقطة" : "pts"}
+                                                                    </span>
+                                                                </div>
+                                                                <p className="text-sm text-gray-500 mb-4">{assign.description}</p>
+                                                            </div>
+                                                            
+                                                            <div>
+                                                                {sub ? (
+                                                                    <div className={`p-3 rounded-lg text-sm font-bold flex items-center justify-between ${sub.status === 'graded' ? 'bg-green-50 text-green-700' : 'bg-blue-50 text-blue-700'}`}>
+                                                                        <span>
+                                                                            {sub.status === 'graded' 
+                                                                                ? (isArabic ? `تم التقييم: ${sub.score}/${assign.maxScore}` : `Graded: ${sub.score}/${assign.maxScore}`)
+                                                                                : (isArabic ? "قيد المراجعة" : "Pending Review")}
+                                                                        </span>
+                                                                        {sub.status === 'graded' && <CheckCircle className="w-5 h-5" />}
+                                                                    </div>
+                                                                ) : (
+                                                                    <button
+                                                                        onClick={() => setSelectedAssignment(assign)}
+                                                                        className="w-full py-2 bg-gray-900 text-white rounded-lg font-bold text-sm hover:bg-gray-800 transition-colors"
+                                                                    >
+                                                                        {isArabic ? "تسليم المهمة" : "Submit Assignment"}
+                                                                    </button>
+                                                                )}
+                                                                
+                                                                {sub?.feedback && (
+                                                                    <div className="mt-2 p-3 bg-yellow-50 border border-yellow-100 rounded-lg text-xs text-yellow-800">
+                                                                        <span className="font-bold block mb-1">{isArabic ? "ملاحظات المعلم:" : "Teacher Feedback:"}</span>
+                                                                        {sub.feedback}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
+            </section>
 
             {/* ========================================================= */}
             {/* KID MINI-STORE SUITE IN MAGICA BAZAR */}
@@ -712,6 +856,73 @@ export default function ChildDashboard({ lang }: { lang: string }) {
                                         {isArabic ? "إدراج المنتج في متجر البازار 🛍️" : "Add to Live Storefront 🛍️"}
                                     </button>
                                 </div>
+                            </form>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
+            {/* ========================================================= */}
+            {/* MODAL 3: ASSIGNMENT SUBMISSION */}
+            {/* ========================================================= */}
+            <AnimatePresence>
+                {selectedAssignment && (
+                    <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4 overflow-y-auto">
+                        <motion.div
+                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                            className="bg-white rounded-3xl p-6 md:p-8 max-w-lg w-full shadow-2xl relative my-8"
+                        >
+                            <button
+                                onClick={() => setSelectedAssignment(null)}
+                                className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 bg-gray-100 rounded-full p-2"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                            
+                            <h3 className="text-2xl font-black text-gray-900 mb-2">
+                                {isArabic ? "تسليم المهمة" : "Submit Assignment"}
+                            </h3>
+                            <p className="text-gray-500 font-bold mb-6">{selectedAssignment.title}</p>
+                            
+                            <form onSubmit={handleAssignmentSubmit} className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                                        {isArabic ? "نص الإجابة (اختياري)" : "Answer Text (Optional)"}
+                                    </label>
+                                    <textarea
+                                        value={submissionText}
+                                        onChange={e => setSubmissionText(e.target.value)}
+                                        rows={4}
+                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none resize-none font-medium text-sm"
+                                        placeholder={isArabic ? "اكتب إجابتك هنا..." : "Type your answer here..."}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                                        {isArabic ? "رابط الملف (اختياري)" : "File Link (Optional)"}
+                                    </label>
+                                    <input
+                                        type="url"
+                                        value={submissionLink}
+                                        onChange={e => setSubmissionLink(e.target.value)}
+                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 outline-none font-medium text-sm text-left dir-ltr"
+                                        placeholder="https://drive.google.com/..."
+                                    />
+                                    <p className="text-xs text-gray-500 mt-1">
+                                        {isArabic ? "مثال: رابط لملف جوجل درايف، يوتيوب، أو كانفا." : "e.g., Google Drive, YouTube, or Canva link."}
+                                    </p>
+                                </div>
+                                <button
+                                    type="submit"
+                                    disabled={isSubmitting || (!submissionText.trim() && !submissionLink.trim())}
+                                    className="w-full py-4 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors disabled:opacity-50 mt-4"
+                                >
+                                    {isSubmitting 
+                                        ? (isArabic ? "جاري التسليم..." : "Submitting...") 
+                                        : (isArabic ? "تأكيد التسليم" : "Confirm Submission")}
+                                </button>
                             </form>
                         </motion.div>
                     </div>

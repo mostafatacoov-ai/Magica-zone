@@ -146,8 +146,8 @@ export default function Navbar({ lang }: { lang: string }) {
                 initial={{ y: -100 }}
                 animate={{ y: 0 }}
                 className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
-                        ? "bg-white/95 backdrop-blur-lg shadow-sm border-b border-gray-100"
-                        : "bg-white/70 backdrop-blur-md border-b border-gray-200/50"
+                    ? "bg-white/95 backdrop-blur-lg shadow-sm border-b border-gray-100"
+                    : "bg-white/70 backdrop-blur-md border-b border-gray-200/50"
                     } ${isArabic ? "rtl font-cairo" : "ltr"}`}
             >
                 <div className="max-w-7xl mx-auto px-6 h-20 md:h-24 flex items-center justify-between">

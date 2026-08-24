@@ -6,6 +6,10 @@ import MagicalBackground from "@/components/ui/MagicalBackground";
 import { GraduationCap, Sparkles, Star, Users, Calendar, CheckCircle2, ArrowRight, ShieldCheck, Laptop, Award, X, Download, FileText } from "lucide-react";
 import Link from "next/link";
 import { useCMSData, CourseItem } from "@/lib/cms/contentStore";
+import { useAuth } from "@/context/AuthContext";
+import { registerStudent, loginUser } from "@/lib/firebase/auth";
+import { enrollChildInCourse } from "@/lib/courses/courseManager";
+import { useRouter } from "next/navigation";
 
 const filterCategories = [
     { id: "ALL", labelEn: "All Courses & Programs", labelAr: "كل الكورسات والبرامج المتاحة" },
@@ -17,11 +21,21 @@ const filterCategories = [
 
 export default function MagicCoursesPage({ params: { lang } }: { params: { lang: string } }) {
     const isArabic = lang === "ar";
+    const router = useRouter();
+    const { user } = useAuth();
     const { data } = useCMSData();
     const courses = (data.courses || []).filter(course => course.published !== false);
     const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
     const [selectedCourseForModal, setSelectedCourseForModal] = useState<CourseItem | null>(null);
     const [enrollSuccess, setEnrollSuccess] = useState<boolean>(false);
+    
+    // Auth Form State for Enrollment
+    const [authMode, setAuthMode] = useState<"login" | "register">("register");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [childName, setChildName] = useState("");
+    const [authError, setAuthError] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const filteredCourses = courses.filter(course => {
         if (selectedCategory === "ALL") return true;
@@ -34,13 +48,46 @@ export default function MagicCoursesPage({ params: { lang } }: { params: { lang:
         return true;
     });
 
-    const handleReservationSubmit = (e: React.FormEvent) => {
+    const handleReservationSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setEnrollSuccess(true);
-        setTimeout(() => {
-            setEnrollSuccess(false);
-            setSelectedCourseForModal(null);
-        }, 2500);
+        setIsSubmitting(true);
+        setAuthError("");
+
+        try {
+            let currentUser = user;
+            
+            // Handle Auth if not logged in
+            if (!currentUser) {
+                if (authMode === "register") {
+                    currentUser = await registerStudent(email, password, childName);
+                } else {
+                    currentUser = await loginUser(email, password);
+                }
+            }
+
+            // Perform Enrollment
+            if (currentUser && selectedCourseForModal) {
+                await enrollChildInCourse(
+                    currentUser.uid, 
+                    selectedCourseForModal.id, 
+                    selectedCourseForModal.titleEn, 
+                    selectedCourseForModal.titleAr
+                );
+                
+                setEnrollSuccess(true);
+                
+                // Redirect to dashboard after a short delay
+                setTimeout(() => {
+                    setEnrollSuccess(false);
+                    setSelectedCourseForModal(null);
+                    router.push(`/${lang}/dashboard`);
+                }, 2000);
+            }
+        } catch (err: any) {
+            setAuthError(err.message || "Authentication failed. Please try again.");
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -359,75 +406,112 @@ export default function MagicCoursesPage({ params: { lang } }: { params: { lang:
                                 </h4>
                                 <p className="text-gray-600 text-sm max-w-sm mx-auto font-medium">
                                     {isArabic
-                                        ? "سيقوم فريق ماجيكا الأكاديمي بالتواصل معك عبر الواتساب لإتمام تأكيد الموعد وتفاصيل انطلاق الجلسات!"
-                                        : "Our academic advisors will contact you shortly via WhatsApp to confirm seat allocation and starting schedules!"}
+                                        ? "جاري توجيهك إلى لوحة التحكم الخاصة بك..."
+                                        : "Redirecting you to your dashboard..."}
                                 </p>
                             </motion.div>
                         ) : (
                             <form onSubmit={handleReservationSubmit} className="space-y-4">
-                                <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-1">
-                                        {isArabic ? "اسم الطفل الرباعي" : "Child Full Name"}
-                                    </label>
-                                    <input
-                                        required
-                                        type="text"
-                                        className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-orange-500 outline-none font-medium"
-                                        placeholder={isArabic ? "مثال: عمر محمد أحمد" : "e.g., Omar Mohamed Ahmed"}
-                                    />
-                                </div>
+                                {!user && (
+                                    <>
+                                        <div className="flex bg-gray-100 rounded-full p-1 mb-4">
+                                            <button
+                                                type="button"
+                                                onClick={() => { setAuthMode("register"); setAuthError(""); }}
+                                                className={`flex-1 py-2 text-sm font-bold rounded-full transition-all ${authMode === "register" ? "bg-white shadow text-orange-600" : "text-gray-500 hover:text-gray-700"}`}
+                                            >
+                                                {isArabic ? "حساب جديد" : "New Account"}
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => { setAuthMode("login"); setAuthError(""); }}
+                                                className={`flex-1 py-2 text-sm font-bold rounded-full transition-all ${authMode === "login" ? "bg-white shadow text-orange-600" : "text-gray-500 hover:text-gray-700"}`}
+                                            >
+                                                {isArabic ? "تسجيل الدخول" : "Login"}
+                                            </button>
+                                        </div>
 
-                                <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-1">
-                                        {isArabic ? "عمر الطفل الحقيقي" : "Child Age"}
-                                    </label>
-                                    <input
-                                        required
-                                        type="number"
-                                        min="5"
-                                        max="16"
-                                        className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-orange-500 outline-none font-medium"
-                                        placeholder="10"
-                                    />
-                                </div>
+                                        {authError && (
+                                            <div className="bg-red-50 text-red-500 p-3 rounded-lg mb-2 text-sm text-center">
+                                                {authError}
+                                            </div>
+                                        )}
 
-                                <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-1">
-                                        {isArabic ? "رقم الهاتف / الواتساب للتواصل (ولي الأمر)" : "Parent WhatsApp Number"}
-                                    </label>
-                                    <input
-                                        required
-                                        type="tel"
-                                        className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-orange-500 outline-none font-medium text-start dir-ltr"
-                                        placeholder="010xxxxxxxx"
-                                    />
-                                </div>
+                                        {authMode === "register" && (
+                                            <div>
+                                                <label className="block text-sm font-bold text-gray-700 mb-1">
+                                                    {isArabic ? "اسم الطالب (الطفل)" : "Student Name"}
+                                                </label>
+                                                <input
+                                                    required
+                                                    type="text"
+                                                    value={childName}
+                                                    onChange={e => setChildName(e.target.value)}
+                                                    className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-orange-500 outline-none font-medium"
+                                                    placeholder={isArabic ? "مثال: عمر محمد أحمد" : "e.g., Omar Mohamed"}
+                                                />
+                                            </div>
+                                        )}
 
-                                <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-1">
-                                        {isArabic ? "ملاحظات إضافية عن الطفل (اختياري)" : "Additional notes or interests (optional)"}
-                                    </label>
-                                    <textarea
-                                        rows={3}
-                                        className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-orange-500 outline-none font-medium resize-none"
-                                        placeholder={isArabic ? "هل لدى الطفل خبرة سابقة؟ هل يفضل مواعيد صباحية أم مسائية؟" : "Any previous background or preferred timings?"}
-                                    />
-                                </div>
+                                        <div>
+                                            <label className="block text-sm font-bold text-gray-700 mb-1">
+                                                {isArabic ? "البريد الإلكتروني" : "Email Address"}
+                                            </label>
+                                            <input
+                                                required
+                                                type="email"
+                                                value={email}
+                                                onChange={e => setEmail(e.target.value)}
+                                                className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-orange-500 outline-none font-medium text-start dir-ltr"
+                                                placeholder="student@magica.com"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-bold text-gray-700 mb-1">
+                                                {isArabic ? "كلمة المرور" : "Password"}
+                                            </label>
+                                            <input
+                                                required
+                                                type="password"
+                                                value={password}
+                                                onChange={e => setPassword(e.target.value)}
+                                                className="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:border-orange-500 outline-none font-medium text-start dir-ltr"
+                                                placeholder="••••••••"
+                                            />
+                                        </div>
+                                    </>
+                                )}
+
+                                {user && (
+                                    <div className="p-4 bg-green-50 rounded-2xl border border-green-100 mb-4 flex items-center gap-3">
+                                        <div className="w-10 h-10 bg-green-200 text-green-700 rounded-full flex items-center justify-center font-bold">
+                                            {user.email?.charAt(0).toUpperCase()}
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-bold text-gray-800">{isArabic ? "أنت مسجل الدخول كـ" : "Logged in as"}</p>
+                                            <p className="text-xs text-gray-500">{user.email}</p>
+                                        </div>
+                                    </div>
+                                )}
 
                                 <div className="p-4 bg-orange-50/60 rounded-2xl border border-orange-100/80 text-xs font-semibold text-gray-600 flex items-center gap-3 mt-2">
                                     <ShieldCheck className="w-6 h-6 text-orange-500 shrink-0" />
                                     <span>
                                         {isArabic
-                                            ? "الحجز المبدئي مجاني تمامًا ومتاح حتى اكتمال العدد المقرر في المجموعة لضمان أعلى جودة تفاعلية."
-                                            : "Initial reservation is 100% free and secures priority assessment until cohort seats are filled."}
+                                            ? "بمجرد التأكيد، سيتم إنشاء لوحة تحكم خاصة بك لمتابعة الكورس ورفع المهام مجانًا."
+                                            : "Once confirmed, you will instantly get access to your dashboard to view courses and submit assignments."}
                                     </span>
                                 </div>
 
                                 <button
                                     type="submit"
-                                    className="w-full py-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-extrabold text-lg rounded-2xl shadow-xl shadow-orange-500/30 hover:brightness-110 transition-all mt-6"
+                                    disabled={isSubmitting}
+                                    className="w-full py-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-extrabold text-lg rounded-2xl shadow-xl shadow-orange-500/30 hover:brightness-110 transition-all mt-6 disabled:opacity-50"
                                 >
-                                    {isArabic ? "تأكيد حجز المقعد الآن" : "Confirm Course Reservation"}
+                                    {isSubmitting 
+                                        ? (isArabic ? "جاري التأكيد..." : "Confirming...")
+                                        : (isArabic ? "تأكيد والانتقال للوحة التحكم" : "Confirm & Go to Dashboard")}
                                 </button>
                             </form>
                         )}
