@@ -638,14 +638,14 @@ export function getCMSData(): CompleteCMSData {
         // Merge with defaults to guarantee all keys exist if structure grew
         return {
             hero: { ...INITIAL_CMS_DATA.hero, ...(parsed.hero || {}) },
-            courses: parsed.courses || INITIAL_CMS_DATA.courses,
-            camps: parsed.camps || INITIAL_CMS_DATA.camps,
-            food: parsed.food || INITIAL_CMS_DATA.food,
-            uniforms: parsed.uniforms || INITIAL_CMS_DATA.uniforms,
+            courses: 'courses' in parsed ? parsed.courses : INITIAL_CMS_DATA.courses,
+            camps: 'camps' in parsed ? parsed.camps : INITIAL_CMS_DATA.camps,
+            food: 'food' in parsed ? parsed.food : INITIAL_CMS_DATA.food,
+            uniforms: 'uniforms' in parsed ? parsed.uniforms : INITIAL_CMS_DATA.uniforms,
             supplies: parsed.supplies || INITIAL_CMS_DATA.supplies,
-            podcasts: parsed.podcasts || INITIAL_CMS_DATA.podcasts,
-            games: parsed.games || INITIAL_CMS_DATA.games,
-            events: parsed.events || INITIAL_CMS_DATA.events,
+            podcasts: 'podcasts' in parsed ? parsed.podcasts : INITIAL_CMS_DATA.podcasts,
+            games: 'games' in parsed ? parsed.games : INITIAL_CMS_DATA.games,
+            events: 'events' in parsed ? parsed.events : INITIAL_CMS_DATA.events,
         };
     } catch (e) {
         console.error("Failed to read CMS data from storage:", e);
@@ -699,18 +699,20 @@ export async function syncCMSWithBackend(): Promise<CompleteCMSData> {
         if (docSnap.exists()) {
             const cloudData = docSnap.data();
             const local = getCMSData();
+            // Use 'in' check so cloud wins even if the value is an empty array []
             const merged: CompleteCMSData = {
-                    hero: cloudData.hero || local.hero,
-                    courses: cloudData.courses || local.courses,
-                    camps: cloudData.camps || local.camps,
-                    food: cloudData.food || local.food,
-                    uniforms: cloudData.uniforms || local.uniforms,
-                    supplies: cloudData.supplies || local.supplies,
-                    podcasts: cloudData.podcasts || local.podcasts,
-                    games: cloudData.games || local.games,
-                    events: cloudData.events || local.events,
+                    hero: 'hero' in cloudData ? cloudData.hero : local.hero,
+                    courses: 'courses' in cloudData ? cloudData.courses : local.courses,
+                    camps: 'camps' in cloudData ? cloudData.camps : local.camps,
+                    food: 'food' in cloudData ? cloudData.food : local.food,
+                    uniforms: 'uniforms' in cloudData ? cloudData.uniforms : local.uniforms,
+                    supplies: 'supplies' in cloudData ? cloudData.supplies : local.supplies,
+                    podcasts: 'podcasts' in cloudData ? cloudData.podcasts : local.podcasts,
+                    games: 'games' in cloudData ? cloudData.games : local.games,
+                    events: 'events' in cloudData ? cloudData.events : local.events,
                 };
-                saveCMSData(merged);
+                // Force-update localStorage so the next page load gets fresh data
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
                 return merged;
         }
     } catch (e) {
