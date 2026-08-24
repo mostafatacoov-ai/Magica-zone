@@ -88,7 +88,7 @@ export async function getKidStores(): Promise<KidStore[]> {
         if (typeof window === "undefined") {
             return INITIAL_SEED_STORES;
         }
-        const res = await fetch('/api/bazar');
+        const res = await fetch('/api/bazar', { cache: 'no-store' });
         if (res.ok) {
             const stores = await res.json();
             return [...INITIAL_SEED_STORES, ...stores];
@@ -110,7 +110,7 @@ export async function getStoreById(id: string): Promise<KidStore | undefined> {
             return undefined;
         }
 
-        const res = await fetch(`/api/bazar/${id}`);
+        const res = await fetch(`/api/bazar/${id}`, { cache: 'no-store' });
         if (res.ok) {
             return await res.json();
         }
@@ -126,7 +126,7 @@ export async function getChildPersonalStore(userId?: string): Promise<KidStore |
         if (typeof window === "undefined") {
             return null;
         }
-        const res = await fetch(`/api/bazar?userId=${userId}`);
+        const res = await fetch(`/api/bazar?userId=${userId}`, { cache: 'no-store' });
         if (res.ok) {
             const stores = await res.json();
             if (stores.length > 0) {

@@ -50,7 +50,7 @@ export async function enrollChildInCourse(childId: string, courseId: string, tit
 
 export async function getChildEnrollments(childId: string): Promise<Enrollment[]> {
     try {
-        const res = await fetch(`/api/enrollments?childId=${childId}`);
+        const res = await fetch(`/api/enrollments?childId=${childId}`, { cache: 'no-store' });
         if (!res.ok) return [];
         return await res.json();
     } catch (e) {
@@ -61,7 +61,7 @@ export async function getChildEnrollments(childId: string): Promise<Enrollment[]
 
 export async function getCourseEnrollments(courseId: string): Promise<Enrollment[]> {
     try {
-        const res = await fetch(`/api/enrollments?courseId=${courseId}`);
+        const res = await fetch(`/api/enrollments?courseId=${courseId}`, { cache: 'no-store' });
         if (!res.ok) return [];
         return await res.json();
     } catch (e) {
@@ -88,7 +88,7 @@ export async function createAssignment(courseId: string, teacherId: string, titl
 
 export async function getCourseAssignments(courseId: string): Promise<Assignment[]> {
     try {
-        const res = await fetch(`/api/assignments?courseId=${courseId}`);
+        const res = await fetch(`/api/assignments?courseId=${courseId}`, { cache: 'no-store' });
         if (!res.ok) return [];
         return await res.json();
     } catch (e) {
@@ -115,7 +115,7 @@ export async function submitAssignment(assignmentId: string, childId: string, co
 
 export async function getAssignmentSubmissions(assignmentId: string): Promise<Submission[]> {
     try {
-        const res = await fetch(`/api/submissions?assignmentId=${assignmentId}`);
+        const res = await fetch(`/api/submissions?assignmentId=${assignmentId}`, { cache: 'no-store' });
         if (!res.ok) return [];
         return await res.json();
     } catch (e) {
@@ -126,7 +126,7 @@ export async function getAssignmentSubmissions(assignmentId: string): Promise<Su
 
 export async function getCourseSubmissions(courseId: string): Promise<Submission[]> {
     try {
-        const res = await fetch(`/api/submissions?courseId=${courseId}`);
+        const res = await fetch(`/api/submissions?courseId=${courseId}`, { cache: 'no-store' });
         if (!res.ok) return [];
         return await res.json();
     } catch (e) {
@@ -137,7 +137,7 @@ export async function getCourseSubmissions(courseId: string): Promise<Submission
 
 export async function getChildSubmissions(childId: string): Promise<Submission[]> {
     try {
-        const res = await fetch(`/api/submissions?childId=${childId}`);
+        const res = await fetch(`/api/submissions?childId=${childId}`, { cache: 'no-store' });
         if (!res.ok) return [];
         return await res.json();
     } catch (e) {
@@ -157,7 +157,7 @@ export async function gradeSubmission(submissionId: string, score: number, feedb
         // Award points to child automatically!
         if (score > 0) {
             // we should call the users API to add points
-            const userRes = await fetch(`/api/users/${childId}`);
+            const userRes = await fetch(`/api/users/${childId}`, { cache: 'no-store' });
             if (userRes.ok) {
                 const user = await userRes.json();
                 const currentPoints = user.points || 0;

@@ -611,7 +611,7 @@ async function syncToCloudBackend(section?: string, data?: any): Promise<void> {
 export async function syncCMSWithBackend(): Promise<CompleteCMSData> {
     if (typeof window === "undefined") return INITIAL_CMS_DATA;
     try {
-        const response = await fetch('/api/cms');
+        const response = await fetch('/api/cms', { cache: 'no-store' });
         if (response.ok) {
             const cloudData = await response.json();
             const local = getCMSData();

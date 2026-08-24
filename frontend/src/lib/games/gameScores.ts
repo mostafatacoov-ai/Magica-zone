@@ -94,7 +94,7 @@ const INITIAL_SCORES: Record<string, GameScore> = {
 export async function getKidGameScores(userId?: string): Promise<Record<string, GameScore>> {
     if (!userId) return INITIAL_SCORES;
     try {
-        const res = await fetch(`/api/users/${userId}`);
+        const res = await fetch(`/api/users/${userId}`, { cache: 'no-store' });
         if (res.ok) {
             const data = await res.json();
             if (data.gameScores) {
@@ -111,7 +111,7 @@ export async function getKidGameScores(userId?: string): Promise<Record<string, 
 export async function saveGameScore(userId: string, gameId: string, newScore: number, earnedStars: number, pointsAdded: number = 50): Promise<void> {
     if (!userId) return;
     try {
-        const res = await fetch(`/api/users/${userId}`);
+        const res = await fetch(`/api/users/${userId}`, { cache: 'no-store' });
         let currentScores = { ...INITIAL_SCORES };
         let currentPoints = 350;
 
@@ -151,7 +151,7 @@ export async function saveGameScore(userId: string, gameId: string, newScore: nu
 export async function getTotalMagicPoints(userId?: string): Promise<number> {
     if (!userId) return 350;
     try {
-        const res = await fetch(`/api/users/${userId}`);
+        const res = await fetch(`/api/users/${userId}`, { cache: 'no-store' });
         if (res.ok) {
             const data = await res.json();
             if (data.points !== undefined) {
