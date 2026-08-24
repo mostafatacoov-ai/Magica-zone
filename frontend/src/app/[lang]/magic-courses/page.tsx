@@ -15,43 +15,23 @@ const filterCategories = [
     { id: "LEADERSHIP", labelEn: "Leadership & Bazar", labelAr: "القيادة والبازار" },
 ];
 
-const ageTiers = [
-    { id: "ALL_AGES", labelEn: "All Ages", labelAr: "جميع الفئات" },
-    { id: "JUNIORS", labelEn: "Juniors (6–9)", labelAr: "صغار (٦–٩ سنوات)" },
-    { id: "TEENS", labelEn: "Teens (10–15)", labelAr: "كبار (١٠–١٥ سنة)" },
-];
-
 export default function MagicCoursesPage({ params: { lang } }: { params: { lang: string } }) {
     const isArabic = lang === "ar";
     const { data } = useCMSData();
     const courses = (data.courses || []).filter(course => course.published !== false);
     const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
-    const [selectedAgeTier, setSelectedAgeTier] = useState<string>("ALL_AGES");
     const [selectedCourseForModal, setSelectedCourseForModal] = useState<CourseItem | null>(null);
     const [enrollSuccess, setEnrollSuccess] = useState<boolean>(false);
 
     const filteredCourses = courses.filter(course => {
-        // Category filter
-        let passesCategory = true;
-        if (selectedCategory !== "ALL") {
-            if (course.categoryId) {
-                passesCategory = course.categoryId === selectedCategory;
-            } else {
-                const text = `${course.titleEn} ${course.titleAr} ${course.descEn} ${course.descAr} ${course.badgeEn || ""}`.toLowerCase();
-                if (selectedCategory === "STEM") passesCategory = text.includes("robot") || text.includes("science") || text.includes("روبوت") || text.includes("math");
-                else if (selectedCategory === "ART") passesCategory = text.includes("art") || text.includes("design") || text.includes("فن") || text.includes("speak");
-                else if (selectedCategory === "TECH") passesCategory = text.includes("code") || text.includes("ai") || text.includes("program") || text.includes("برمج") || text.includes("ذك");
-                else if (selectedCategory === "LEADERSHIP") passesCategory = text.includes("leader") || text.includes("bazar") || text.includes("قياد") || text.includes("بازار") || text.includes("ceo");
-            }
-        }
-        // Age tier filter
-        let passesAge = true;
-        if (selectedAgeTier !== "ALL_AGES") {
-            const ageText = `${course.ageEn || ""} ${course.ageAr || ""}`.toLowerCase();
-            if (selectedAgeTier === "JUNIORS") passesAge = ageText.includes("6") || ageText.includes("7") || ageText.includes("8") || ageText.includes("9") || ageText.includes("junior") || ageText.includes("صغ");
-            else if (selectedAgeTier === "TEENS") passesAge = ageText.includes("10") || ageText.includes("11") || ageText.includes("12") || ageText.includes("13") || ageText.includes("14") || ageText.includes("15") || ageText.includes("teen") || ageText.includes("كب");
-        }
-        return passesCategory && passesAge;
+        if (selectedCategory === "ALL") return true;
+        if (course.categoryId) return course.categoryId === selectedCategory;
+        const text = `${course.titleEn} ${course.titleAr} ${course.descEn} ${course.descAr} ${course.badgeEn || ""}`.toLowerCase();
+        if (selectedCategory === "STEM") return text.includes("robot") || text.includes("science") || text.includes("روبوت") || text.includes("math");
+        if (selectedCategory === "ART") return text.includes("art") || text.includes("design") || text.includes("فن") || text.includes("speak");
+        if (selectedCategory === "TECH") return text.includes("code") || text.includes("ai") || text.includes("program") || text.includes("برمج") || text.includes("ذك");
+        if (selectedCategory === "LEADERSHIP") return text.includes("leader") || text.includes("bazar") || text.includes("قياد") || text.includes("بازار") || text.includes("ceo");
+        return true;
     });
 
     const handleReservationSubmit = (e: React.FormEvent) => {
@@ -134,9 +114,8 @@ export default function MagicCoursesPage({ params: { lang } }: { params: { lang:
                 </div>
             </section>
 
-            {/* Filters: Category + Age Tier */}
-            <section className="max-w-7xl mx-auto px-6 mb-12 space-y-4">
-                {/* Category Pills */}
+            {/* Filters: Category Only */}
+            <section className="max-w-7xl mx-auto px-6 mb-12">
                 <div className="flex items-center justify-center gap-2 overflow-x-auto py-1 scrollbar-none flex-wrap">
                     {filterCategories.map((cat) => {
                         const active = selectedCategory === cat.id;
@@ -155,36 +134,6 @@ export default function MagicCoursesPage({ params: { lang } }: { params: { lang:
                         );
                     })}
                 </div>
-                {/* Age Tier Pills */}
-                <div className="flex items-center justify-center gap-2 flex-wrap">
-                    <span className="text-xs font-extrabold text-gray-400 uppercase tracking-wider mr-2">
-                        {isArabic ? "الفئة:" : "Age:"}
-                    </span>
-                    {ageTiers.map((tier) => {
-                        const active = selectedAgeTier === tier.id;
-                        return (
-                            <button
-                                key={tier.id}
-                                onClick={() => setSelectedAgeTier(tier.id)}
-                                className={`px-4 py-1.5 rounded-full font-bold text-xs transition-all whitespace-nowrap border ${
-                                    active
-                                        ? "bg-purple-600 text-white border-purple-600 shadow-md"
-                                        : "bg-white text-gray-500 border-gray-200 hover:border-purple-300 hover:text-purple-600"
-                                }`}
-                            >
-                                {isArabic ? tier.labelAr : tier.labelEn}
-                            </button>
-                        );
-                    })}
-                </div>
-                {/* Active filter summary */}
-                {(selectedCategory !== "ALL" || selectedAgeTier !== "ALL_AGES") && (
-                    <p className="text-center text-xs text-gray-500 font-semibold">
-                        {isArabic
-                            ? `عرض ${filteredCourses.length} كورس`
-                            : `Showing ${filteredCourses.length} course${filteredCourses.length !== 1 ? 's' : ''}`}
-                    </p>
-                )}
             </section>
 
             {/* Courses Catalog Grid */}
