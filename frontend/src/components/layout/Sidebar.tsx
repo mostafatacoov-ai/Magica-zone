@@ -44,6 +44,11 @@ export default function Sidebar({ lang }: { lang: string }) {
 
     const filteredNav = navItems.filter(item => role && item.roles.includes(role));
 
+    // Admin Dashboard page has its own full-screen CMS sidebar, so we hide this outer one
+    if (role === 'admin' && pathname === `/${lang}/dashboard`) {
+        return null;
+    }
+
     return (
         <>
             {/* =========================================================

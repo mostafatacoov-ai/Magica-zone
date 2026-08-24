@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://admin:cVofhxvspPlmYjFU@cluster0.05r458t.mongodb.net/?appName=Cluster0";
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://admin:cVofhxvspPlmYjFU@ac-aavapsr-shard-00-00.05r458t.mongodb.net:27017,ac-aavapsr-shard-00-01.05r458t.mongodb.net:27017,ac-aavapsr-shard-00-02.05r458t.mongodb.net:27017/?ssl=true&replicaSet=atlas-37poss-shard-0&authSource=admin&retryWrites=true&w=majority&appName=Cluster0";
 
 if (!MONGODB_URI) {
     throw new Error(
@@ -27,6 +27,7 @@ async function dbConnect() {
     if (!cached.promise) {
         const opts = {
             bufferCommands: false,
+            family: 4,
         };
 
         cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {

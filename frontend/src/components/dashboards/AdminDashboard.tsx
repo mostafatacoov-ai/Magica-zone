@@ -5,7 +5,9 @@ import {
     LayoutDashboard, Globe, BookOpen, Tent, Store,
     Mic, Utensils, Shirt, Wrench, Gamepad2, Shield,
     Sparkles, Menu, X, ChevronRight, Calendar, LogOut,
+    Users, UserCheck, MessageSquare, Settings
 } from "lucide-react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { logoutUser } from "@/lib/firebase/auth";
 import { useRouter } from "next/navigation";
@@ -114,6 +116,36 @@ function SidebarContent({ activeTab, isArabic, onSelect, onLogout }: { activeTab
                     })}
                 </div>
             ))}
+
+            <div className="mb-4">
+                <p className={`text-white/30 text-[10px] font-black uppercase tracking-widest px-3 mb-1.5 ${isArabic ? "text-right" : ""}`}>
+                    {isArabic ? "إدارة البوابة" : "PORTAL MANAGEMENT"}
+                </p>
+                <Link href={`/${isArabic ? "ar" : "en"}/dashboard/users`} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 text-white/50 hover:text-white/80 hover:bg-white/5 ${isArabic ? "flex-row-reverse text-right" : "text-left"}`}>
+                    <span className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all text-white/40">
+                        <Users className="w-4 h-4" />
+                    </span>
+                    <span className="flex-1 truncate">{isArabic ? "إدارة المستخدمين" : "Manage Users"}</span>
+                </Link>
+                <Link href={`/${isArabic ? "ar" : "en"}/dashboard/approvals`} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 text-white/50 hover:text-white/80 hover:bg-white/5 ${isArabic ? "flex-row-reverse text-right" : "text-left"}`}>
+                    <span className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all text-white/40">
+                        <UserCheck className="w-4 h-4" />
+                    </span>
+                    <span className="flex-1 truncate">{isArabic ? "طلبات التسجيل" : "Pending Approvals"}</span>
+                </Link>
+                <Link href={`/${isArabic ? "ar" : "en"}/dashboard/messages`} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 text-white/50 hover:text-white/80 hover:bg-white/5 ${isArabic ? "flex-row-reverse text-right" : "text-left"}`}>
+                    <span className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all text-white/40">
+                        <MessageSquare className="w-4 h-4" />
+                    </span>
+                    <span className="flex-1 truncate">{isArabic ? "الرسائل" : "Messages"}</span>
+                </Link>
+                <Link href={`/${isArabic ? "ar" : "en"}/dashboard/settings`} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 text-white/50 hover:text-white/80 hover:bg-white/5 ${isArabic ? "flex-row-reverse text-right" : "text-left"}`}>
+                    <span className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all text-white/40">
+                        <Settings className="w-4 h-4" />
+                    </span>
+                    <span className="flex-1 truncate">{isArabic ? "الإعدادات" : "Settings"}</span>
+                </Link>
+            </div>
 
             <div className="mt-auto pt-4 mb-4 px-3 border-t border-white/10">
                 <button
